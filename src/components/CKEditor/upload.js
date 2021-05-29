@@ -26,8 +26,6 @@ class MyUploadAdapter {
       withCredentials: true // true 为不允许带 token, false 为允许
     })
 
-    console.log(res.data, '上传！')
-
     // 方法返回数据格式： {default: "url"}
     return {
       default: process.env.VUE_APP_IMG_URL + res.data.data

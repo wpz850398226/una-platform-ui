@@ -107,7 +107,6 @@ export default {
         this.fastClick = false
         var phone = this.form.telPhone
         userData.getUserByTelPhone(phone).then((res) => {
-          console.log(res)
           if (res.data) {
             userData.addSendMsg(phone).then((res) => {
               this.sendPhone = phone

@@ -78,7 +78,6 @@ export default {
       })
     },
     handleSway(e) {
-      console.log(e)
       this.jobId = e.id
       netData.getWorkNode(e.publishId).then((resolve) => {
         this.nodeList = resolve.rows

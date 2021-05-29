@@ -33,12 +33,11 @@ export default {
       })
     },
     setActiveName(e) {
-      console.log(e)
+
     },
     tabChange(e) {
       this.activeName = e.name
       this.$emit('tabChange', e.name)
-      console.log(e)
     }
   },
   render(h, context) {

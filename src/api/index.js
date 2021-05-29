@@ -10,7 +10,7 @@ const reqUrl = process.env.VUE_APP_BASE_URL
 const imgUrl = process.env.VUE_APP_IMG_URL
 
 function chImg(url) {
-  // console.log(url, 'Jie')
+  //
   if (url) {
     if (url.indexOf('data:image') !== -1) { // base64
       return {
@@ -64,18 +64,17 @@ function removePropertyOfNull(obj) {
 }
 
 async function chGet(url, data) {
-  // console.log('chGet', qs.stringify(data))
+  //
   const reqData = qs.stringify(removePropertyOfNull(data))
   const g = reqData ? '?' : ''
   const urlStr = `${reqUrl}${url}${g}${reqData}`
-  console.log(urlStr, 'chGet方法请求地址')
+
   return new Promise((resolve, reject) => {
     axios({
       url: urlStr,
       method: 'GET',
       data
     }).then((res) => {
-      console.log('get请求' + urlStr + '正常，返回内容为：', res)
       resolve(res)
     }).catch((err) => {
       console.error('与服务器通信异常')
@@ -85,10 +84,9 @@ async function chGet(url, data) {
 }
 
 async function chPost(url, data) {
-  console.log('通用post调用，数据：', data)
   data = qs.stringify(removePropertyOfNull(data)) // 序列化
   // const reqData = JSON.stringify(data)
-  console.log(`${reqUrl}${url}`)
+
   return new Promise((resolve, reject) => {
     axios({
       url: `${reqUrl}${url}`,
@@ -108,7 +106,7 @@ async function chPost(url, data) {
 async function chPut(url, data) {
   // const reqData = JSON.stringify(data)
   data = qs.stringify(removePropertyOfNull(data)) // 序列化
-  console.log(`${reqUrl}${url}`)
+
   return new Promise((resolve, reject) => {
     axios({
       url: `${reqUrl}${url}`,
@@ -186,7 +184,7 @@ async function chDownloadAS(downloadUrl, filename) {
   if (!downloadUrl) {
     return
   }
-  console.log(downloadUrl, '下载地址')
+
   const blob = await chDownloadA(downloadUrl)
   const url = window.URL.createObjectURL(new Blob([blob]))
   const link = document.createElement('a')
@@ -199,7 +197,6 @@ async function chDownloadAS(downloadUrl, filename) {
 }
 
 async function chDownloadA(url) {
-  console.log('chDownload', url)
   return new Promise((resolve, reject) => {
     axios({
       method: 'POST',

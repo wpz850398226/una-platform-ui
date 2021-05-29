@@ -83,7 +83,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
         const { data } = response
-        console.log(data, 'kkkkkk')
+
         commit('SET_TOKEN', data)
         setToken(data)
 
@@ -99,7 +99,6 @@ const actions = {
     const { telPhone, code } = userInfo
     return new Promise((resolve, reject) => {
       phoneLogin({ telPhone: telPhone.trim(), code: code, appkey: 'uUdTluWpcZzkf4Yyog0FPuXXvoue0saO' }).then(response => {
-        console.log(response)
         const { data } = response
         if (data.code === '200') {
           commit('SET_TOKEN', data.Authorization)
@@ -124,8 +123,6 @@ const actions = {
       getInfo().then(response => {
         const { data } = response
 
-        console.log(response, '888')
-
         if (!data) {
           reject('信息校验失败, 请重新登录.1')
         }
@@ -139,21 +136,19 @@ const actions = {
 
         // resolve()
         getElements(state.token).then(res => {
-          console.warn('按钮权限结果', res)
           const datas = res.data
           if (!datas) {
             reject('信息校验失败, 请重新登录.2')
           }
-          console.warn(datas, '按钮权限')
+
           commit('SET_ELEMENTS', datas)
 
           configurationListAll().then((resk) => {
-            // console.log('系统配置项', resk.data)
+            //
             commit('SET_CONFIG', resk.data)
           })
 
           entityListAll().then((resk) => {
-            console.log('实体类', resk)
             commit('SET_ENTITY', resk)
             dictionaryList().then((resk) => {
               commit('SET_DICTIONARY', resk)
@@ -170,12 +165,11 @@ const actions = {
   refreshElement({ commit, state }) {
     return new Promise((resolve, reject) => {
       getElements(state.token).then(res => {
-        console.warn('按钮权限结果', res)
         const datas = res.data
         if (!datas) {
           reject('信息校验失败, 请重新登录.')
         }
-        console.warn(datas, '按钮权限')
+
         commit('SET_ELEMENTS', datas)
         resolve()
       })

@@ -142,13 +142,11 @@ export default {
   },
   mounted() {
     roleData.roleList().then(resolve => {
-      console.log('角色列表', resolve)
       if (resolve) {
         this.roleList = resolve.rows
       }
     })
     userData.userListAll().then(resolve => {
-      console.log('用户列表', resolve)
       if (resolve) {
         this.userList = resolve.rows
       }
@@ -169,12 +167,10 @@ export default {
       })
     },
     handleReassignment(e) {
-      console.log(e)
       this.showTransferDialogVisible = true
       this.transferForm.taskId = e.id
     },
     updateUserName(e, t) {
-      console.log(e)
       if (t === 1) {
         const userName = this.userList.filter(u => u.id === e)
         this.transferForm.userName = userName[0].name

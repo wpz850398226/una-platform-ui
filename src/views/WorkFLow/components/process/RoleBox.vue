@@ -61,12 +61,11 @@ export default {
   methods: {
     init() {
       const t = []
-      console.log('检查', this.selected)
+
       this.selected.forEach(m => {
         t.push(m.id)
       })
       this.checkList = t
-      console.log('自动', this.checkList)
     },
     selectOk() {
       this.$emit('selectOver', this.checkList)

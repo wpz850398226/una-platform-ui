@@ -20,12 +20,8 @@ router.beforeEach(async(to, from, next) => {
   // determine whether the user has logged in
   const hasToken = getToken()
 
-  console.log('token', hasToken)
-
-  console.warn('请求地址', window.location.href)
-
   if (hasToken) {
-    // console.log('有token', hasToken)
+    //
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
       next({ path: '/' })
@@ -33,29 +29,24 @@ router.beforeEach(async(to, from, next) => {
     } else {
       // determine whether the user has obtained his permission roles through getInfo
       // const hasRoles = store.getters.roles && store.getters.roles.length > 0
-      console.log('即将到', to, from)
+
       // NProgress.done()
       const permission_routes = store.getters.generated_routes
       // alert('即将到', JSON.stringify(to))
       if (permission_routes) {
         // alert('有路由表' + JSON.stringify(to))
-        // console.log('路由', store.getters.permission_routes, store.getters.permission_routes.length)
-        console.log('得到的路由表', permission_routes)
-        console.log('已获取即将到', to, from)
+        //
+
         next()
       } else {
         try {
-          console.log('未获取到路由表，准备获取用户信息')
           await store.dispatch('user/getInfo')
-          console.log('准备加载路由')
+
           store.dispatch('permission/generateRoutes', []).then((res) => {
-            console.log('接收到的路由######', res)
             router.addRoutes(res)
-            console.log('合并路由', router)
+
             // next({ ...to, replace: true })
-            console.log('from', from)
-            console.log('to', to)
-            console.log(res)
+
             if (res.length === 0) {
               next('/403')
             } else {
@@ -83,7 +74,7 @@ router.beforeEach(async(to, from, next) => {
   } else {
     /* has no token*/
     // alert(JSON.stringify(whiteList))
-    console.log('ppp', to.path)
+
     if (whiteList.indexOf(to.path) !== -1) {
       // in the free login whitelist, go directly
       next()

@@ -80,11 +80,9 @@ export default {
   },
   mounted() {
     this.activeIndex = 'baseSetup'
-    console.log(this.$route)
   },
   methods: {
     handleSelect(key, keyPath) {
-      console.log(key, keyPath)
       this.activeIndex = key
     },
     newProcess() {
@@ -96,7 +94,6 @@ export default {
       this.activeIndex = 'baseSetup'
     },
     publish() {
-      console.log(JSON.stringify(this.template))
       this.$confirm(
         '您确定审批流程已配置完毕,并需要将其保存?',
         '提示',
@@ -106,7 +103,6 @@ export default {
           type: 'warning'
         }
       ).then(() => {
-        console.log(this.setup)
         const template = {
           id: this.template.id,
           templateName: this.setup.name,
@@ -122,7 +118,6 @@ export default {
         }
         if (this.valid()) {
           if (template.id) {
-            console.warn('修改')
             netData.editWorkflow(template).then(resolve => {
               this.$message.success('修改成功')
               this.mode = 0

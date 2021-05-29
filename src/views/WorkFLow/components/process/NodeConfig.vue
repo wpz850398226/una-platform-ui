@@ -432,22 +432,18 @@ export default {
   },
   watch: {
     selectedNode(newVal, oldVal) {
-      console.log('变了', newVal)
       this.userConditions = newVal.condition || []
       this.slectedRole = newVal.props.approval.user.role || []
-      console.log('读本地橘色', this.slectedRole)
     }
   },
   mounted() {
     roleData.roleList(this.template.id).then(resolve => {
-      console.log('角色列表', resolve)
       if (resolve) {
         this.roleList = resolve.rows
       }
     })
 
     netData.conditionsListByDefId(this.template.id).then(resolve => {
-      console.log('流程下条件', resolve)
       if (resolve) {
         this.conditionList = resolve.rows
         this.userConditions = this.selectedNode.condition || []
@@ -456,13 +452,12 @@ export default {
   },
   methods: {
     saveRole(roles) {
-      console.log('已选中的', roles)
       const t = []
       roles.forEach(v => {
         const r = this.roleList.filter(m => m.id === v)
         t.push(r[0])
       })
-      console.log(t)
+
       this.$store.commit('workflow/selectedRoler', t)
       this.showRoleSelect = false
     },
@@ -479,11 +474,10 @@ export default {
       this.showUserSelect = false
     },
     selectCondition(e, i) {
-      console.log(e)
       const u = this.userConditions[i]
       let p = this.conditionList.filter(w => w.id === e)
       p = p[0]
-      console.log(p)
+
       u.fields = p.fields
       u.optionType = p.optionType
       u.options = p.options

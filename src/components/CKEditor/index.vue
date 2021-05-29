@@ -67,12 +67,12 @@ export default {
     }
   },
   mounted() {
-    // console.log(this.content, 'kkkkk')
+    //
     // this.editorData = this.content
   },
   methods: {
     change() {
-      console.log('kjjkkjkj')
+
     },
     onReady(editor) {
       // 自定义上传图片插件

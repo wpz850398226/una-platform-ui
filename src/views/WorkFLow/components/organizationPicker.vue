@@ -229,7 +229,6 @@ export default {
     },
     getOrgList() {
       netData.organizeTree('uUdTluWpcZzkf4Yyog0FPuXXvoue0saO', '', 'user').then((resolve) => {
-        console.log('组织树', resolve.rows)
         if (resolve && Array.isArray(resolve.rows) && resolve.rows.length > 0) {
           this.nodes = resolve.rows[0]
           this.dealNode(this.nodes)
@@ -306,14 +305,11 @@ export default {
     },
     noSelected(index) {
       const cid = this.select[index].id
-      console.log(cid)
-      console.log(this.navNodes)
 
       for (let i = 0; i < this.navNodes.length; i += 1) {
         const node = this.navNodes[i]
         for (let j = 0; j < node.length; j += 1) {
           if (cid === node[j].id) {
-            console.log('修改k')
             node[j].selected = false
           }
         }
@@ -324,7 +320,6 @@ export default {
       for (let i = 0; i < curNode.length; i += 1) {
         const n = this.curNodes[i]
         if (cid === curNode[i].id) {
-          console.log('修改p')
           n.selected = false
           this.$set(this.curNodes, i, n)
         }
@@ -355,7 +350,6 @@ export default {
       return this.avatarColor[0]
     },
     nextNode(node) {
-      console.log('点下级', node)
       this.navTitles.push(node.name)
       this.navNodes.push(this.curNodes)
       this.dealNode(node)

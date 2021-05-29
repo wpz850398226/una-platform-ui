@@ -70,14 +70,12 @@ const actions = {
   },
   generateRoutes({ commit }, roles) {
     return new Promise(resolve => {
-      console.log('动态路由开始')
-
       getUserMenu().then(response => {
         const { data } = response
-        console.log('动态菜单', data)
+
         const routes = generator(data)
         routes.push({ path: '*', redirect: '/404', hidden: true })
-        console.warn(routes, '移植菜单')
+
         commit('SET_ROUTES', routes)
         resolve(routes)
       })
@@ -123,7 +121,7 @@ const generator = (routerMap, parent) => {
       currentRouter.path = currentRouter.path.replace('//', '/')
     }
     currentRouter.path = '' + currentRouter.path
-    // console.warn('拼接路由', currentRouter.path)
+    //
     // 重定向
     item.redirect && (currentRouter.redirect = item.redirect)
 

@@ -9,7 +9,7 @@ cls<template>
         label-width="120px"
       >
         <el-form-item
-          v-for="(field, i) in fieldList"
+          v-for="field in fieldList"
           :key="field.id"
           :label="field.name"
           :prop="field.assignmentCode"
@@ -183,7 +183,6 @@ export default {
 
   },
   async mounted() {
-    console.log(this.$route.meta.code)
     this.entity = getEntity(this.className)
     await this.getFieldList(this.entity.id)
     // this.relationList = this.entity.relationList
@@ -215,7 +214,6 @@ export default {
     getFieldList(entityId) {
       return new Promise((resolve, reject) => {
         fieldPort.fieldList({ 'entityId': entityId }).then((result) => {
-          console.log(result)
           this.fieldList = result.map(record => {
             this.defaultForm[record.assignmentCode] = ''
             return record
@@ -283,7 +281,7 @@ export default {
         if (valid) {
           // if (this.carFile) {
           //   await chUpload(this.carFile).then((res) => {
-          //     console.log(res)
+          //
           //     this.defaultForm.imgUrl = res.data
           //   })
           // }

@@ -191,7 +191,6 @@ export default {
   methods: {
     getGroups() {
       netData.gruopAllList().then((resolve) => {
-        console.log('分组', resolve)
         this.groups = resolve.rows
       })
     },
@@ -239,7 +238,6 @@ export default {
       })
     },
     getTemplateData(data, group) {
-      console.log('原始数据', data)
       return {
         id: getDefault(data, 'id', ''),
         baseSetup: {
@@ -301,7 +299,6 @@ export default {
       }
     },
     editFrom(item, group) {
-      console.log('编辑', item)
       this.$store.commit('workflow/setTemplate', this.getTemplateData(item, group))
       this.$emit('editProcess')
     },
@@ -309,7 +306,6 @@ export default {
       netData.workflowHistoryList(1, '', this.selProcessId).then((resolve) => {
         this.historyPageTotal = resolve.total
         this.historyTableData = resolve.rows
-        console.log(this.historyTableData, '历史表哥哥')
       })
     },
     switchHistoryPage(e) {
@@ -319,20 +315,17 @@ export default {
       })
     },
     historyForm(item, gruop) {
-      console.log(item)
       this.selProcessId = item.id
       this.getProcessHistoryList()
       this.historyDialogVisible = true
     },
     publishForm(item, gruop) {
-      console.log(item)
       netData.publishWorkflow(item.id).then((resolve) => {
         this.$message.success('发布成功')
         this.getGroups()
       })
     },
     deleteFrom(item, group) {
-      console.log(item)
       this.$confirm('此操作将永久删除该流程, 是否继续?', '提示', {
         confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
       }).then(() => {
@@ -343,7 +336,6 @@ export default {
       })
     },
     moveFrom(item) {
-      console.log(item)
       if (item.isStop) {
         this.$confirm(
           `您确定要删除表单 ${item.name} 吗，删除后无法恢复，是否继续？`,

@@ -125,7 +125,7 @@ export default {
     },
     cropSuccess(imageDataUrl, field) {
       this.publicForm.imgUrl = imageDataUrl
-      // console.log('裁剪后', field, imageDataUrl)
+      //
       const f = blob2File(base642Blob(imageDataUrl), 'default.png')
       this.carFile = f
     },
@@ -182,7 +182,7 @@ export default {
         if (valid) {
           // if (this.carFile) {
           //   await chUpload(this.carFile).then((res) => {
-          //     console.log(res)
+          //
           //     this.publicForm.imgUrl = res.data
           //   })
           // }

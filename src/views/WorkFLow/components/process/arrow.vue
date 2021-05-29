@@ -108,7 +108,7 @@ export default {
       const { approval } = this.node.props
       if (this.node.type === nodeType.ROOT) {
         const userText = this.getUsersText(approval.user.users)
-        console.log('计算解雇', text)
+
         text = !userText ? '请设置发起人' : userText
         type = '请设置发起人'
       } else if (this.node.type === nodeType.SP) {
@@ -126,7 +126,7 @@ export default {
             text = `角色- ${
               approval.user.role !== '' ? tr : '请选择角色'
             }`
-            console.log(text, '********')
+
             break
           case '3':
             text = '发起人自己'
@@ -145,7 +145,7 @@ export default {
             if (k.optionType === 'select') {
               const ops = JSON.parse(k.options)
               const opt = ops.filter(m => m.value === k.val)
-              console.log('检查aa', opt)
+
               if (opt.length === 1) {
                 tmp = `${tmp} ${k.name} ${k.symbol} ${opt[0].label} &`
               } else {
@@ -155,13 +155,10 @@ export default {
               tmp = `${tmp} ${k.name} ${k.symbol} ${k.val} &`
             }
           })
-          console.warn(tmp)
 
           type = tmp.substring(0, tmp.length - 1)
         }
-        console.log('该文本', this.node)
       } else if (this.node.type === nodeType.CS) {
-        console.log('ksssss', approval)
         if (approval.type === '1') {
           text = this.getUsersText(approval.user.users)
         }
@@ -193,7 +190,6 @@ export default {
       this.$emit('addNode', type, this.node)
     },
     getUsersText(users) {
-      console.log('检查用户', users)
       let text = ''
       if (users && Array.isArray(users)) {
         users.forEach((u) => {
@@ -206,7 +202,6 @@ export default {
       this.$emit('addCd', this.node)
     },
     delNode() {
-      console.log('删除节点', this.node)
       this.$emit('delNode', this.node)
     },
     select() {

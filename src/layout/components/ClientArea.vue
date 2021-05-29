@@ -26,7 +26,7 @@ export default {
       const hk = document.documentElement.clientHeight - 140 - (this.searchBar ? 60 : 0)
       this.customStyle = `height: ${hk}px; width: 100%`
       this.show = true
-      // console.log(this.customStyle)
+      //
     }
   },
   render(h, context) {

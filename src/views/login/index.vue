@@ -1,27 +1,29 @@
 <template>
   <div class="login-container">
     <div class="login-inner">
+      <el-card>
+        <div class="flex justify-center margin-bottom-sm">UNA后台交互设计系统</div>
+        <form ref="form" class="login-form" :model="passForm">
+          <div class="form-item">
+            <el-input v-model="passForm.username" placeholder="用户名" type="text" />
+          </div>
+          <div class="form-item margin-top-xs">
+            <el-input v-model="passForm.password" placeholder="密码" show-password @keyup.enter="passLogin" />
+          </div>
 
-      <form ref="form" class="login-form" :model="passForm">
-        <div class="form-item">
-          <el-input v-model="passForm.username" placeholder="用户名" type="text" />
-        </div>
-        <div class="form-item margin-top-xs">
-          <el-input v-model="passForm.password" placeholder="密码" show-password @keyup.enter="passLogin" />
-        </div>
+          <div class="flex justify-between margin-top">
+            <el-button
+              type="success"
+            >微信登录</el-button>
 
-        <div class="flex justify-between margin-top">
-          <el-button
-            type="success"
-          >微信登录</el-button>
-
-          <el-button
-            :loading="loading"
-            type="primary"
-            @click.native.prevent="passLogin"
-          >登 录</el-button>
-        </div>
-      </form>
+            <el-button
+              :loading="loading"
+              type="primary"
+              @click.native.prevent="passLogin"
+            >登 录</el-button>
+          </div>
+        </form>
+      </el-card>
 
     </div>
   </div>
@@ -49,7 +51,6 @@ export default {
         this.$store
           .dispatch('user/login', this.passForm)
           .then(() => {
-            console.log('密码校验成功')
             this.$router.push({ path: '/' })
             this.loading = false
           })

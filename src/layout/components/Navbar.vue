@@ -126,7 +126,6 @@ import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import Screenfull from '@/components/Screenfull'
 import * as netData from '@/api/user'
-import { accessKey } from '@/api/user'
 import avatarBox from 'vue-image-crop-upload'
 
 export default {
@@ -249,7 +248,6 @@ export default {
       }
     },
     editInfo() {
-      console.log(this.userinfo, this.username)
       const userInfo = this.userinfo
       this.userForm = {
         id: userInfo.id,
@@ -272,10 +270,8 @@ export default {
     },
     cropSuccess(imageDataUrl, field) {
       this.userForm.attr1 = imageDataUrl
-      console.log('裁剪后', imageDataUrl)
     },
     async submitEditUser(formName) {
-      console.log(this.userForm)
       this.$refs[formName].validate(async(valid) => {
         if (valid) {
           netData.editUser(this.userForm).then(async(resolve) => {
@@ -283,16 +279,11 @@ export default {
             this.$message.success('修改成功')
             await this.$store.dispatch('user/getInfo')
           })
-        } else {
-          console.log('error submit!!')
         }
       })
     },
     submitChangePwd(formName) {
-      console.log(formName, '验证表单')
-      console.log(this.pwdForm)
       this.$refs[formName].validate((valid) => {
-        console.log('验证结果', valid)
         if (valid) {
           this.pwdForm.username = this.username
           // if (this.pwdForm.newPass === this.pwdForm.surepwd) {
@@ -312,7 +303,7 @@ export default {
           //       mode: cryptoJs.mode.CBC,
           //       padding: cryptoJs.pad.Pkcs7
           //     }).toString()
-          //     console.log(response)
+          //
           //     this.pwdForm.oldpwd = passwordO
           //     this.pwdForm.newpwd = passwordN
           //     netData.changePwd(this.pwdForm).then((resolve) => {
@@ -324,9 +315,7 @@ export default {
           // } else {
           //   this.$message.error('两次密码不一致!')
           // }
-          // console.log('执行添加菜单操作');
-        } else {
-          console.log('error submit!!')
+          //
         }
       })
     }

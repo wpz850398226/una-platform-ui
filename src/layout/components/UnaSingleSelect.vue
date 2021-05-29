@@ -33,7 +33,6 @@ export default {
   },
   methods: {
     async queryOptions(field) {
-      console.log(field.optionNameFieldCode, field.optionValueFieldCode, 'selecttttttttttttt')
       const optionName = field.optionParamName
       const optionValue = field.optionParamValue
       const obj = {}
@@ -53,7 +52,7 @@ export default {
     },
     callFather: function() {
       // 发射信号
-      console.log(this.selectedValue)
+
       this.$emit('getCalled', this.selectedValue)
       // 其中 getCalled 是一个自定义的事件，功能类似于一个中转
     }

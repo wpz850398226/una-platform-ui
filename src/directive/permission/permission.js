@@ -11,15 +11,14 @@ import store from '@/store'
 function checkPermission(el, binding) {
   const { value } = binding
   const elements = store.getters && store.getters.elements
-  console.log(elements)
+
   if (value) {
     const permissionElement = value
 
     // const hasPermission = elements.filter((item) => item.code === permissionElement)
     const hasPermission = elements.reduce((t, v) => v.code === permissionElement ? [...t, v] : t, [])
-    console.log('所有', elements)
-    console.log('检查', permissionElement, hasPermission)
-    // console.log('新方法', test)
+
+    //
     // const hasPermission = roles.some(role => {
     //   return permissionRoles.includes(role)
     // })

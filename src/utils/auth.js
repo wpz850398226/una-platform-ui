@@ -14,7 +14,6 @@ export function setAppKey(appKey) {
 }
 
 export function removeAppKey() {
-  console.log('删除AppKey')
   return Cookies.remove(AppKey)
 }
 

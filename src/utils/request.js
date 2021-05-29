@@ -17,22 +17,22 @@ service.interceptors.request.use(
   config => {
     config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
     // do something before request is sent
-    // console.log('检查token', store.getters.token)
+    //
     if (store.getters.token) {
-      // console.log('有token')
+      //
       // let each request carry token
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation
-      // console.warn(getToken())
+      //
       config.headers['Authorization'] = getToken()
       // config.headers['companyId'] = getCompanyId()
     }
     if (store.getters.tentId) {
-      // console.log('有token')
+      //
       // let each request carry token
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation
-      // console.warn(getToken())
+      //
       config.headers['tentId'] = getTentId()
       config.headers['appKey'] = getAppKey()
     }
@@ -40,7 +40,7 @@ service.interceptors.request.use(
   },
   error => {
     // do something with request error
-    console.log(error) // for debug
+
     return Promise.reject(error)
   }
 )
@@ -58,14 +58,13 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
-    // console.log(response)
+    //
 
     const res = response.data
-    // console.log('请求结果', response.data)
+    //
     if (!res.status) { return res }
     // if the custom code is not 20000, it is judged as an error.
     if (res.status !== 200 || (Object.prototype.hasOwnProperty.call(res, 'rel') && !res.rel)) {
-      console.log('请求状态异常')
       CMessage.error(res.message || '服务器错误')
 
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
@@ -87,12 +86,11 @@ service.interceptors.response.use(
         data: res.data
       })
     } else {
-      // console.log('请求状态正常')
+      //
       return res
     }
   },
   error => {
-    console.log('err' + error) // for debug
     CMessage.error(error.message)
     return Promise.reject(error)
   }

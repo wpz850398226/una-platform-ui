@@ -51,8 +51,7 @@ export default {
     }
   },
   mounted() {
-    console.log('侧边栏')
-    console.log(this.permission_routes)
+
   }
 }
 </script>

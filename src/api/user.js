@@ -98,7 +98,6 @@ export function phoneLogin(data) {
 // 人员管理
 
 export function userList(page = 1, limit = 10, name = '', telPhone = '', isDelete = 0) {
-  console.log(name, telPhone)
   return chGet('admin/account/page', {
     page, limit, name, telPhone, isDelete
   })

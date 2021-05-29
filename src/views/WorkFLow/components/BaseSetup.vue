@@ -184,17 +184,14 @@ export default {
   mounted() {
     this.codeList = findDictionaryList(58)
     this.getGroups()
-    console.log(this.setup, '启动应')
   },
   methods: {
     getGroups() {
       netData.gruopAllList().then((resolve) => {
-        console.log('分组', resolve)
         this.fromGroup = resolve.rows
       })
     },
     addGroup() {
-      console.log('aaaa')
       if (this.newGroup.trim() !== '') {
         netData.addGruop({ groupName: this.newGroup.trim() }).then((resolve) => {
           this.$message.success('添加分组成功')
@@ -208,7 +205,6 @@ export default {
       this.showUserSelect = false
     },
     selected(select) {
-      console.log(select)
       this.showUserSelect = false
       this.$store.commit(`set${this.nowUserSelect}`, select)
     },

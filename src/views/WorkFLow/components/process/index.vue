@@ -60,7 +60,7 @@ export default {
     }
   },
   mounted() {
-    console.log('模板数据：', this.dom)
+
   },
   methods: {
     getDomTree(h, node) {
@@ -69,7 +69,6 @@ export default {
         return []
       }
 
-      console.log(node.type, nodeType.ROOT, node.type === nodeType.ROOT)
       if (node.type === nodeType.ROOT || node.type === nodeType.SP ||
           node.type === nodeType.CS || node.type === nodeType.EMPTY) {
         const dom = that.getDomTree(h, node.node)
@@ -205,9 +204,8 @@ export default {
       // this.updateDom()
     },
     delNode(node) {
-      console.log('删除节点', node)
       const parentNode = this.getParentNode(node)
-      console.log('父节点', parentNode)
+
       if (parentNode !== null) {
         if (nodeType.CONDITION === parentNode.node.type) {
           // 删除的是条件节点
@@ -236,7 +234,6 @@ export default {
           new Date().getTime().toString().substring(5)
     },
     updateDom() {
-      console.log(JSON.stringify(this.dom))
       this.updated = false
       this.$nextTick(() => {
         this.updated = true

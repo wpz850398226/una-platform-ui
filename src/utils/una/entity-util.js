@@ -1,7 +1,6 @@
 import store from '@/store'
 
 export function getEntity(className) {
-  console.log(store.getters.entitys, 'xxxxxxxxxxxeeeeeeeee')
   if (className) {
     const entitys = store.getters && store.getters.entitys
 
