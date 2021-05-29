@@ -61,34 +61,43 @@ service.interceptors.response.use(
     //
 
     const res = response.data
-    //
-    if (!res.status) { return res }
-    // if the custom code is not 20000, it is judged as an error.
-    if (res.status !== 200 || (Object.prototype.hasOwnProperty.call(res, 'rel') && !res.rel)) {
-      CMessage.error(res.message || '服务器错误')
-
-      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.status === 40301) {
-        // to re-login
-        MessageBox.confirm('您已注销，您可以取消停留在该页上，或重新登录', '您已注销', {
-          confirmButtonText: '重新登录',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          store.dispatch('user/resetToken').then(() => {
-            // alert('aaaa')
-            location.reload()
-          })
-        })
-      }
+    if (res.code && res.code === 500) {
+      CMessage.error(res.message)
       return Promise.reject({
         error: res.message || 'Error',
         data: res.data
       })
-    } else {
-      //
-      return res
     }
+    return res
+    // console.log(res, 'kkkk')
+    // //
+    // if (!res.status) { return res }
+    // // if the custom code is not 20000, it is judged as an error.
+    // if (res.status !== 200) {
+    //   CMessage.error(res.message || '服务器错误')
+
+    //   // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
+    //   if (res.status === 40301) {
+    //     // to re-login
+    //     MessageBox.confirm('您已注销，您可以取消停留在该页上，或重新登录', '您已注销', {
+    //       confirmButtonText: '重新登录',
+    //       cancelButtonText: '取消',
+    //       type: 'warning'
+    //     }).then(() => {
+    //       store.dispatch('user/resetToken').then(() => {
+    //         // alert('aaaa')
+    //         location.reload()
+    //       })
+    //     })
+    //   }
+    //   return Promise.reject({
+    //     error: res.message || 'Error',
+    //     data: res.data
+    //   })
+    // } else {
+    //   //
+    //   return res
+    // }
   },
   error => {
     CMessage.error(error.message)

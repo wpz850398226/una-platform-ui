@@ -32,7 +32,7 @@ export default {
   },
   data() {
     return {
-      title: '智慧消防队管理平台',
+      title: 'UNA后台交互设计系统',
       logo: require('../../../assets/logo.png')
     }
   }

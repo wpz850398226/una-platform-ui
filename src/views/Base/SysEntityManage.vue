@@ -105,10 +105,10 @@ export default {
   mounted() {
     this.entity = getEntity(this.className)
     this.getPublicList()
-    this.fieldList = getFieldList(this.className)
-    this.colourDicList = findDictionaryList(96)
-    this.typeDicList = findDictionaryList(99)
-    this.stateDicList = findDictionaryList(42)
+    // this.fieldList = getFieldList(this.className)
+    // this.colourDicList = findDictionaryList(96)
+    // this.typeDicList = findDictionaryList(99)
+    // this.stateDicList = findDictionaryList(42)
   },
   methods: {
     chImg,
@@ -130,6 +130,7 @@ export default {
       this.carFile = f
     },
     getPublicList(page = 1, limit = 10) {
+      console.log(this.entity.path)
       chGet(this.entity.path + '/page', {
         page, limit
       }).then((resolve) => {

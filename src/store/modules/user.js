@@ -135,27 +135,39 @@ const actions = {
         // commit('SET_AVATAR', attr1)
 
         // resolve()
-        getElements(state.token).then(res => {
-          const datas = res.data
-          if (!datas) {
-            reject('信息校验失败, 请重新登录.2')
-          }
-
-          commit('SET_ELEMENTS', datas)
-
-          configurationListAll().then((resk) => {
-            //
-            commit('SET_CONFIG', resk.data)
-          })
-
-          entityListAll().then((resk) => {
-            commit('SET_ENTITY', resk)
-            dictionaryList().then((resk) => {
-              commit('SET_DICTIONARY', resk)
-              resolve()
-            })
-          })
+        Promise.all([getElements(), configurationListAll(), entityListAll()]).then(result => {
+          commit('SET_ELEMENTS', result[0].data)
+          commit('SET_CONFIG', result[1].data)
+          commit('SET_ENTITY', result[2])
+          console.log('sss', result[2])
+          resolve()
+        }).catch((error) => {
+          console.log(error)
+          reject(error)
+          // this.$message.error('基础信息获取失败')
         })
+        // getElements().then(res => {
+        //   const datas = res.data
+        //   if (!datas) {
+        //     reject('信息校验失败, 请重新登录.2')
+        //   }
+
+        //   commit('SET_ELEMENTS', datas)
+
+        //   configurationListAll().then((resk) => {
+        //     //
+        //     commit('SET_CONFIG', resk.data)
+        //   })
+
+        //   entityListAll().then((resk) => {
+        //     commit('SET_ENTITY', resk)
+        //     resolve()
+        //     // dictionaryList().then((resk) => {
+        //     //   commit('SET_DICTIONARY', resk)
+        //     //   resolve()
+        //     // })
+        //   })
+        // })
       }).catch(error => {
         reject(error)
       })

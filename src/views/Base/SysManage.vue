@@ -69,7 +69,7 @@ cls<template>
       </span>
     </el-dialog>
 
-    <ClientArea search-bar>
+    <ClientArea>
       <div slot="content" class="flex justify-between" style="height:100%">
         <div
           v-show="Array.isArray(this.relationList) && this.relationList.length > 0"
@@ -179,11 +179,9 @@ export default {
       showAvatar: false
     }
   },
-  computed: {
-
-  },
   async mounted() {
     this.entity = getEntity(this.className)
+    console.log(this.entity)
     await this.getFieldList(this.entity.id)
     // this.relationList = this.entity.relationList
     // this.getPublicList()
@@ -212,17 +210,17 @@ export default {
       this.$set(this.defaultForm, code, e.id)
     },
     getFieldList(entityId) {
-      return new Promise((resolve, reject) => {
-        fieldPort.fieldList({ 'entityId': entityId }).then((result) => {
-          this.fieldList = result.map(record => {
-            this.defaultForm[record.assignmentCode] = ''
-            return record
-          })
-
-          this.dataForm = { ...this.defaultForm }
-          resolve()
+      // return new Promise((resolve, reject) => {
+      fieldPort.fieldList({ 'entityId': entityId }).then((result) => {
+        this.fieldList = result.map(record => {
+          this.defaultForm[record.assignmentCode] = ''
+          return record
         })
+
+        this.dataForm = { ...this.defaultForm }
+        // resolve()
       })
+      // })
     },
     getPublicList(e) {
       chGet(this.entity.path + '/page', e).then((result) => {
@@ -276,15 +274,9 @@ export default {
       }
       this.defaultFormDialogVisible = true
     },
-    async submitAddPublic(formName) {
+    submitAddPublic(formName) {
       this.$refs[formName].validate(async(valid) => {
         if (valid) {
-          // if (this.carFile) {
-          //   await chUpload(this.carFile).then((res) => {
-          //
-          //     this.defaultForm.imgUrl = res.data
-          //   })
-          // }
           this.loading = true
 
           chPost(this.entity.path + '/save', this.defaultForm).then((resolve) => {

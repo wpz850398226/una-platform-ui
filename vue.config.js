@@ -6,7 +6,7 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const name = defaultSettings.title || '智慧消防队' // page title
+const name = defaultSettings.title || 'UNA后台交互设计系统' // page title
 
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
@@ -39,6 +39,7 @@ module.exports = {
   //   before: require('./mock/mock-server.js')
   // },
   devServer: {
+    open: true,
     proxy: {
       '/sys': { // 这里最好有一个 /
         // target: 'http://127.0.0.1', // 服务器端接口地址 http://42.192.150.206:10080/sys/login/toLogin
