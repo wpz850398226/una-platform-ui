@@ -15,7 +15,6 @@
   display: none;
 }
 
-
 // to fixed https://github.com/ElemeFE/element/issues/2461
 .el-dialog {
   transform: none;
@@ -39,7 +38,7 @@
 // dropdown
 .el-dropdown-menu {
   a {
-    display: block
+    display: block;
   }
 }
 
@@ -48,16 +47,21 @@
   box-sizing: content-box;
 }
 
-
-.el-avatar>img {
+.el-avatar > img {
   width: 100%;
 }
 
-.el-tree-node.is-current > .el-tree-node__content{
-    background-color: rgba(144, 186, 223, 0.612) !important;
+.el-tree-node.is-current > .el-tree-node__content {
+  background-color: rgba(144, 186, 223, 0.612) !important;
 }
-
 
 .el-card .el-card__body {
   height: 100%;
+}
+
+.input-with-select {
+  .el-input-group__prepend {
+    width: 100px;
+    background-color: #ffffff;
+  }
 }
