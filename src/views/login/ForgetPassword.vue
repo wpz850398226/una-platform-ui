@@ -50,11 +50,7 @@
 </template>
 
 <script>
-import cryptoJs from 'crypto-js'
-import Vue from 'vue'
-import Vuerify from 'vuerify'
 import * as userData from '../../api/user'
-Vue.use(Vuerify)
 
 export default {
   name: 'ForgetPassword',
@@ -77,41 +73,8 @@ export default {
       loading: false
     }
   },
-
-  vuerify: {
-    'form.telPhone': {
-      test: /^1\d{10}$/,
-      message: '请输入正确手机号'
-    },
-    'form.writepwd': {
-      test: /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,10}$/,
-      message: '密码规则不符合，请保持最小6位最大10位及包含数字、大小写字母、特殊符号规则!'
-    },
-    'form.pwdAgain': {
-      test: /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,10}$/,
-      message: '密码规则不符合，请保持最小6位最大10位及包含数字、大小写字母、特殊符号规则!'
-    },
-
-    'form.code': {
-      test: /^\d{4}$/,
-      message: '请输入4位数短信验证码'
-    }
-  },
-
-  computed: {
-    // 计算属性，获取校验不通过的对象
-    // 如 { "form.name": "至少 4 位字符", "form.desc": "至少 10 位字符" }
-    errors() {
-      return this.$vuerify.$errors
-    }
-  },
-
   methods: {
     getCode() {
-      const verifyList = ['form.telPhone']
-      if (!this.$vuerify.check(verifyList)) {
-        return
-      }
       if (this.fastClick) {
         this.fastClick = false
         var phone = this.form.telPhone
@@ -144,17 +107,8 @@ export default {
     },
 
     onSubmit() {
-      var that = this
-      const verifyList = [
-        'form.telPhone',
-        'form.writepwd',
-        'form.pwdAgain',
-        'form.code'
-      ]
       // check() 校验所有规则，参数可以设置需要校验的数组
-      if (!this.$vuerify.check(verifyList)) {
-        return
-      } else if (this.form.telPhone !== this.sendPhone) {
+      if (this.form.telPhone !== this.sendPhone) {
         this.$message.error('请输入发送短信的手机号')
         return
       } else if (this.form.writepwd !== this.form.pwdAgain) {
@@ -162,34 +116,34 @@ export default {
         return
       }
 
-      userData.accessKey().then(response => {
-        const { userkey } = response.data
+      // userData.accessKey().then(response => {
+      //   const { userkey } = response.data
 
-        let passwordS = cryptoJs.enc.Utf8.parse(this.form.writepwd)
-        const tokenKey = cryptoJs.enc.Utf8.parse(response.data.tokenkey)
-        passwordS = cryptoJs.AES.encrypt(passwordS, tokenKey, {
-          iv: tokenKey,
-          mode: cryptoJs.mode.CBC,
-          padding: cryptoJs.pad.Pkcs7
-        }).toString()
+      //   let passwordS = cryptoJs.enc.Utf8.parse(this.form.writepwd)
+      //   const tokenKey = cryptoJs.enc.Utf8.parse(response.data.tokenkey)
+      //   passwordS = cryptoJs.AES.encrypt(passwordS, tokenKey, {
+      //     iv: tokenKey,
+      //     mode: cryptoJs.mode.CBC,
+      //     padding: cryptoJs.pad.Pkcs7
+      //   }).toString()
 
-        this.form.userKey = userkey
-        this.form.pwd = passwordS
-        this.loading = true
-        userData.updatePwd(this.form).then((res) => {
-          if (res.rel === true) {
-            this.$message.success('修改密码成功')
-            this.loading = false
-            setTimeout(function() {
-              that.historyBack()
-            }, 1000)
-          } else {
-            this.$message.error(res.message)
-          }
-        }, (e) => {
-          this.loading = false
-        })
-      })
+      //   this.form.userKey = userkey
+      //   this.form.pwd = passwordS
+      //   this.loading = true
+      //   userData.updatePwd(this.form).then((res) => {
+      //     if (res.rel === true) {
+      //       this.$message.success('修改密码成功')
+      //       this.loading = false
+      //       setTimeout(function() {
+      //         that.historyBack()
+      //       }, 1000)
+      //     } else {
+      //       this.$message.error(res.message)
+      //     }
+      //   }, (e) => {
+      //     this.loading = false
+      //   })
+      // })
     },
 
     historyBack() {

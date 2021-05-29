@@ -4,9 +4,9 @@
     <el-select
       v-model="selectedValue"
       :placeholder="field.annotation"
-      v-on:change="callFather"
       filterable
       style="width: 100%;"
+      @change="callFather"
     >
       <el-option
         v-for="item in optionList"

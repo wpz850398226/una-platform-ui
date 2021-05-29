@@ -64,10 +64,7 @@
 </template>
 
 <script>
-import Vue from 'vue'
-import Vuerify from 'vuerify'
 import * as userData from '../../api/user'
-Vue.use(Vuerify)
 
 // 1001
 
@@ -91,38 +88,7 @@ export default {
       loading: false
     }
   },
-
-  vuerify: {
-    'form.username': {
-      test: /^[^\u4e00-\u9fa5]+$/,
-      message: '用户名不能包含汉字'
-    },
-    'form.password': {
-      test: /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,10}$/,
-      message: '密码规则不符合，请保持最小6位最大10位及包含数字、大小写字母、特殊符号规则!'
-    },
-    'form.telPhone': {
-      test: /^1\d{10}$/,
-      message: '请输入正确手机号'
-    },
-    'form.code': {
-      test: /^\d{4}$/,
-      message: '请输入4位数短信验证码'
-    },
-    'form.verifiCode': {
-      test: /\S/,
-      message: '请输入租户验证码'
-    }
-  },
-  computed: {
-    // 计算属性，获取校验不通过的对象
-    // 如 { "form.name": "至少 4 位字符", "form.desc": "至少 10 位字符" }
-    errors() {
-      return this.$vuerify.$errors
-    }
-  },
   methods: {
-
     countByUsername() {
       if (this.form.username) {
         userData.countByUsername(this.form.username).then((res) => {
@@ -137,11 +103,6 @@ export default {
     },
 
     getCode() {
-      const verifyList = ['form.telPhone']
-      if (!this.$vuerify.check(verifyList)) {
-        return
-      }
-
       if (this.fastClick) {
         this.fastClick = false
         var phone = this.form.telPhone
@@ -183,11 +144,8 @@ export default {
 
     onSubmit() {
       var that = this
-      const verifyList = ['form.username', 'form.password', 'form.telPhone', 'form.code', 'form.verifiCode']
       // check() 校验所有规则，参数可以设置需要校验的数组
-      if (!this.$vuerify.check(verifyList)) {
-        return
-      } else if (this.checkName === false) {
+      if (this.checkName === false) {
         this.$message.error('账号被占用请修改')
         return
       } else if (this.form.telPhone !== this.sendPhone) {

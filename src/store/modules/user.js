@@ -130,15 +130,12 @@ const actions = {
           reject('信息校验失败, 请重新登录.1')
         }
         // roles,
-        const { username, name, attr1 } = data
+        const { username, name } = data
 
         commit('SET_USERINFO', data)
         commit('SET_USERNAME', username)
         commit('SET_NAME', name)
         // commit('SET_AVATAR', attr1)
-
-        // 2020-01-28 影响用户正常登陆
-        // getCompanyId(data.organizationList[0].companyId) // 禁止使用Cookie
 
         // resolve()
         getElements(state.token).then(res => {

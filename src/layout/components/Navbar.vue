@@ -127,7 +127,6 @@ import Hamburger from '@/components/Hamburger'
 import Screenfull from '@/components/Screenfull'
 import * as netData from '@/api/user'
 import { accessKey } from '@/api/user'
-import cryptoJs from 'crypto-js'
 import avatarBox from 'vue-image-crop-upload'
 
 export default {
@@ -296,35 +295,35 @@ export default {
         console.log('验证结果', valid)
         if (valid) {
           this.pwdForm.username = this.username
-          if (this.pwdForm.newPass === this.pwdForm.surepwd) {
-            accessKey().then(response => {
-              // const { userkey } = response.data
-              this.pwdForm.userKey = response.data.userkey
-              let passwordO = cryptoJs.enc.Utf8.parse(this.pwdForm.oldPass)
-              let passwordN = cryptoJs.enc.Utf8.parse(this.pwdForm.newPass)
-              const tokenKey = cryptoJs.enc.Utf8.parse(response.data.tokenkey)
-              passwordO = cryptoJs.AES.encrypt(passwordO, tokenKey, {
-                iv: tokenKey,
-                mode: cryptoJs.mode.CBC,
-                padding: cryptoJs.pad.Pkcs7
-              }).toString()
-              passwordN = cryptoJs.AES.encrypt(passwordN, tokenKey, {
-                iv: tokenKey,
-                mode: cryptoJs.mode.CBC,
-                padding: cryptoJs.pad.Pkcs7
-              }).toString()
-              console.log(response)
-              this.pwdForm.oldpwd = passwordO
-              this.pwdForm.newpwd = passwordN
-              netData.changePwd(this.pwdForm).then((resolve) => {
-                this.changePwdDialogVisible = false
-                this.$message.success('修改成功!')
-                // this.logout()
-              })
-            })
-          } else {
-            this.$message.error('两次密码不一致!')
-          }
+          // if (this.pwdForm.newPass === this.pwdForm.surepwd) {
+          //   accessKey().then(response => {
+          //     // const { userkey } = response.data
+          //     this.pwdForm.userKey = response.data.userkey
+          //     let passwordO = cryptoJs.enc.Utf8.parse(this.pwdForm.oldPass)
+          //     let passwordN = cryptoJs.enc.Utf8.parse(this.pwdForm.newPass)
+          //     const tokenKey = cryptoJs.enc.Utf8.parse(response.data.tokenkey)
+          //     passwordO = cryptoJs.AES.encrypt(passwordO, tokenKey, {
+          //       iv: tokenKey,
+          //       mode: cryptoJs.mode.CBC,
+          //       padding: cryptoJs.pad.Pkcs7
+          //     }).toString()
+          //     passwordN = cryptoJs.AES.encrypt(passwordN, tokenKey, {
+          //       iv: tokenKey,
+          //       mode: cryptoJs.mode.CBC,
+          //       padding: cryptoJs.pad.Pkcs7
+          //     }).toString()
+          //     console.log(response)
+          //     this.pwdForm.oldpwd = passwordO
+          //     this.pwdForm.newpwd = passwordN
+          //     netData.changePwd(this.pwdForm).then((resolve) => {
+          //       this.changePwdDialogVisible = false
+          //       this.$message.success('修改成功!')
+          //       // this.logout()
+          //     })
+          //   })
+          // } else {
+          //   this.$message.error('两次密码不一致!')
+          // }
           // console.log('执行添加菜单操作');
         } else {
           console.log('error submit!!')
