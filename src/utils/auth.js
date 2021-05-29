@@ -27,7 +27,6 @@ export function setTentId(tentId) {
 }
 
 export function removeTentId() {
-  console.log('删除TentId')
   return Cookies.remove(TentId)
 }
 
@@ -40,6 +39,5 @@ export function setToken(token) {
 }
 
 export function removeToken() {
-  console.log('删除token')
   return Cookies.remove(TokenKey)
 }

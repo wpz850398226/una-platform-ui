@@ -5,8 +5,6 @@ import CMessage from '@/utils/el-message'
 import store from '@/store'
 import { getToken, getTentId, getAppKey } from '@/utils/auth'
 
-// import { getCompanyId } from '@/utils/food'
-
 // create an axios instance
 const service = axios.create({
   // baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url

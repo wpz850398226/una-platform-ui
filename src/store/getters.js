@@ -18,7 +18,6 @@ const getters = {
   visitedViews: state => state.tagsView.visitedViews,
   cachedViews: state => state.tagsView.cachedViews,
   workflow_selectedNode: state => state.workflow.selectedNode,
-  workflow_template: state => state.workflow.template,
-  foodList: state => state.food.foodList
+  workflow_template: state => state.workflow.template
 }
 export default getters

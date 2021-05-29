@@ -14,8 +14,6 @@ import { configurationListAll } from '@/api/una/sys_configuration'
 import { getToken, setToken, removeToken, getTentId, setTentId, removeTentId, getAppKey, setAppKey, removeAppKey } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
-// import { getCompanyId } from '@/utils/food'
-
 const getDefaultState = () => {
   return {
     token: getToken(),
@@ -85,20 +83,9 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
         const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
-
-        // configurationListAll().then((resk) => {
-        //   commit('SET_CONFIG', resk.data)
-        // })
-
-        // dictionaryList().then((resk) => {
-        //   commit('SET_DICTIONARY', resk.data)
-        // })
-
-        // entityListAll().then((resk) => {
-        //   commit('SET_ENTITY', resk.data)
-        // })
+        console.log(data, 'kkkkkk')
+        commit('SET_TOKEN', data)
+        setToken(data)
 
         resolve()
       }).catch(error => {
@@ -134,7 +121,7 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
+      getInfo().then(response => {
         const { data } = response
 
         console.log(response, '888')
@@ -145,17 +132,10 @@ const actions = {
         // roles,
         const { username, name, attr1 } = data
 
-        console.warn(data)
-        // roles must be a non-empty array
-        // if (!roles || roles.length <= 0) {
-        //   reject('getInfo: roles must be a non-null array!')
-        // }
-
-        // commit('SET_ROLES', roles)
         commit('SET_USERINFO', data)
         commit('SET_USERNAME', username)
         commit('SET_NAME', name)
-        commit('SET_AVATAR', attr1)
+        // commit('SET_AVATAR', attr1)
 
         // 2020-01-28 影响用户正常登陆
         // getCompanyId(data.organizationList[0].companyId) // 禁止使用Cookie
@@ -176,10 +156,10 @@ const actions = {
           })
 
           entityListAll().then((resk) => {
-            // console.log('实体类', resk.data)
-            commit('SET_ENTITY', resk.data)
+            console.log('实体类', resk)
+            commit('SET_ENTITY', resk)
             dictionaryList().then((resk) => {
-              commit('SET_DICTIONARY', resk.data)
+              commit('SET_DICTIONARY', resk)
               resolve()
             })
           })

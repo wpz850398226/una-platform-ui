@@ -8,14 +8,9 @@
  */
 import request from '@/utils/request'
 import { chGet, chPost, chPut, chDelete } from './index'
-import qs from 'query-string'
 
 export function login(data) {
-  return request({
-    url: '/sys/login/login',
-    method: 'post',
-    data: qs.stringify(data)
-  })
+  return chPost('login/login', data)
 }
 
 export function accessKey() {
@@ -25,20 +20,12 @@ export function accessKey() {
   })
 }
 
-export function getInfo(token) {
-  return request({
-    url: '/sys/account/getInfo',
-    method: 'get'
-    // params: { token }
-  })
+export function getInfo() {
+  return chGet('account/getInfo')
 }
 
-export function getElements(token) {
-  return request({
-    url: '/sys/permission/getByToken',
-    method: 'get'
-    // params: { token }
-  })
+export function getElements() {
+  return chGet('permission/getByToken')
 }
 
 export function getUserMenu(token) {

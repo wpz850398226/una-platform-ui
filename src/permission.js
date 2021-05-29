@@ -20,6 +20,8 @@ router.beforeEach(async(to, from, next) => {
   // determine whether the user has logged in
   const hasToken = getToken()
 
+  console.log('token', hasToken)
+
   console.warn('请求地址', window.location.href)
 
   if (hasToken) {
@@ -81,8 +83,7 @@ router.beforeEach(async(to, from, next) => {
   } else {
     /* has no token*/
     // alert(JSON.stringify(whiteList))
-    // alert(to.path)
-
+    console.log('ppp', to.path)
     if (whiteList.indexOf(to.path) !== -1) {
       // in the free login whitelist, go directly
       next()

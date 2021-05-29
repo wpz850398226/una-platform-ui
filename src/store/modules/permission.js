@@ -8,15 +8,7 @@ import {
 const constantRouterComponents = {
   'Layout': () => import('@/layout'),
   'SysManage': () => import('@/views/Base/SysManage'),
-  'SysEntityManage': () => import('@/views/Base/SysEntityManage'),
-  'UserManage': () => import('@/views/Base/UserManage'),
-
-  'WorkFlowConfigManage': () => import('@/views/WorkFLow/WorkFlowConfigManage'),
-  'WorkFlowCondition': () => import('@/views/WorkFLow/WorkFlowCondition'),
-  'WorkFlowManage': () => import('@/views/WorkFLow/WorkFlowManage'),
-  'WorkFlowReassignment': () => import('@/views/WorkFLow/WorkFlowReassignment'),
-
-  'PublicVehicleManage': () => import('@/views/Base/PublicVehicleManage')
+  'SysEntityManage': () => import('@/views/Base/SysEntityManage')
 }
 
 // /**
@@ -78,13 +70,6 @@ const actions = {
   },
   generateRoutes({ commit }, roles) {
     return new Promise(resolve => {
-      // let accessedRoutes
-      // if (roles.includes('admin')) {
-      //   accessedRoutes = asyncRoutes || []
-      // } else {
-      //   accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
-      // }
-      // commit('SET_ROUTES', accessedRoutes)
       console.log('动态路由开始')
 
       getUserMenu().then(response => {
@@ -106,7 +91,7 @@ const generator = (routerMap, parent) => {
     const { name, type, spread, code, href, icon } = item || {}
     const currentRouter = {
       // 如果路由设置了 path，则作为默认 path，否则 路由地址 动态拼接生成如 /dashboard/workplace
-      path: item.path,
+      path: item.path.replace('/sys', ''),
       // 路由名称，建议唯一
       name: item.path || '',
       // 该路由对应页面的 组件 :方案1

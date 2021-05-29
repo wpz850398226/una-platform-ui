@@ -91,10 +91,6 @@ cls<template>
           </el-card>
         </div>
 
-        <!--        <div-->
-        <!--          v-show="busCompanyForm.companyId"-->
-        <!--          class="box-content flex flex-direction justify-between"-->
-        <!--        >-->
         <el-card class="box-content" shadow="never">
           <CardArea>
             <div slot="content">
@@ -127,8 +123,6 @@ cls<template>
             </div>
           </CardArea>
         </el-card>
-        <!--        </div>-->
-
       </div>
     </ClientArea>
   </div>
@@ -153,7 +147,7 @@ import { chDelete, chGet, chPost } from '../../api/index'
 // }
 
 export default {
-  name: 'DeviceTypeManage',
+  name: 'SysManage',
   components: {
     ClientArea, avatarBox, CardArea, UnaSingleSelect
   },
@@ -189,12 +183,13 @@ export default {
 
   },
   async mounted() {
+    console.log(this.$route.meta.code)
     this.entity = getEntity(this.className)
     await this.getFieldList(this.entity.id)
-    this.relationList = this.entity.relationList
-    this.getPublicList()
-    this.getTreeList()
-    this.colourDicList = findDictionaryList(96)
+    // this.relationList = this.entity.relationList
+    // this.getPublicList()
+    // this.getTreeList()
+    // this.colourDicList = findDictionaryList(96)
   },
   methods: {
     chImg,
@@ -220,6 +215,7 @@ export default {
     getFieldList(entityId) {
       return new Promise((resolve, reject) => {
         fieldPort.fieldList({ 'entityId': entityId }).then((result) => {
+          console.log(result)
           this.fieldList = result.map(record => {
             this.defaultForm[record.assignmentCode] = ''
             return record

@@ -67,7 +67,7 @@ async function chGet(url, data) {
   // console.log('chGet', qs.stringify(data))
   const reqData = qs.stringify(removePropertyOfNull(data))
   const g = reqData ? '?' : ''
-  const urlStr = `${url}${g}${reqData}`
+  const urlStr = `${reqUrl}${url}${g}${reqData}`
   console.log(urlStr, 'chGet方法请求地址')
   return new Promise((resolve, reject) => {
     axios({
