@@ -53,6 +53,7 @@ router.beforeEach(async(to, from, next) => {
               // if (from.query.redirect && from.query.redirect !== '/403') {
               //   next(from.query.redirect)
               // }
+              console.log(to.matched)
               if (to.matched.length === 0) {
                 router.push(to.path)
               }

@@ -75,16 +75,18 @@ export const constantRoutes = [
   },
 
   {
-    path: '/manage/SysField',
+    path: '/systemManage',
     component: Layout,
+    hidden: true,
     meta: { title: '系统设置' },
     children: [
       {
-        path: '/',
+        path: '/manage/SysField',
         name: 'FieldManage',
         component: () => import('@/views/Base/FieldManage'),
-        meta: { title: '字段管理', breadcrumb: true }
+        meta: { title: '字段管理', breadcrumb: true, code: 'SysField' }
       }
+
     ]
 
   },
