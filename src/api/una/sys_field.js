@@ -4,5 +4,5 @@ export function getDisplayValue(map) {
 }
 
 export function fieldList(param) {
-  return chGet('field/queryPlural', param)
+  return chGet('field/list', param)
 }

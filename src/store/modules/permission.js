@@ -89,7 +89,7 @@ const generator = (routerMap, parent) => {
     const { name, type, spread, code, href, icon } = item || {}
     const currentRouter = {
       // 如果路由设置了 path，则作为默认 path，否则 路由地址 动态拼接生成如 /dashboard/workplace
-      path: item.path.replace('/sys', ''),
+      path: item.path ? item.path.replace('/sys', '') : item.route + Math.random(),
       // 路由名称，建议唯一
       name: item.path || '',
       // 该路由对应页面的 组件 :方案1

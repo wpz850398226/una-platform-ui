@@ -47,8 +47,8 @@ export default {
           obj[optionName] = optionValue
         }
       }
-      const result = await chGet(field.optionEntityPath + '/list', obj)
-      this.optionList = result.data
+      const result = await chGet(field.optionEntityPath.replace('/sys', '') + '/list', obj)
+      this.optionList = result
     },
     callFather: function() {
       // 发射信号

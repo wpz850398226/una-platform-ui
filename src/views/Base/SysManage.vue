@@ -82,6 +82,8 @@ cls<template>
                 <el-tree
                   :data="treeData"
                   :props="defaultProps"
+                  node-key="id"
+                  :default-expanded-keys="[100000]"
                   :expand-on-click-node="false"
                   :default-expand-all="false"
                   @node-click="handleNodeClick"
@@ -91,19 +93,27 @@ cls<template>
           </el-card>
         </div>
 
-        <el-card class="box-content" shadow="never">
+        <el-card v-if="tableReady" class="box-content" shadow="never">
+          <div class="una-fix-height margin-bottom-sm flex justify-between">
+            <el-button size="medium" type="primary" @click="showAddDialog">添加{{ this.entity.name }}</el-button>
+          </div>
           <CardArea>
             <div slot="content">
-              <div class="una-fix-height margin-bottom-sm flex justify-between">
-                <!--<div class="flex">
-                  <el-input v-model="searchKey" class="margin-right-xs" placeholder="请输入搜索内容" />
-                  <el-button v-if="!searchMode" icon="el-icon-search" plain type="primary" @click="goSearch">搜索</el-button>
-                  <el-button v-else plain type="primary" @click="backSearch">返回全部</el-button>
-                </div>-->
-                <el-button size="medium" type="primary" @click="showAddDialog">添加{{ this.entity.name }}</el-button>
-              </div>
-              <el-table v-if="tableReady" :data="tableData" style="width: 100%;" height="85%">
-                <el-table-column v-for="(field, i) in fieldList" :key="field.id" :prop="field.assignmentCode" :label="field.name" />
+
+              <el-table border :data="tableData" style="width: 100%;" height="75%">
+                <el-table-column v-for="(field, i) in fieldList" :key="field.id" :prop="field.assignmentCode" :label="field.name">
+                  <template slot-scope="scope">
+                    <div>
+                      <div v-if="typeof scope.row[field.assignmentCode] === 'boolean'">
+                        <el-tag v-if="scope.row[field.assignmentCode]" type="primary">是</el-tag>
+                        <el-tag v-else type="danger">否</el-tag>
+                      </div>
+                      <div v-else>
+                        {{ scope.row[field.assignmentCode] }}
+                      </div>
+                    </div>
+                  </template>
+                </el-table-column>
                 <el-table-column label="操作" width="100" fixed="right">
                   <template slot-scope="scope">
                     <el-button type="text" @click="handleEdit(scope.row)">编辑</el-button>
@@ -114,8 +124,9 @@ cls<template>
               <div class="una-fix-height margin-top flex justify-center">
                 <el-pagination
                   background
-                  layout="sizes, prev, pager, next"
+                  layout="total, sizes, prev, pager, next"
                   :total="pageTotal"
+                  :pager-count="5"
                   @current-change="switchPage"
                   @size-change="handleSizeChange"
                 />
@@ -133,7 +144,7 @@ import { chImg } from '@/api/index'
 import avatarBox from 'vue-image-crop-upload'
 import ClientArea from '../../layout/components/ClientArea'
 import CardArea from '../../layout/components/CardArea'
-import UnaSingleSelect from '../../layout/components/UnaSingleSelect'
+import UnaSingleSelect from '../../layout/components/UnaSingleSelect.vue'
 import * as fieldPort from '../../api/una/sys_field'
 import { findDictionaryList } from '@/utils/find-dictionary.js'
 import { getEntity } from '@/utils/una/entity-util.js'
@@ -161,7 +172,6 @@ export default {
       fieldList: [],
       tableData: [],
       treeData: [],
-      colourDicList: [],
       defaultForm: {}, // 默认表单
       dataForm: {}, // 数据表单，绑定数据的
       defaultFormDialogVisible: false,
@@ -183,10 +193,8 @@ export default {
     this.entity = getEntity(this.className)
     console.log(this.entity)
     await this.getFieldList(this.entity.id)
-    // this.relationList = this.entity.relationList
-    // this.getPublicList()
-    // this.getTreeList()
-    // this.colourDicList = findDictionaryList(96)
+    this.getPublicList()
+    this.getTreeList()
   },
   methods: {
     chImg,
@@ -223,7 +231,7 @@ export default {
       // })
     },
     getPublicList(e) {
-      chGet(this.entity.path + '/page', e).then((result) => {
+      chGet(this.entity.path.replace('/sys', '') + '/page', e).then((result) => {
         this.pageTotal = result.count
         this.tableData = result.data.map(record => {
           this.fieldList.forEach(field => {
@@ -238,14 +246,17 @@ export default {
       })
     },
     getTreeList() {
+      this.relationList = this.entity.relationList
+      console.log('kkk')
       if (Array.isArray(this.relationList) && this.relationList.length > 0) {
         const path = this.relationList[0].parentEntityPath
         const fieldCode = this.relationList[0].relatedFieldCode
         const dataValue = this.relationList[0].parentDataValue
         const obj = {}
         obj[fieldCode] = dataValue
-        chGet(path + '/list', obj).then((result) => {
-          this.treeData = result.data
+        chGet(path.replace('/sys', '') + '/list', obj).then((result) => {
+          console.log('sss', result)
+          this.treeData = result
         })
       }
     },
@@ -269,10 +280,11 @@ export default {
         return false
       }
       this.dataForm = { ...this.defaultForm }
+      this.defaultFormDialogVisible = true
+
       if (this.$refs.dataForm) {
         this.$refs.dataForm.clearValidate()
       }
-      this.defaultFormDialogVisible = true
     },
     submitAddPublic(formName) {
       this.$refs[formName].validate(async(valid) => {

@@ -6,7 +6,7 @@ export function configurationList(page = 1, limit = 10) {
 }
 
 export function configurationListAll() {
-  return chGet('configuration/all')
+  return chGet('configuration/list')
 }
 
 export function addConfiguration(form) {
@@ -14,7 +14,7 @@ export function addConfiguration(form) {
 }
 
 export function editConfiguration(form) {
-  return chPut('configuration', form)
+  return chPut('configuration/save', form)
 }
 
 export function deleteConfiguration(id) {
