@@ -7,8 +7,9 @@ import {
 // 前端路由表
 const constantRouterComponents = {
   'Layout': () => import('@/layout'),
-  'SysManage': () => import('@/views/Base/SysManage'),
-  'SysEntityManage': () => import('@/views/Base/SysEntityManage')
+  'SysManage': () => import('@/views/Base/SysManage')
+  // 'SysManage': () => import('@/views/Base/SysManage'),
+  // 'SysEntityManage': () => import('@/views/Base/SysEntityManage')
 }
 
 // /**

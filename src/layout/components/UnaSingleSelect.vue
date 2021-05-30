@@ -29,6 +29,7 @@ export default {
     }
   },
   mounted() {
+    console.log(this.field, '检查')
     this.queryOptions(this.field)
   },
   methods: {
@@ -46,9 +47,12 @@ export default {
         } else {
           obj[optionName] = optionValue
         }
+        console.log(obj, 'obj')
       }
-      const result = await chGet(field.optionEntityPath.replace('/sys', '') + '/list', obj)
-      this.optionList = result
+      if (field.optionEntityPath) {
+        const result = await chGet(field.optionEntityPath.replace('/sys/', '') + '/list', obj)
+        this.optionList = result
+      }
     },
     callFather: function() {
       // 发射信号

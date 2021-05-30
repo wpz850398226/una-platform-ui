@@ -73,6 +73,21 @@ export const constantRoutes = [
       }
     ]
   },
+
+  {
+    path: '/manage/SysField',
+    component: Layout,
+    meta: { title: '系统设置' },
+    children: [
+      {
+        path: '/',
+        name: 'FieldManage',
+        component: () => import('@/views/Base/FieldManage'),
+        meta: { title: '字段管理', breadcrumb: true }
+      }
+    ]
+
+  },
   {
     path: '/403',
     component: () => import('@/views/403'),

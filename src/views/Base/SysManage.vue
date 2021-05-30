@@ -20,17 +20,17 @@ cls<template>
             v-model="defaultForm[field.assignmentCode]"
           />
           <el-input
-            v-if="field.assignmentModeDcode === 'field_assignment_hidden'"
+            v-else-if="field.assignmentModeDcode === 'field_assignment_hidden'"
             v-model="defaultForm[field.assignmentCode]"
           />
-          <UnaSingleSelect
-            v-if="field.assignmentModeDcode === 'field_assignment_singleselect'"
+          <una-single-select
+            v-else-if="field.assignmentModeDcode === 'field_assignment_singleselect'"
             :field="field"
             :model="defaultForm[field.assignmentCode]"
             @getCalled="changeFormValue($event,field.assignmentCode)"
           />
           <el-switch
-            v-if="field.assignmentModeDcode === 'field_assignment_switch'"
+            v-else-if="field.assignmentModeDcode === 'field_assignment_switch'"
             v-model="defaultForm[field.assignmentCode]"
             active-color="#13ce66"
             :active-value="1"
@@ -38,13 +38,13 @@ cls<template>
             inactive-color="#ff4949"
           />
           <el-date-picker
-            v-if="field.assignmentModeDcode === 'field_assignment_datetime'"
+            v-else-if="field.assignmentModeDcode === 'field_assignment_datetime'"
             v-model="defaultForm[field.assignmentCode]"
             type="datetime"
             :placeholder="field.annotation"
             value-format="yyyy-MM-dd HH:mm:ss"
           />
-          <div v-if="field.assignmentModeDcode === 'field_assignment_image'" class="avatar avatar-uploader" @click="showAvatar = true">
+          <div v-else-if="field.assignmentModeDcode === 'field_assignment_image'" class="avatar avatar-uploader" @click="showAvatar = true">
             <img
               v-if="busUserForm.accountImg"
               class="img"
@@ -53,7 +53,7 @@ cls<template>
             <i v-else class="el-icon-plus avatar-uploader-icon" />
           </div>
           <avatarBox
-            v-if="field.assignmentModeDcode === 'field_assignment_image'"
+            v-else-if="field.assignmentModeDcode === 'field_assignment_image'"
             v-model="showAvatar"
             field="img"
             :width="300"
@@ -61,6 +61,7 @@ cls<template>
             img-format="png"
             @crop-success="cropSuccess"
           />
+          <div>{{ field.assignmentModeDcode }}</div>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -220,6 +221,7 @@ export default {
     getFieldList(entityId) {
       // return new Promise((resolve, reject) => {
       fieldPort.fieldList({ 'entityId': entityId }).then((result) => {
+        console.log('字段列表', result)
         this.fieldList = result.map(record => {
           this.defaultForm[record.assignmentCode] = ''
           return record
