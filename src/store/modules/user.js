@@ -135,11 +135,12 @@ const actions = {
         // commit('SET_AVATAR', attr1)
 
         // resolve()
-        Promise.all([getElements(), configurationListAll(), entityListAll()]).then(result => {
+        Promise.all([getElements(), configurationListAll(), entityListAll(), dictionaryList()]).then(result => {
           commit('SET_ELEMENTS', result[0].data)
           commit('SET_CONFIG', result[1].data)
           commit('SET_ENTITY', result[2])
-          console.log('sss', result[2])
+          commit('SET_DICTIONARY', result[3])
+          console.log('sss', result[3])
           resolve()
         }).catch((error) => {
           console.log(error)

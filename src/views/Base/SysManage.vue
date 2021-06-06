@@ -270,7 +270,7 @@ export default {
       this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
         confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
       }).then(() => {
-        chDelete(this.entity.path + `/${e.id}`).then((resolve) => {
+        chDelete(this.entity.path.replace('/sys', '') + `/${e.id}`).then((resolve) => {
           this.$message.success('删除成功!')
           this.getPublicList()
         })
@@ -293,7 +293,7 @@ export default {
         if (valid) {
           this.loading = true
 
-          chPost(this.entity.path + '/save', this.defaultForm).then((resolve) => {
+          chPost(this.entity.path.replace('/sys', '') + '/save', this.defaultForm).then((resolve) => {
             this.defaultFormDialogVisible = false
             this.$message.success('保存成功')
             this.getPublicList()

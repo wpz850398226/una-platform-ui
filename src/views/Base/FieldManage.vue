@@ -1,17 +1,18 @@
 <template>
   <div class="app-container">
-    <el-dialog :title="entity.name" :visible.sync="defaultFormDialogVisible" width="700px" :append-to-body="true">
+    <el-dialog :title="entity.name" :visible.sync="defaultFormDialogVisible" width="720px" :append-to-body="true">
       <el-form
         ref="publicAddForm"
         :model="dataForm"
         status-icon
         :rules="defaultFormRules"
-        label-width="70px"
+        label-width="100px"
       >
         <h3>基本信息</h3>
         <div class="flex justify-between">
           <el-form-item label="所属实体" prop="entityIdName">
-            <el-input v-model="dataForm.entityIdName" />
+            <el-input v-model="dataForm.entityIdName" readonly />
+            <el-input v-model="dataForm.entityId" style="display:none;" readonly />
           </el-form-item>
           <el-form-item label="名称" prop="name">
             <el-input v-model="dataForm.name" />
@@ -20,14 +21,6 @@
         <div class="flex justify-between">
           <el-form-item label="所属组名" prop="groupName">
             <el-input v-model="dataForm.groupName" />
-          </el-form-item>
-        </div>
-        <div class="flex justify-between">
-          <el-form-item label="赋值编码" prop="assignmentCode">
-            <el-input v-model="dataForm.assignmentCode" />
-          </el-form-item>
-          <el-form-item label="取值编码" prop="displayCode">
-            <el-input v-model="dataForm.displayCode" />
           </el-form-item>
         </div>
         <div class="flex justify-between">
@@ -85,7 +78,144 @@
             />
           </el-form-item>
         </div>
+        <div class="flex justify-between">
+          <el-form-item label="展示方式" prop="displayModeDcode">
+            <UnaDicSelect v-model="dataForm.displayModeDcode" parent-code="field_display" />
+          </el-form-item>
+          <el-form-item label="展示长度" prop="displayLength">
+            <el-input
+              v-model="dataForm.displayLength"
+              type="number"
+            />
+          </el-form-item>
+        </div>
         <h3>表单相关</h3>
+        <div class="flex justify-between">
+          <el-form-item label="是否必填" prop="isRequired">
+            <el-switch
+              v-model="dataForm.isRequired"
+              active-color="#13ce66"
+              :active-value="1"
+              :inactive-value="0"
+              inactive-color="#ff4949"
+            />
+          </el-form-item>
+          <el-form-item label="可否修改" prop="isUpdate">
+            <el-switch
+              v-model="dataForm.isUpdate"
+              active-color="#13ce66"
+              :active-value="1"
+              :inactive-value="0"
+              inactive-color="#ff4949"
+            />
+          </el-form-item>
+          <el-form-item label="批量修改" prop="isBatchUpdate">
+            <el-switch
+              v-model="dataForm.isBatchUpdate"
+              active-color="#13ce66"
+              :active-value="1"
+              :inactive-value="0"
+              inactive-color="#ff4949"
+            />
+          </el-form-item>
+        </div>
+        <div class="flex justify-between">
+          <el-form-item label="赋值方式" prop="assignmentModeDcode">
+            <UnaDicSelect v-model="dataForm.assignmentModeDcode" parent-code="field_assignment" />
+          </el-form-item>
+          <el-form-item label="可选上限" prop="selectableLimitNum">
+            <el-input
+              v-model="dataForm.selectableLimitNum"
+              type="number"
+            />
+          </el-form-item>
+        </div>
+        <div class="flex justify-between">
+          <el-form-item label="格式校验" prop="formatCheckTypeDcode">
+            <UnaDicSelect v-model="dataForm.formatCheckTypeDcode" parent-code="field_formatDetection" />
+          </el-form-item>
+          <el-form-item label="数据检测" prop="dataCheckTypeDcode">
+            <UnaDicSelect v-model="dataForm.dataCheckTypeDcode" parent-code="field_data_detection" />
+          </el-form-item>
+        </div>
+        <div class="flex justify-between">
+          <el-form-item label="选项实体" prop="optionEntityId">
+            <el-select
+              v-model="dataForm.optionEntityId"
+            />
+          </el-form-item>
+          <el-form-item label="选项展示" prop="optionNameFieldCode">
+            <el-select
+              v-model="dataForm.optionNameFieldCode"
+            />
+          </el-form-item>
+        </div>
+        <div class="flex justify-between">
+          <el-form-item label="选项提交" prop="optionValueFieldCode">
+            <el-select
+              v-model="dataForm.optionValueFieldCode"
+            />
+          </el-form-item>
+          <el-form-item label="选项参数键" prop="optionParamName">
+            <el-input
+              v-model="dataForm.optionParamName"
+            />
+          </el-form-item>
+        </div>
+        <div class="flex justify-between">
+          <el-form-item label="选项参数值" prop="optionParamValue">
+            <el-input
+              v-model="dataForm.optionParamValue"
+            />
+          </el-form-item>
+          <el-form-item label="联动父元素" prop="selectParentId">
+            <el-select
+              v-model="dataForm.selectParentId"
+            />
+          </el-form-item>
+        </div>
+        <div class="flex justify-between">
+          <el-form-item label="触发隐藏" prop="switchHideOption">
+            <el-select
+              v-model="dataForm.switchHideOption"
+            />
+          </el-form-item>
+          <el-form-item label="被隐藏字段" prop="switchHideIds">
+            <el-input
+              v-model="dataForm.switchHideIds"
+            />
+          </el-form-item>
+        </div>
+        <div class="flex justify-between">
+          <el-form-item label="默认值" prop="defaultValue">
+            <el-input
+              v-model="dataForm.defaultValue"
+            />
+          </el-form-item>
+          <el-form-item label="注释" prop="annotation">
+            <el-input
+              v-model="dataForm.annotation"
+            />
+          </el-form-item>
+        </div>
+        <el-form-item label="单选备选值" prop="radioOptions">
+          <el-input
+            v-model="dataForm.radioOptions"
+          />
+        </el-form-item>
+        <el-form-item label="选项查询语句" prop="optionSql">
+          <el-input
+            v-model="dataForm.optionSql"
+            type="textarea"
+            row="3"
+          />
+        </el-form-item>
+        <el-form-item label="备注" prop="optionSql">
+          <el-input
+            v-model="dataForm.remark"
+          />
+        </el-form-item>
+
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="defaultFormDialogVisible = false">取 消</el-button>
@@ -118,7 +248,7 @@
         </div>
         <el-card v-if="tableReady" class="box-content" shadow="never">
           <div class="una-fix-height margin-bottom-sm flex justify-between">
-            <el-button size="medium" type="primary" @click="showAddDialog">添加{{ this.entity.name }}</el-button>
+            <el-button size="medium" type="primary" @click="showAddDialog">添加</el-button>
           </div>
           <CardArea>
             <div slot="content">
@@ -169,11 +299,13 @@ import * as fieldPort from '../../api/una/sys_field'
 import { chDelete, chGet, chPost } from '../../api/index'
 import CardArea from '../../layout/components/CardArea'
 import UnaSingleSelect from '../../layout/components/UnaSingleSelect.vue'
+import UnaDicSelectVue from '@/layout/components/UnaDicSelect.vue'
+import UnaDicSelect from '@/layout/components/UnaDicSelect.vue'
 
 export default {
-  name: 'DeviceTypeManage',
+  name: 'FieldManage',
   components: {
-    ClientArea, CardArea, UnaSingleSelect
+    ClientArea, CardArea, UnaSingleSelect, UnaDicSelect
   },
   data() {
     return {
@@ -192,11 +324,13 @@ export default {
       defaultForm: {}, // 默认表单
       defaultFormRules: {
         name: [{ required: true, message: '请输入名称', trigger: 'change' }],
-        path: [{ required: true, message: '请输入路径', trigger: 'change' }],
-        className: [{ required: true, message: '请输入类名', trigger: 'change' }]
+        assignmentCode: [{ required: true, message: '请输入赋值编码', trigger: 'change' }],
+        displayModeDcode: [{ required: true, message: '请选择展示方式', trigger: 'change' }],
+        assignmentModeDcode: [{ required: true, message: '请选择赋值方式', trigger: 'change' }]
       },
       dataForm: {}, // 数据表单，绑定数据的
-      defaultFormDialogVisible: false
+      defaultFormDialogVisible: false,
+      node: '' // 当前选中节点
     }
   },
   mounted() {
@@ -212,6 +346,9 @@ export default {
         return false
       }
       this.dataForm = { ...this.defaultForm }
+      this.dataForm.entityId = this.node.id
+      this.dataForm.entityIdName = this.node.title
+
       this.defaultFormDialogVisible = true
 
       if (this.$refs.dataForm) {
@@ -225,6 +362,8 @@ export default {
       this.getPublicList({ 'pageNum': e })
     },
     handleNodeClick(e) {
+      this.node = e
+      console.log(e)
       this.treeSelected = e.id
       const obj = {}
       const code = this.relationList[0].relatedFieldCode
@@ -277,6 +416,38 @@ export default {
           this.treeData = result
         })
       }
+    },
+    submitAddPublic(formName) {
+      this.$refs[formName].validate(async(valid) => {
+        if (valid) {
+          this.loading = true
+
+          chPost(this.entity.path.replace('/sys', '') + '/save', this.dataForm).then((resolve) => {
+            this.defaultFormDialogVisible = false
+            this.$message.success('保存成功')
+            this.getPublicList()
+            this.loading = false
+          }, (e) => {
+            this.loading = false
+          })
+        }
+      })
+    },
+    handleEdit(e) {
+      this.dataForm = { ...e }
+      this.dataForm.entityId = this.node.id
+      this.dataForm.entityIdName = this.node.title
+      this.defaultFormDialogVisible = true
+    },
+    handleDelete(e) {
+      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+        confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+      }).then(() => {
+        chDelete(this.entity.path.replace('/sys', '') + `/${e.id}`).then((resolve) => {
+          this.$message.success('删除成功!')
+          this.getPublicList()
+        })
+      })
     }
   }
 
