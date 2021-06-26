@@ -3,35 +3,65 @@ cls<template>
     <el-dialog :title="entity.name" :visible.sync="defaultFormDialogVisible" width="550px" :append-to-body="true">
       <el-form
         ref="publicAddForm"
-        :model="defaultForm"
+        :model="dataForm"
         status-icon
         :rules="defaultFormRules"
         label-width="120px"
       >
         <el-form-item
           v-for="field in fieldList"
+          v-show="formItemVisible(field.assignmentModeDcode)"
           :key="field.id"
           :label="field.name"
           :prop="field.assignmentCode"
         >
+          {{ field.assignmentCode }}
+          <!-- {{ field }} -->
+          <!-- defaultValue -->
+
+          <UnaTreeNode
+            v-if="field.assignmentModeDcode === 'field_assignment_treeNode'"
+            v-model="dataForm[field.assignmentCode]"
+            :dafault-value="field.defaultValue"
+          />
+
+          <el-radio-group
+            v-else-if="field.assignmentModeDcode === 'field_assignment_radio'"
+            v-model="dataForm[field.assignmentCode]"
+          >
+            <el-radio v-for="(item, index) in field.radioOptionArray" :key="'radio'+index" :label="item">{{ item }}</el-radio>
+          </el-radio-group>
+
+          <CkEditor
+            v-else-if="field.assignmentModeDcode === 'field_assignment_editor'"
+            v-model="dataForm[field.assignmentCode]"
+          />
 
           <el-input
-            v-if="field.assignmentModeDcode === 'field_assignment_text'"
-            v-model="defaultForm[field.assignmentCode]"
+            v-else-if="field.assignmentModeDcode === 'field_assignment_text'"
+            v-model="dataForm[field.assignmentCode]"
           />
           <el-input
             v-else-if="field.assignmentModeDcode === 'field_assignment_hidden'"
-            v-model="defaultForm[field.assignmentCode]"
+            v-model="dataForm[field.assignmentCode]"
           />
           <una-single-select
             v-else-if="field.assignmentModeDcode === 'field_assignment_singleselect'"
+            v-model="dataForm[field.assignmentCode]"
             :field="field"
-            :model="defaultForm[field.assignmentCode]"
-            @getCalled="changeFormValue($event,field.assignmentCode)"
+          />
+          <una-location
+            v-else-if="field.assignmentModeDcode === 'field_assignment_map'"
+            v-model="dataForm[field.assignmentCode]"
+          />
+          <una-upload
+            v-else-if="field.assignmentModeDcode === 'field_assignment_multiUpload'"
+            v-model="dataForm[field.assignmentCode]"
+            :show-file-list="false"
           />
           <el-switch
             v-else-if="field.assignmentModeDcode === 'field_assignment_switch'"
-            v-model="defaultForm[field.assignmentCode]"
+            v-model="dataForm[field.assignmentCode]"
             active-color="#13ce66"
             :active-value="1"
             :inactive-value="0"
@@ -39,7 +69,7 @@ cls<template>
           />
           <el-date-picker
             v-else-if="field.assignmentModeDcode === 'field_assignment_datetime'"
-            v-model="defaultForm[field.assignmentCode]"
+            v-model="dataForm[field.assignmentCode]"
             type="datetime"
             :placeholder="field.annotation"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -48,7 +78,7 @@ cls<template>
             <img
               v-if="busUserForm.accountImg"
               class="img"
-              :src="defaultForm[field.assignmentCode]"
+              :src="dataForm[field.assignmentCode]"
             >
             <i v-else class="el-icon-plus avatar-uploader-icon" />
           </div>
@@ -73,7 +103,7 @@ cls<template>
     <ClientArea>
       <div slot="content" class="flex justify-between" style="height:100%">
         <div
-          v-show="Array.isArray(this.relationList) && this.relationList.length > 0"
+          v-show="Array.isArray(relationList) && relationList.length > 0"
           class="flex flex-direction justify-between"
         >
           <el-card class="box-card" shadow="never">
@@ -95,14 +125,58 @@ cls<template>
         </div>
 
         <el-card v-if="tableReady" class="box-content" shadow="never">
-          <div class="una-fix-height margin-bottom-sm flex justify-between">
-            <el-button size="medium" type="primary" @click="showAddDialog">添加{{ this.entity.name }}</el-button>
-          </div>
-          <CardArea>
+          <el-row :gutter="20">
+            <el-col v-for="(item,index) in entity.queryList" :key="index" :span="8" class="flex">
+              <div class="flex align-center">
+                <div class="margin-right-xs" style="min-width: 50px;">{{ item.name }}</div>
+                <el-input
+                  v-if="item.assignmentModeDcode === 'field_query_exactText' || item.assignmentModeDcode === 'field_query_fuzzyText'"
+                  v-model="queryFields[item.fieldCode]"
+                />
+                <el-switch
+                  v-else-if="item.assignmentModeDcode === 'field_query_switch'"
+                  v-model="queryFields[item.fieldCode]"
+                  active-color="#13ce66"
+                  :active-value="1"
+                  :inactive-value="0"
+                  inactive-color="#ff4949"
+                />
+                <una-single-select
+                  v-else-if="item.assignmentModeDcode === 'field_query_singleselect'"
+                  v-model="queryFields[item.fieldCode]"
+                  :field="item"
+                />
+                <el-date-picker
+                  v-else-if="item.assignmentModeDcode === 'field_query_geDate'"
+                  v-model="queryFields[item.fieldCode]"
+                  type="date"
+                  value-format="yyyy-MM-dd 00:00:00"
+                  format="yyyy-MM-dd"
+                  clearable
+                />
+                <el-date-picker
+                  v-else-if="item.assignmentModeDcode === 'field_query_leDate'"
+                  v-model="queryFields[item.fieldCode]"
+                  type="date"
+                  value-format="yyyy-MM-dd 23:59:59"
+                  format="yyyy-MM-dd"
+                  clearable
+                />
+              </div>
+
+            </el-col>
+            <el-col v-if="entity.queryList.length>0" :span="3">
+              <el-button size="medium" type="primary" @click="goQuery">搜索</el-button>
+            </el-col>
+            <el-col :span="3">
+              <el-button size="medium" type="primary" @click="showAddDialog">添加{{ this.entity.name }}</el-button>
+            </el-col>
+          </el-row>
+          <CardArea class="margin-top-xs">
             <div slot="content">
 
               <el-table border :data="tableData" style="width: 100%;" height="75%">
-                <el-table-column v-for="(field, i) in fieldList" :key="field.id" :prop="field.assignmentCode" :label="field.name">
+                <el-table-column v-for="field in fieldList" :key="field.id" :prop="field.assignmentCode" :label="field.name">
                   <template slot-scope="scope">
                     <div>
                       <div v-if="typeof scope.row[field.assignmentCode] === 'boolean'">
@@ -115,10 +189,11 @@ cls<template>
                     </div>
                   </template>
                 </el-table-column>
-                <el-table-column label="操作" width="100" fixed="right">
+                <el-table-column label="操作" width="150" fixed="right">
                   <template slot-scope="scope">
                     <el-button type="text" @click="handleEdit(scope.row)">编辑</el-button>
                     <el-button type="text" @click="handleDelete(scope.row)">删除</el-button>
+                    <el-button type="text" @click="handleUp(scope.row)">升序</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -146,22 +221,20 @@ import avatarBox from 'vue-image-crop-upload'
 import ClientArea from '../../layout/components/ClientArea'
 import CardArea from '../../layout/components/CardArea'
 import UnaSingleSelect from '../../layout/components/UnaSingleSelect.vue'
-import * as fieldPort from '../../api/una/sys_field'
-import { findDictionaryList } from '@/utils/find-dictionary.js'
-import { getEntity } from '@/utils/una/entity-util.js'
-import { chDelete, chGet, chPost } from '../../api/index'
+import UnaTreeNode from '../../layout/components/UnaTreeNode.vue'
+import UnaLocation from '../../layout/components/UnaLocation.vue'
+import UnaUpload from '../../layout/components/UnaUpload.vue'
+import CkEditor from '../../components/CKEditor/index.vue'
 
-// const publicFormDefault = {
-//   parentId: '',
-//   name: '',
-//   className: '',
-//   path: ''
-// }
+import * as fieldPort from '../../api/una/sys_field'
+import { getEntity } from '@/utils/una/entity-util.js'
+import { chPut, chDelete, chGet, chPost } from '../../api/index'
 
 export default {
   name: 'SysManage',
   components: {
-    ClientArea, avatarBox, CardArea, UnaSingleSelect
+    ClientArea, avatarBox, CardArea, UnaSingleSelect, UnaTreeNode,
+    CkEditor, UnaLocation, UnaUpload
   },
   data() {
     return {
@@ -178,29 +251,66 @@ export default {
       defaultFormDialogVisible: false,
       loading: false,
       defaultFormRules: {
-        name: [{ required: true, message: '请输入名称', trigger: 'change' }],
-        path: [{ required: true, message: '请输入路径', trigger: 'change' }],
-        className: [{ required: true, message: '请输入类名', trigger: 'change' }]
+        // typeDcode: [{ required: true, message: '请输入名称', trigger: 'change' }]
+        // path: [{ required: true, message: '请输入路径', trigger: 'change' }],
+        // className: [{ required: true, message: '请输入类名', trigger: 'change' }]
       },
       defaultProps: {
         children: 'children',
         label: 'name'
       },
       pageTotal: 0,
-      showAvatar: false
+      showAvatar: false,
+      queryFields: {}
+    }
+  },
+  computed: {
+    formItemVisible() {
+      return (e) => {
+        const exclude = ['field_assignment_treeNode']
+        return !exclude.includes(e)
+      }
     }
   },
   async mounted() {
     this.entity = getEntity(this.className)
-    console.log(this.entity)
+    // 处理模糊查询条件
+    this.entity.queryList.map((v) => {
+      if (v.assignmentModeDcode === 'field_query_fuzzyText') {
+        v.fieldCode = `:${v.fieldCode}`
+      }
+      if (v.assignmentModeDcode === 'field_query_geDate') {
+        v.fieldCode = `ge:${v.fieldCode}`
+      }
+      if (v.assignmentModeDcode === 'field_query_leDate') {
+        v.fieldCode = `le:${v.fieldCode}`
+      }
+      return v
+    })
+
+    // 处理模糊查询条件
+
+    console.log(this.entity, '88888')
     await this.getFieldList(this.entity.id)
     this.getPublicList()
     this.getTreeList()
   },
   methods: {
     chImg,
-    changeFormValue(e, code) {
-      this.dataForm[code] = e
+    goQuery() {
+      chGet(this.entity.path + '/page', this.queryFields).then((result) => {
+        this.pageTotal = result.count
+        this.tableData = result.data.map(record => {
+          this.fieldList.forEach(field => {
+            if (record[field.assignmentCode] && field.assignmentCode !== field.displayCode) {
+              // 如果赋值编码不等于显示编码，则查询显示数据
+              record[field.assignmentCode] = record['map'][field.displayCode]
+            }
+          })
+          return record
+        })
+        this.tableReady = true
+      })
     },
     handleSizeChange(e) {
       this.getPublicList({ 'pageNum': 1, 'pageSize': e })
@@ -224,6 +334,9 @@ export default {
         console.log('字段列表', result)
         this.fieldList = result.map(record => {
           this.defaultForm[record.assignmentCode] = ''
+          if (record.isRequired) {
+            this.defaultFormRules[record.assignmentCode] = [{ required: true, message: `请输入或选择${record.name}`, trigger: 'change' }]
+          }
           return record
         })
 
@@ -233,7 +346,7 @@ export default {
       // })
     },
     getPublicList(e) {
-      chGet(this.entity.path.replace('/sys', '') + '/page', e).then((result) => {
+      chGet(this.entity.path + '/page', e).then((result) => {
         this.pageTotal = result.count
         this.tableData = result.data.map(record => {
           this.fieldList.forEach(field => {
@@ -256,21 +369,36 @@ export default {
         const dataValue = this.relationList[0].parentDataValue
         const obj = {}
         obj[fieldCode] = dataValue
-        chGet(path.replace('/sys', '') + '/list', obj).then((result) => {
+        chGet(path + '/list', obj).then((result) => {
           console.log('sss', result)
           this.treeData = result
         })
       }
     },
     handleEdit(e) {
-      this.defaultForm = { ...e }
-      this.defaultFormDialogVisible = true
+      chGet(this.entity.path + `/${e.id}`).then((resolve) => {
+        console.log(resolve.data)
+        this.dataForm = resolve.data
+
+        this.defaultFormDialogVisible = true
+      }, (e) => {
+      })
+
+      // this.dataForm = { ...e }
+      // this.defaultFormDialogVisible = true
+    },
+    handleUp(e) {
+      chPut(this.entity.path + `/ascend/${e.id}`).then((resolve) => {
+        this.$message.success('保存成功')
+        this.getPublicList()
+      }, (e) => {
+      })
     },
     handleDelete(e) {
       this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
         confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
       }).then(() => {
-        chDelete(this.entity.path.replace('/sys', '') + `/${e.id}`).then((resolve) => {
+        chDelete(this.entity.path + `/${e.id}`).then((resolve) => {
           this.$message.success('删除成功!')
           this.getPublicList()
         })
@@ -289,11 +417,15 @@ export default {
       }
     },
     submitAddPublic(formName) {
+      console.log(this.dataForm)
       this.$refs[formName].validate(async(valid) => {
         if (valid) {
           this.loading = true
+          // this.dataForm.map = ''
+          const { map, ...commitData } = this.dataForm
+          console.log('提交检查', commitData)
 
-          chPost(this.entity.path.replace('/sys', '') + '/save', this.defaultForm).then((resolve) => {
+          chPost(this.entity.path + '/save', commitData).then((resolve) => {
             this.defaultFormDialogVisible = false
             this.$message.success('保存成功')
             this.getPublicList()

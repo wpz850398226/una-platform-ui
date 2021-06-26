@@ -1,22 +1,22 @@
 import { chGet, chPost, chPut, chDelete } from '../index'
 export function configurationList(page = 1, limit = 10) {
-  return chGet('configuration/page', {
+  return chGet('/sys/configuration/page', {
     page, limit
   })
 }
 
 export function configurationListAll() {
-  return chGet('configuration/list')
+  return chGet('/sys/configuration/list')
 }
 
 export function addConfiguration(form) {
-  return chPost('configuration/save', form)
+  return chPost('/sys/configuration/save', form)
 }
 
 export function editConfiguration(form) {
-  return chPut('configuration/save', form)
+  return chPut('/sys/configuration/save', form)
 }
 
 export function deleteConfiguration(id) {
-  return chDelete(`configuration/${id}`)
+  return chDelete(`/sys/configuration/${id}`)
 }

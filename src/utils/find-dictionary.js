@@ -41,7 +41,7 @@ export function findDictionaryList(pid) {
     const elements = store.getters && store.getters.dictionary
 
     const res = elements.reduce((t, v) => v.code === pid ? [...t, v] : t, [])
-    console.log(res)
+    console.log(res, 'kkkkkssss')
     if (res.length > 0) {
       return res[0].children
     }

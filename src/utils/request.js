@@ -1,13 +1,12 @@
 
 import axios from 'axios'
-import { MessageBox } from 'element-ui'
 import CMessage from '@/utils/el-message'
 import store from '@/store'
 import { getToken, getTentId, getAppKey } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
-  // baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
+  // baseURL: 'http://192.168.1.3:80', // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000 // request timeout
 })
@@ -61,7 +60,7 @@ service.interceptors.response.use(
     //
 
     const res = response.data
-    if (res.code && res.code === 500) {
+    if (res.code && (res.code === 500 || res.code === 400)) {
       CMessage.error(res.message)
       return Promise.reject({
         error: res.message || 'Error',

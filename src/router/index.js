@@ -74,22 +74,22 @@ export const constantRoutes = [
     ]
   },
 
-  {
-    path: '/systemManage',
-    component: Layout,
-    hidden: true,
-    meta: { title: '系统设置' },
-    children: [
-      {
-        path: '/manage/SysField',
-        name: 'FieldManage',
-        component: () => import('@/views/Base/FieldManage'),
-        meta: { title: '字段管理', breadcrumb: true, code: 'SysField' }
-      }
+  // {
+  //   path: '/sys/systemManage',
+  //   component: Layout,
+  //   hidden: true,
+  //   meta: { title: '系统设置' },
+  //   children: [
+  //     {
+  //       path: '/manage/SysField',
+  //       name: 'FieldManage',
+  //       component: () => import('@/views/Base/FieldManage'),
+  //       meta: { title: '字段管理1', breadcrumb: true, code: 'SysField' }
+  //     }
 
-    ]
+  //   ]
 
-  },
+  // },
   {
     path: '/403',
     component: () => import('@/views/403'),

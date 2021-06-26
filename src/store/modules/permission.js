@@ -86,15 +86,17 @@ const actions = {
 }
 
 const generator = (routerMap, parent) => {
+  console.log('菜单', routerMap)
   return routerMap.map(item => {
     const { name, type, spread, code, href, icon } = item || {}
     const currentRouter = {
       // 如果路由设置了 path，则作为默认 path，否则 路由地址 动态拼接生成如 /dashboard/workplace
-      path: item.path ? item.path.replace('/sys', '') : item.route + Math.random(),
+      path: `${item.path}`,
+      // path: item.path ? item.path.replace('/sys', '') : item.route + Math.random(),
       // 路由名称，建议唯一
       name: item.path || '',
       // 该路由对应页面的 组件 :方案1
-      component: constantRouterComponents[item.route],
+      component: item.code === 'SysField' ? () => import('@/views/Base/FieldManage') : constantRouterComponents[item.route],
 
       // 该路由对应页面的 组件 :方案2 (动态加载)
       // component: (constantRouterComponents[item.component || item.key]) || (() => import(`@/views/${item.component}`)),

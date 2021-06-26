@@ -1,22 +1,22 @@
 import { chGet, chPost, chPut, chDelete } from '../index'
 export function entityList(page = 1, limit = 10) {
-  return chGet('entity/page', {
+  return chGet('/sys/entity/page', {
     page, limit
   })
 }
 
 export function entityListAll() {
-  return chGet('entity/list')
+  return chGet('/sys/entity/list')
 }
 
 export function addEntity(form) {
-  return chPost('entity/save', form)
+  return chPost('/sys/entity/save', form)
 }
 
 export function editEntity(form) {
-  return chPut('entity', form)
+  return chPut('/sys/entity', form)
 }
 
 export function deleteEntity(id) {
-  return chDelete(`entity/${id}`)
+  return chDelete(`/sys/entity/${id}`)
 }

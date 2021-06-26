@@ -5,7 +5,7 @@ import { getToken, getTentId, getAppKey } from '@/utils/auth'
 
 import qs from 'query-string'
 
-const reqUrl = process.env.VUE_APP_BASE_URL
+const reqUrl = '/api'
 
 const imgUrl = process.env.VUE_APP_IMG_URL
 
@@ -53,14 +53,15 @@ function chUnImg(url) {
 }
 
 function removePropertyOfNull(obj) {
-  const outObj = obj
-  if (obj) {
-    Object.keys(obj).forEach((item) => {
-      if (!obj[item] && obj[item] !== 0) delete outObj[item]
-    })
-    return outObj
-  }
-  return ''
+  return obj
+  // const outObj = obj
+  // if (obj) {
+  //   Object.keys(obj).forEach((item) => {
+  //     if (!obj[item] && obj[item] !== 0) delete outObj[item]
+  //   })
+  //   return outObj
+  // }
+  // return ''
 }
 
 async function chGet(url, data) {
@@ -68,6 +69,8 @@ async function chGet(url, data) {
   const reqData = qs.stringify(removePropertyOfNull(data))
   const g = reqData ? '?' : ''
   const urlStr = `${reqUrl}${url}${g}${reqData}`
+
+  console.log(urlStr)
 
   return new Promise((resolve, reject) => {
     axios({
@@ -86,6 +89,8 @@ async function chGet(url, data) {
 async function chPost(url, data) {
   data = qs.stringify(removePropertyOfNull(data)) // 序列化
   // const reqData = JSON.stringify(data)
+
+  console.log(`${reqUrl}${url}`)
 
   return new Promise((resolve, reject) => {
     axios({

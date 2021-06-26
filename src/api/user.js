@@ -10,7 +10,7 @@ import request from '@/utils/request'
 import { chGet, chPost, chPut, chDelete } from './index'
 
 export function login(data) {
-  return chPost('login/login', data)
+  return chPost('/sys/login/login', data)
 }
 
 export function accessKey() {
@@ -21,19 +21,15 @@ export function accessKey() {
 }
 
 export function getInfo() {
-  return chGet('account/getInfo')
+  return chGet('/sys/account/getInfo')
 }
 
 export function getElements() {
-  return chGet('permission/getByToken')
+  return chGet('/sys/permission/getByToken')
 }
 
 export function getUserMenu(token) {
-  return request({
-    url: '/sys/menu/getByToken',
-    method: 'get'
-    // params: { token }
-  })
+  return chGet('/sys/menu/getByToken')
 }
 
 export function logout() {

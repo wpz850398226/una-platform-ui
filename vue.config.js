@@ -41,9 +41,9 @@ module.exports = {
   devServer: {
     open: true,
     proxy: {
-      '/sys': { // 这里最好有一个 /
-        // target: 'http://127.0.0.1', // 服务器端接口地址 http://42.192.150.206:10080/sys/login/toLogin
-        target: ' http://42.192.150.206:10080', // 服务器端接口地址
+      '/api': { // 这里最好有一个 /
+        target: 'http://192.168.1.3:80', // 服务器端接口地址 http://42.192.150.206:10080/sys/login/toLogin
+        // target: ' http://42.192.150.206:10080', // 服务器端接口地址
         ws: true, // 如果要代理 websockets，配置这个参数
         // 如果是https接口，需要配置这个参数
         changeOrigin: true // 是否跨域
@@ -51,6 +51,16 @@ module.exports = {
         //   '^/api': '/api',
         // },
       }
+      // '/cp': { // 这里最好有一个 /
+      //   target: 'http://192.168.1.3:80', // 服务器端接口地址 http://42.192.150.206:10080/sys/login/toLogin
+      //   // target: ' http://42.192.150.206:10080', // 服务器端接口地址
+      //   ws: true, // 如果要代理 websockets，配置这个参数
+      //   // 如果是https接口，需要配置这个参数
+      //   changeOrigin: true // 是否跨域
+      //   // pathRewrite: {
+      //   //   '^/api': '/api',
+      //   // },
+      // }
     }
   },
   transpileDependencies: [

@@ -25,7 +25,7 @@
         </div>
         <div class="flex justify-between">
           <el-form-item label="赋值编码" prop="assignmentCode">
-            <el-input v-model="dataForm.assignmentCode" />
+            <el-input v-model="dataForm.assignmentCode" @input="syncName" />
           </el-form-item>
           <el-form-item label="取值编码" prop="displayCode">
             <el-input v-model="dataForm.displayCode" />
@@ -100,7 +100,7 @@
               inactive-color="#ff4949"
             />
           </el-form-item>
-          <el-form-item label="可否修改" prop="isUpdate">
+          <el-form-item label="表单是否加载" prop="isUpdate">
             <el-switch
               v-model="dataForm.isUpdate"
               active-color="#13ce66"
@@ -135,26 +135,58 @@
             <UnaDicSelect v-model="dataForm.formatCheckTypeDcode" parent-code="field_formatDetection" />
           </el-form-item>
           <el-form-item label="数据检测" prop="dataCheckTypeDcode">
-            <UnaDicSelect v-model="dataForm.dataCheckTypeDcode" parent-code="field_data_detection" />
+            <UnaDicSelect v-model="dataForm.dataCheckTypeDcode" parent-code="field_dataDetection" />
           </el-form-item>
         </div>
-        <div class="flex justify-between">
+        {{ dataForm.assignmentModeDcode }}
+        <div
+          v-if="dataForm.assignmentModeDcode === 'field_assignment_singleselect' || dataForm.assignmentModeDcode ==='field_assignment_multiselect'"
+          class="flex justify-between"
+        >
           <el-form-item label="选项实体" prop="optionEntityId">
             <el-select
               v-model="dataForm.optionEntityId"
-            />
+              @change="getEntityFieldList"
+            >
+              <el-option
+                v-for="item in entityList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+
+            </el-select>
           </el-form-item>
           <el-form-item label="选项展示" prop="optionNameFieldCode">
             <el-select
               v-model="dataForm.optionNameFieldCode"
-            />
+              clearable
+            >
+              <el-option
+                v-for="item in entityFieldList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.assignmentCode"
+              />
+            </el-select>
           </el-form-item>
         </div>
-        <div class="flex justify-between">
+        <div
+          v-if="dataForm.assignmentModeDcode === 'field_assignment_singleselect' || dataForm.assignmentModeDcode ==='field_assignment_multiselect'"
+          class="flex justify-between"
+        >
           <el-form-item label="选项提交" prop="optionValueFieldCode">
             <el-select
               v-model="dataForm.optionValueFieldCode"
-            />
+              clearable
+            >
+              <el-option
+                v-for="item in entityFieldList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.assignmentCode"
+              />
+            </el-select>
           </el-form-item>
           <el-form-item label="选项参数键" prop="optionParamName">
             <el-input
@@ -171,7 +203,14 @@
           <el-form-item label="联动父元素" prop="selectParentId">
             <el-select
               v-model="dataForm.selectParentId"
-            />
+            >
+              <el-option
+                v-for="item in entityLinkageFieldList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </el-select>
           </el-form-item>
         </div>
         <div class="flex justify-between">
@@ -267,10 +306,11 @@
                     </div>
                   </template>
                 </el-table-column>
-                <el-table-column label="操作" width="100" fixed="right">
+                <el-table-column label="操作" width="150" fixed="right">
                   <template slot-scope="scope">
                     <el-button type="text" @click="handleEdit(scope.row)">编辑</el-button>
                     <el-button type="text" @click="handleDelete(scope.row)">删除</el-button>
+                    <el-button type="text" @click="handleUp(scope.row)">升序</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -296,10 +336,10 @@
 import ClientArea from '../../layout/components/ClientArea'
 import { getEntity } from '@/utils/una/entity-util.js'
 import * as fieldPort from '../../api/una/sys_field'
-import { chDelete, chGet, chPost } from '../../api/index'
+import * as entityData from '../../api/una/sys_entity'
+import { chDelete, chGet, chPost, chPut } from '../../api/index'
 import CardArea from '../../layout/components/CardArea'
 import UnaSingleSelect from '../../layout/components/UnaSingleSelect.vue'
-import UnaDicSelectVue from '@/layout/components/UnaDicSelect.vue'
 import UnaDicSelect from '@/layout/components/UnaDicSelect.vue'
 
 export default {
@@ -321,7 +361,9 @@ export default {
       fieldList: [],
       tableData: [],
       pageTotal: 0,
-      defaultForm: {}, // 默认表单
+      defaultForm: {
+        isEffect: 1
+      }, // 默认表单
       defaultFormRules: {
         name: [{ required: true, message: '请输入名称', trigger: 'change' }],
         assignmentCode: [{ required: true, message: '请输入赋值编码', trigger: 'change' }],
@@ -330,16 +372,42 @@ export default {
       },
       dataForm: {}, // 数据表单，绑定数据的
       defaultFormDialogVisible: false,
-      node: '' // 当前选中节点
+      node: '', // 当前选中节点
+      entityList: [],
+      entityFieldList: [],
+      entityLinkageFieldList: []
     }
   },
   mounted() {
+    console.log(this.$route.meta)
     this.entity = getEntity(this.className)
     this.getTreeList()
     this.getFieldList(this.entity.id)
     this.getPublicList()
+    this.getEntityListAll()
   },
   methods: {
+    syncName(e) {
+      this.dataForm.displayCode = e
+    },
+    getEntityFieldList(e) {
+      console.log(e)
+      fieldPort.fieldList({ 'entityId': e }).then(res => {
+        this.entityFieldList = res
+      })
+    },
+    getEntityLinkageFieldList(e) {
+      console.log(e)
+      fieldPort.fieldList({ 'entityId': e }).then(res => {
+        this.entityLinkageFieldList = res
+      })
+    },
+    getEntityListAll() {
+      entityData.entityListAll().then(res => {
+        console.log(res, '实体')
+        this.entityList = res
+      })
+    },
     showAddDialog() {
       if (Array.isArray(this.relationList) && this.relationList.length > 0 && !this.treeSelected) {
         this.$message.error('请选择树节点')
@@ -348,6 +416,7 @@ export default {
       this.dataForm = { ...this.defaultForm }
       this.dataForm.entityId = this.node.id
       this.dataForm.entityIdName = this.node.title
+      this.dataForm.isEffect = 1
 
       this.defaultFormDialogVisible = true
 
@@ -370,11 +439,12 @@ export default {
       // 刷新表格
       obj[code] = e.id
       this.getPublicList(obj)
+      this.getEntityLinkageFieldList(e.id)
+
       // 设置表单父类元素默认值
       this.$set(this.defaultForm, code, e.id)
     },
     getFieldList(entityId) {
-      // return new Promise((resolve, reject) => {
       fieldPort.fieldList({ 'entityId': entityId }).then((result) => {
         console.log('字段列表', result)
         this.fieldList = result.map(record => {
@@ -383,12 +453,10 @@ export default {
         })
 
         this.dataForm = { ...this.defaultForm }
-        // resolve()
       })
-      // })
     },
     getPublicList(e) {
-      chGet(this.entity.path.replace('/sys', '') + '/page', e).then((result) => {
+      chGet(this.entity.path + '/page', e).then((result) => {
         this.pageTotal = result.count
         this.tableData = result.data.map(record => {
           this.fieldList.forEach(field => {
@@ -404,14 +472,13 @@ export default {
     },
     getTreeList() {
       this.relationList = this.entity.relationList
-      console.log('kkk')
       if (Array.isArray(this.relationList) && this.relationList.length > 0) {
         const path = this.relationList[0].parentEntityPath
         const fieldCode = this.relationList[0].relatedFieldCode
         const dataValue = this.relationList[0].parentDataValue
         const obj = {}
         obj[fieldCode] = dataValue
-        chGet(path.replace('/sys', '') + '/list', obj).then((result) => {
+        chGet(path + '/list', obj).then((result) => {
           console.log('sss', result)
           this.treeData = result
         })
@@ -421,8 +488,11 @@ export default {
       this.$refs[formName].validate(async(valid) => {
         if (valid) {
           this.loading = true
+          // this.dataForm.map = ''
+          delete this.dataForm.map
 
-          chPost(this.entity.path.replace('/sys', '') + '/save', this.dataForm).then((resolve) => {
+          chPost(this.entity.path + '/save', this.dataForm
+          ).then((resolve) => {
             this.defaultFormDialogVisible = false
             this.$message.success('保存成功')
             this.getPublicList()
@@ -434,16 +504,32 @@ export default {
       })
     },
     handleEdit(e) {
-      this.dataForm = { ...e }
-      this.dataForm.entityId = this.node.id
-      this.dataForm.entityIdName = this.node.title
-      this.defaultFormDialogVisible = true
+      chGet(this.entity.path + `/${e.id}`).then((resolve) => {
+        console.log(resolve.data)
+        this.dataForm = resolve.data
+
+        this.dataForm.entityId = this.node.id
+        this.dataForm.entityIdName = this.node.title
+        console.log(this.dataForm, 'kkk')
+
+        this.getEntityFieldList(this.dataForm.optionEntityId)
+
+        this.defaultFormDialogVisible = true
+      }, (e) => {
+      })
+    },
+    handleUp(e) {
+      chPut(this.entity.path + `/ascend/${e.id}`).then((resolve) => {
+        this.$message.success('保存成功')
+        this.getPublicList()
+      }, (e) => {
+      })
     },
     handleDelete(e) {
       this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
         confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
       }).then(() => {
-        chDelete(this.entity.path.replace('/sys', '') + `/${e.id}`).then((resolve) => {
+        chDelete(this.entity.path + `/${e.id}`).then((resolve) => {
           this.$message.success('删除成功!')
           this.getPublicList()
         })

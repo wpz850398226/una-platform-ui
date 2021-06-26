@@ -11,7 +11,7 @@
         v-for="item in options"
         :key="item.id"
         :label="item.title"
-        :value="item.value"
+        :value="item.code"
       />
     </el-select>
   </div>

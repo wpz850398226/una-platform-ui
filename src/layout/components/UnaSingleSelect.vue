@@ -1,18 +1,19 @@
 <!-- my-component.vue -->
 <template>
   <div class="una-single-select">
+    ##{{ field.optionNameFieldCode }}##{{ field.optionValueFieldCode }}##
     <el-select
-      v-model="selectedValue"
+      v-model="selVal"
       :placeholder="field.annotation"
       filterable
       style="width: 100%;"
-      @change="callFather"
+      @change="updateVal"
     >
       <el-option
         v-for="item in optionList"
         :key="item.id"
-        :label="item[field.optionNameFieldCode]"
-        :value="item[field.optionValueFieldCode]"
+        :label="field.optionNameFieldCode?item[field.optionNameFieldCode]: item['name']"
+        :value="field.optionValueFieldCode?item[field.optionValueFieldCode]: item['id']"
       />
     </el-select>
   </div>
@@ -21,15 +22,27 @@
 import { chGet } from '../../api/index'
 export default {
   name: 'UnaSingleSelect',
-  props: ['field', 'model'],
+  model: {
+    prop: 'value',
+    event: 'updateVal'
+  },
+  props: {
+    field: { required: true },
+    // eslint-disable-next-line vue/require-prop-types
+    value: {
+      required: true
+    }
+
+  },
   data() {
     return {
       optionList: [],
-      selectedValue: this.model
+      selVal: ''
     }
   },
   mounted() {
     console.log(this.field, '检查')
+    this.selVal = this.value
     this.queryOptions(this.field)
   },
   methods: {
@@ -50,15 +63,14 @@ export default {
         console.log(obj, 'obj')
       }
       if (field.optionEntityPath) {
-        const result = await chGet(field.optionEntityPath.replace('/sys/', '') + '/list', obj)
+        const result = await chGet(field.optionEntityPath + '/list', obj)
         this.optionList = result
+        console.log(this.optionList, 'asp')
       }
     },
-    callFather: function() {
-      // 发射信号
-
-      this.$emit('getCalled', this.selectedValue)
-      // 其中 getCalled 是一个自定义的事件，功能类似于一个中转
+    updateVal(e) {
+      console.log(e)
+      this.$emit('updateVal', e)
     }
   }
 }
