@@ -86,7 +86,12 @@
 
         <el-table-column v-for="field in fieldList" :key="field.id" :prop="field.assignmentCode" :label="field.name">
           <template slot-scope="scope">
-            <div>
+            {{ field.displayModeDcode }}
+            <div v-if="field.displayModeDcode === 'field_display_area'">
+              {{ code2Text(scope.row[field.assignmentCode]) }}
+            </div>
+            <div v-else>
+
               <div v-if="typeof scope.row[field.assignmentCode] === 'boolean'">
                 <el-tag v-if="scope.row[field.assignmentCode]" type="primary">是</el-tag>
                 <el-tag v-else type="danger">否</el-tag>
@@ -123,6 +128,7 @@
 </template>
 
 <script>
+import { CodeToText } from 'element-china-area-data'
 import { chPut, chDelete, chGet, chPost } from '@/api/index'
 import * as fieldPort from '@/api/una/sys_field'
 
@@ -154,6 +160,19 @@ export default {
       pageSize: 10,
       singleSelectValue: '',
       selectedData: []
+    }
+  },
+  computed: {
+    code2Text() {
+      return (e) => {
+        if (e) {
+          const sp = e.split(',')
+          if (sp && Array.isArray(sp) && sp.length === 3) {
+            return `${CodeToText[sp[0]]}${CodeToText[sp[1]]}${CodeToText[sp[2]]}`
+          }
+        }
+        return ''
+      }
     }
   },
   mounted() {

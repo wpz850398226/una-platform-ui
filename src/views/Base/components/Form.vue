@@ -49,6 +49,10 @@
           v-model="dataForm[field.assignmentCode]"
           :field="field"
         />
+        <una-area
+          v-else-if="field.assignmentModeDcode === 'field_assignment_gangedRegion'"
+          v-model="dataForm[field.assignmentCode]"
+        />
         <una-location
           v-else-if="field.assignmentModeDcode === 'field_assignment_map'"
           v-model="dataForm[field.assignmentCode]"
@@ -73,6 +77,11 @@
           :placeholder="field.annotation"
           value-format="yyyy-MM-dd HH:mm:ss"
         />
+        <el-input-number
+          v-else-if="field.assignmentModeDcode === 'field_assignment_number'"
+          v-model="dataForm[field.assignmentCode]"
+          :label="field.annotation"
+        />
         <div v-else-if="field.assignmentModeDcode === 'field_assignment_image'" class="avatar avatar-uploader" @click="showAvatar = true">
           <img
             v-if="busUserForm.accountImg"
@@ -92,6 +101,7 @@
 
 <script>
 import UnaSingleSelect from '@/layout/components/UnaSingleSelect.vue'
+import UnaArea from '@/layout/components/UnaArea.vue'
 import UnaTreeNode from '@/layout/components/UnaTreeNode.vue'
 import UnaLocation from '@/layout/components/UnaLocation.vue'
 import UnaUpload from '@/layout/components/UnaUpload.vue'
@@ -103,7 +113,7 @@ import * as fieldPort from '@/api/una/sys_field'
 export default {
   name: 'Form',
   components: {
-    UnaSingleSelect, UnaTreeNode,
+    UnaSingleSelect, UnaTreeNode, UnaArea,
     CkEditor, UnaLocation, UnaUpload
   },
   props: {
@@ -136,17 +146,18 @@ export default {
     initForm(oldData, mergeData) {
       if (oldData) {
         this.dataForm = oldData
+      } else {
+        this.dataForm = { ...this.defaultForm }
         if (mergeData) { // 合并默认值
-          Object.keys.map(v => {
+          console.log(mergeData, 'mergeData')
+          Object.keys(mergeData).map(v => {
             this.$set(this.defaultForm, v, mergeData[v])
           })
         }
-      } else {
-        this.dataForm = { ...this.defaultForm }
       }
 
       if (this.$refs.publicForm) {
-        this.$refs.publicForm.clearValidate()
+        this.$refs.publicForm.resetFields()
       }
     },
     getFieldList() {

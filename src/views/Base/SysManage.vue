@@ -89,10 +89,8 @@ export default {
 
     handleEdit(e) {
       chGet(this.entity.path + `/${e.id}`).then((resolve) => {
-        // this.dataForm = resolve.data
         this.defaultFormDialogVisible = true
         this.$nextTick(() => {
-          console.log(this.$refs)
           this.$refs.formController.initForm(resolve.data)
         })
       })

@@ -379,23 +379,27 @@ export default {
         this.$message.error('请选择树节点')
         return false
       }
+
+      this.defaultFormDialogVisible = true
+
       this.dataForm = { ...this.defaultForm }
       this.dataForm.entityId = this.treeSelected
       this.dataForm.entityIdName = this.treeNode.title
       this.dataForm.isEffect = 1
 
-      this.defaultFormDialogVisible = true
-
-      if (this.$refs.dataForm) {
-        this.$refs.dataForm.clearValidate()
+      if (this.$refs.fieldForm) {
+        this.$refs.fieldForm.resetFields()
       }
     },
     handleEdit(e) {
       chGet(this.entity.path + `/${e.id}`).then((resolve) => {
         this.defaultFormDialogVisible = true
+        this.dataForm = resolve.data
         this.$nextTick(() => {
           console.log(this.$refs)
-          this.dataForm = resolve.data
+          if (this.$refs.fieldForm) {
+            this.$refs.fieldForm.resetFields()
+          }
         })
       })
     },
@@ -408,7 +412,7 @@ export default {
           ).then((resolve) => {
             this.defaultFormDialogVisible = false
             this.$message.success('保存成功')
-            this.getPublicList()
+            this.updateTableData(this.treeQuery)
             this.loading = false
           }, (e) => {
             this.loading = false

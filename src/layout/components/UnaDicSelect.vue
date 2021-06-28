@@ -1,5 +1,6 @@
 <template>
   <div>
+    @{{ selVal }}@
     <el-select
       v-model="selVal"
       :placeholder="placeholder"
@@ -55,7 +56,6 @@ export default {
   },
   methods: {
     updateVal(e) {
-      console.log(e)
       this.$emit('updateVal', e)
     }
   }
