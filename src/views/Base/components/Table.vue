@@ -1,11 +1,8 @@
 <template>
   <div class="Table">
     <el-card v-if="tableReady" class="box-content" shadow="never">
-
-      <!-- <CardArea v-if="entity" class="margin-top-xs">
-        <div slot="content" style="height: 100%;"> -->
       <el-row :gutter="10">
-        <el-col :span="3">
+        <el-col v-if="selectable" :span="3">
           <el-button
             icon="el-icon-finished"
             size="small"
@@ -120,8 +117,7 @@
           @size-change="handleSizeChange"
         />
       </div>
-      <!-- </div>
-      </CardArea> -->
+
     </el-card>
   </div>
 </template>
@@ -129,12 +125,10 @@
 <script>
 import { chPut, chDelete, chGet, chPost } from '@/api/index'
 import * as fieldPort from '@/api/una/sys_field'
-import CardArea from '@/layout/components/CardArea.vue'
 
 export default {
   name: 'Table',
   components: {
-    CardArea
   },
   props: {
     entity: {
@@ -189,18 +183,6 @@ export default {
   methods: {
     getFieldList() {
       return fieldPort.fieldList({ 'entityId': this.entity.id })
-      // .then((result) => {
-      //   console.log('字段列表', result)
-      //   this.fieldList = result
-      //   // result.map(record => {
-      //   //   // this.defaultForm[record.assignmentCode] = ''
-      //   //   // if (record.isRequired) {
-      //   //   //   this.defaultFormRules[record.assignmentCode] = [{ required: true, message: `请输入或选择${record.name}`, trigger: 'change' }]
-      //   //   // }
-      //   //   return record
-      //   // })
-      //   // this.dataForm = { ...this.defaultForm }
-      // })
     },
     getPublicList(e) {
       chGet(this.entity.path + '/page', { 'pageNum': 1, 'pageSize': this.pageSize, ...e }).then((result) => {

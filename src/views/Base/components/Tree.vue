@@ -67,7 +67,7 @@ export default {
       const relationList = this.entity.relationList
       const code = relationList[0].relatedFieldCode
 
-      this.$emit('treeNodeClick', code, e.id)
+      this.$emit('treeNodeClick', code, e.id, e)
       // const obj = {}
       // const code = this.relationList[0].relatedFieldCode
       // // 刷新表格
