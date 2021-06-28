@@ -23,7 +23,7 @@ export default {
   methods: {
     pageResize() {
       this.show = false
-      const hk = document.documentElement.clientHeight - 140 - (this.searchBar ? 60 : 0)
+      const hk = document.documentElement.clientHeight - 85 - (this.searchBar ? 60 : 0)
       this.customStyle = `height: ${hk}px; width: 100%`
       this.show = true
       //

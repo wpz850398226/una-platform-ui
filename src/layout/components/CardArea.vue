@@ -19,11 +19,12 @@ export default {
     overflow: hidden;
     .scroll-area {
       height: 100%;
-      width: calc(100% + 15px);
+      width: 100%;
       overflow-y: scroll;
-      div:not(.una-fix-height) {
-        height: 100%;
-      }
+      overflow-x: scroll;
+      // div:not(.una-fix-height) {
+      //   height: 100%;
+      // }
     }
   }
 </style>
