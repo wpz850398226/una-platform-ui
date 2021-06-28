@@ -136,14 +136,13 @@ export default {
     initForm(oldData, mergeData) {
       if (oldData) {
         this.dataForm = oldData
+        if (mergeData) { // 合并默认值
+          Object.keys.map(v => {
+            this.$set(this.defaultForm, v, mergeData[v])
+          })
+        }
       } else {
         this.dataForm = { ...this.defaultForm }
-      }
-
-      if (mergeData) { // 合并默认值
-        Object.keys.map(v => {
-          this.$set(this.defaultForm, v, mergeData[v])
-        })
       }
 
       if (this.$refs.publicForm) {

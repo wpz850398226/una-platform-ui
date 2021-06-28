@@ -25,8 +25,11 @@
             <Table
               ref="tableController"
               :entity="entity"
+              :selectable="true"
+              multiply
               @showAddDialog="showAddDialog"
               @tableRowEdit="handleEdit"
+              @submitSelect="submitSelect"
             />
           </el-col>
         </el-row>
@@ -119,6 +122,9 @@ export default {
       this.$nextTick(() => {
         this.$refs.formController.initForm('', this.treeQuery)
       })
+    },
+    submitSelect(e) {
+      console.log(e)
     }
 
   }

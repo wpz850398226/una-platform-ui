@@ -5,6 +5,15 @@
       <!-- <CardArea v-if="entity" class="margin-top-xs">
         <div slot="content" style="height: 100%;"> -->
       <el-row :gutter="10">
+        <el-col :span="3">
+          <el-button
+            icon="el-icon-finished"
+            size="small"
+            type="success"
+            @click="submitSelect"
+          >确认选中</el-button>
+        </el-col>
+
         <el-col v-for="(item,index) in entity.queryList" :key="index" :span="8" class="flex">
           <div class="flex align-center">
             <div class="margin-right-xs" style="min-width: 50px;">{{ item.name }}</div>
@@ -45,20 +54,38 @@
           </div>
 
         </el-col>
+
         <el-col v-if="entity.queryList.length>0" :span="3">
-          <el-button size="medium" type="primary" @click="goQuery">搜索</el-button>
-          <el-button size="medium" type="primary" @click="resetQuery">重置</el-button>
+          <el-button size="small" type="primary" @click="goQuery">搜索</el-button>
+          <el-button size="small" type="primary" @click="resetQuery">重置</el-button>
         </el-col>
         <el-col :span="3">
-          <el-button size="medium" type="primary" @click="showAddDialog">添加{{ entity.name }}</el-button>
+          <el-button size="small" type="primary" @click="showAddDialog">添加{{ entity.name }}</el-button>
         </el-col>
       </el-row>
 
-      <el-table border :data="tableData" style="width: 100%; margin-top: 10px;" height="75%">
+      <el-table
+        border
+        :data="tableData"
+        style="width: 100%; margin-top: 10px;"
+        height="75%"
+        @selection-change="selectionChange"
+      >
         <el-table-column
+          v-if="selectable && multiply"
           type="selection"
           width="55"
         />
+
+        <el-table-column
+          v-if="selectable && !multiply"
+          width="55"
+        >
+          <template slot-scope="scope">
+            <el-radio v-model="singleSelectValue" :label="scope.$index" @change.native="selectionChange(scope.row)"><span /></el-radio>
+          </template>
+
+        </el-table-column>
 
         <el-table-column v-for="field in fieldList" :key="field.id" :prop="field.assignmentCode" :label="field.name">
           <template slot-scope="scope">
@@ -113,6 +140,14 @@ export default {
     entity: {
       required: true,
       type: Object
+    },
+    selectable: { // 支持选择
+      type: Boolean,
+      default: false
+    },
+    multiply: { // 支持多选
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -122,7 +157,9 @@ export default {
       tableReady: false, // 表格数据是否处理完成
       queryFields: {}, // 查询条件
       pageTotal: 0,
-      pageSize: 10
+      pageSize: 10,
+      singleSelectValue: '',
+      selectedData: []
     }
   },
   mounted() {
@@ -203,6 +240,17 @@ export default {
     },
     showAddDialog() {
       this.$emit('showAddDialog')
+    },
+    selectionChange(e) {
+      if (Array.isArray(e)) {
+        this.selectedData = e
+      } else {
+        this.selectedData = [e]
+      }
+      console.log(e)
+    },
+    submitSelect() {
+      this.$emit('submitSelect', this.selectedData.map(v => v.id).join(','))
     }
   }
 }
