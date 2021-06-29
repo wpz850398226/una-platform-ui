@@ -100,14 +100,11 @@
         label-position="right"
         label-width="100px"
       >
-        <el-form-item label="旧密码" prop="oldPass">
-          <el-input v-model="pwdForm.oldPass" show-password maxlength="10" />
-        </el-form-item>
-        <el-form-item label="新密码" prop="newPass">
-          <el-input v-model="pwdForm.newPass" show-password maxlength="10" />
+        <el-form-item label="新密码" prop="password">
+          <el-input v-model="pwdForm.password" show-password maxlength="16" />
         </el-form-item>
         <el-form-item label="确认密码" prop="surepwd">
-          <el-input v-model="pwdForm.surepwd" show-password maxlength="10" />
+          <el-input v-model="pwdForm.surepwd" show-password maxlength="16" />
         </el-form-item>
       </el-form>
 
@@ -127,6 +124,7 @@ import Hamburger from '@/components/Hamburger'
 import Screenfull from '@/components/Screenfull'
 import * as netData from '@/api/user'
 import avatarBox from 'vue-image-crop-upload'
+import { changePwd } from '@/api/user'
 
 export default {
   components: {
@@ -179,17 +177,12 @@ export default {
         type: [{ required: true, message: '请输入类型', trigger: 'change' }]
       },
       pwdForm: {
-        username: '',
-        oldPass: '',
-        newPass: '',
-        oldpwd: '',
-        newpwd: '',
-        surepwd: '',
-        userKey: ''
+        id: '',
+        password: '',
+        surepwd: ''
       },
       userPwdRules: {
-        oldPass: [{ required: true, message: '请输入旧密码', trigger: 'change' }],
-        newPass: [{ required: true, message: '请输入新密码', trigger: 'change' }],
+        password: [{ required: true, message: '请输入新密码', trigger: 'change' }],
         surepwd: [{ required: true, message: '请确认新密码', trigger: 'change' }]
       }
     }
@@ -205,6 +198,7 @@ export default {
   },
   mounted() {
     this.isfirstLogin()
+    this.pwdForm.id = this.userinfo.id
   },
   methods: {
     chImg,
@@ -241,11 +235,7 @@ export default {
       this.changePwdDialogVisible = true
     },
     closeChangePwd() {
-      if (this.userinfo.firstLogin === '1') {
-        this.logout()
-      } else {
-        this.changePwdDialogVisible = false
-      }
+      this.changePwdDialogVisible = false
     },
     editInfo() {
       const userInfo = this.userinfo
@@ -285,37 +275,9 @@ export default {
     submitChangePwd(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.pwdForm.username = this.username
-          // if (this.pwdForm.newPass === this.pwdForm.surepwd) {
-          //   accessKey().then(response => {
-          //     // const { userkey } = response.data
-          //     this.pwdForm.userKey = response.data.userkey
-          //     let passwordO = cryptoJs.enc.Utf8.parse(this.pwdForm.oldPass)
-          //     let passwordN = cryptoJs.enc.Utf8.parse(this.pwdForm.newPass)
-          //     const tokenKey = cryptoJs.enc.Utf8.parse(response.data.tokenkey)
-          //     passwordO = cryptoJs.AES.encrypt(passwordO, tokenKey, {
-          //       iv: tokenKey,
-          //       mode: cryptoJs.mode.CBC,
-          //       padding: cryptoJs.pad.Pkcs7
-          //     }).toString()
-          //     passwordN = cryptoJs.AES.encrypt(passwordN, tokenKey, {
-          //       iv: tokenKey,
-          //       mode: cryptoJs.mode.CBC,
-          //       padding: cryptoJs.pad.Pkcs7
-          //     }).toString()
-          //
-          //     this.pwdForm.oldpwd = passwordO
-          //     this.pwdForm.newpwd = passwordN
-          //     netData.changePwd(this.pwdForm).then((resolve) => {
-          //       this.changePwdDialogVisible = false
-          //       this.$message.success('修改成功!')
-          //       // this.logout()
-          //     })
-          //   })
-          // } else {
-          //   this.$message.error('两次密码不一致!')
-          // }
-          //
+          changePwd(this.pwdForm).then(res => {
+            console.log('修改结果', res)
+          })
         }
       })
     }

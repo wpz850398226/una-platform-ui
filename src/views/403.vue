@@ -10,7 +10,7 @@
       <div class="bullshit">
         <div class="bullshit__oops">OOPS!</div>
         <div class="bullshit__info">All rights reserved
-          <a style="color:#20a0ff" href="http://www.119xiehui.com" target="_blank">创辉科技</a>
+          <a style="color:#20a0ff" href="http://www.119xiehui.com" target="_blank">Una交互设计平台</a>
         </div>
         <div class="bullshit__headline">{{ message }}</div>
         <div class="bullshit__info">可能您的账号未被授权，请联系管理员.</div>

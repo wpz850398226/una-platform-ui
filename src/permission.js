@@ -11,6 +11,8 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 const whiteList = ['/login', '/forgetPassword', '/register'] // no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
+  console.log('to', to)
+
   // start progress bar
   NProgress.start()
 
@@ -34,9 +36,6 @@ router.beforeEach(async(to, from, next) => {
       const permission_routes = store.getters.generated_routes
       // alert('即将到', JSON.stringify(to))
       if (permission_routes) {
-        // alert('有路由表' + JSON.stringify(to))
-        //
-
         next()
       } else {
         try {
@@ -44,9 +43,6 @@ router.beforeEach(async(to, from, next) => {
 
           store.dispatch('permission/generateRoutes', []).then((res) => {
             router.addRoutes(res)
-
-            // next({ ...to, replace: true })
-
             if (res.length === 0) {
               next('/403')
             } else {

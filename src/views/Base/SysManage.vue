@@ -26,6 +26,7 @@
             <una-table
               ref="tableController"
               :entity="entity"
+              :query="dataQuery"
               @showAddDialog="showAddDialog"
               @tableRowEdit="handleEdit"
               @tableRowDelete="handleDelete"
@@ -62,11 +63,14 @@ export default {
       relationList: [],
       entity: '',
       defaultFormDialogVisible: false,
-      treeQuery: {}
+      treeQuery: {},
+      dataQuery: {}
     }
   },
   mounted() {
+    console.log('检测', this.$route.meta)
     this.entity = getEntity(this.$route.meta.code)
+    this.dataQuery = this.$route.meta.query
     this.relationList = this.entity.relationList
     console.log(this.entity, '88888')
   },

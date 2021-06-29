@@ -1,10 +1,12 @@
 import store from '@/store'
 
 export function getEntity(className) {
+  console.log(className, 'className')
   if (className) {
     const entitys = store.getters && store.getters.entitys
 
     const res = entitys.reduce((t, v) => v.code === className ? [...t, v] : t, [])
+    console.log(res[0], 'ssb')
     return res.length > 0 ? res[0] : ''
   } else {
     console.error('查询实体失败')

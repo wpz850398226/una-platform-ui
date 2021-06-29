@@ -1,6 +1,15 @@
 <template>
   <div class="Table">
     <el-card v-if="tableReady" class="box-content" shadow="never">
+      <div class="flex margin-bottom-xs">
+        <el-popover placement="left-start" title="列筛选" trigger="click">
+          <el-checkbox-group v-model="checkList" @change="columnFilter">
+            <el-checkbox v-for="(item, index) in fieldList" :key="index" :label="item.id">{{ item.name }}</el-checkbox>
+          </el-checkbox-group>
+          <el-button slot="reference" title="列筛选" size="mini"><i class="el-icon-menu" /></el-button>
+        </el-popover>
+
+      </div>
       <el-row :gutter="10">
         <el-col v-if="selectable" :span="3">
           <el-button
@@ -65,7 +74,7 @@
         border
         :data="tableData"
         style="width: 100%; margin-top: 10px;"
-        height="75%"
+        height="70%"
         @selection-change="selectionChange"
       >
         <el-table-column
@@ -85,7 +94,7 @@
         </el-table-column>
 
         <el-table-column
-          v-for="field in fieldList"
+          v-for="field in visibleColumns"
           :key="field.id"
           sortable
           :prop="field.assignmentCode"
@@ -120,6 +129,12 @@
             </div>
             <div v-else-if="field.displayModeDcode === 'field_display_icon'">
               <i v-if="scope.row[field.assignmentCode]" :class="scope.row[field.assignmentCode]" />
+            </div>
+            <div v-else-if="field.displayModeDcode === 'field_display_showInTemplate'">
+              <una-document
+                :id="scope.row.id"
+                :entity-id="entity.id"
+              />
             </div>
 
             <div v-else>
@@ -156,18 +171,25 @@
 import { CodeToText } from 'element-china-area-data'
 import { chPut, chDelete, chGet, chPost } from '@/api/index'
 import * as fieldPort from '@/api/una/sys_field'
+// import qs from 'query-string'
+import UnaDocument from '@/layout/components/UnaDocument.vue'
 
 import UnaMap from '@/layout/components/UnaMap.vue'
 
 export default {
   name: 'UnaTable',
   components: {
-    UnaMap
+    UnaMap, UnaDocument
   },
   props: {
     entity: {
       required: true,
       type: Object
+    },
+    query: {
+      required: false,
+      type: String,
+      default: ''
     },
     selectable: { // 支持选择
       type: Boolean,
@@ -182,6 +204,7 @@ export default {
     return {
       fieldList: [],
       tableData: [],
+      checkList: [], // 筛选列选中的数据列表
       tableReady: false, // 表格数据是否处理完成
       queryFields: {}, // 查询条件
       pageCurrent: 1,
@@ -189,10 +212,14 @@ export default {
       pageSize: 10,
       singleSelectValue: '',
       selectedData: [],
-      otherCondition: {}
+      otherCondition: {},
+      dataQueryCondition: {}
     }
   },
   computed: {
+    visibleColumns() {
+      return this.fieldList.filter((k) => this.checkList.includes(k.id))
+    },
     code2Text() {
       return (e) => {
         if (e) {
@@ -223,25 +250,41 @@ export default {
 
     // 处理模糊查询条件
 
+    if (this.entity.id) {
+      // const p = qs.parse(`?${this.query}`)
+      this.dataQueryCondition = { entityId: this.entity.id }
+    }
+
     this.getFieldList().then((result) => {
       console.log('字段列表', result)
       this.fieldList = result
       this.getPublicList()
+      this.columnFilter()
     })
   },
   methods: {
     getFieldList() {
       return fieldPort.fieldList({ 'entityId': this.entity.id })
     },
+    columnFilter(val) {
+      if (!val) {
+        this.fieldList.forEach(e => {
+          this.checkList.push(e.id)
+        })
+      }
+    },
     getPublicList(e, m) {
       if (e) {
         this.otherCondition = e
+      } else {
+        this.otherCondition = this.dataQueryCondition
       }
       chGet(this.entity.path + '/page', {
         'pageNum': this.pageCurrent,
         'pageSize': this.pageSize,
         ...this.otherCondition,
         ...m
+        // ...this.dataQueryCondition
       }).then((result) => {
         this.pageTotal = result.count
         this.tableData = result.data.map(record => {
@@ -251,6 +294,8 @@ export default {
               record[field.assignmentCode] = record['map'][field.displayCode]
             }
           })
+          record = { ...record, ...record.value }
+
           return record
         })
         this.tableReady = true
@@ -304,6 +349,11 @@ export default {
       width: 100%;
       height: 100%;
     }
+  }
+
+  .el-popover .el-checkbox {
+    display: block;
+    margin-bottom: 5px;
   }
 
 </style>

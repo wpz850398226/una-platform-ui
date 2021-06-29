@@ -85,13 +85,25 @@ const actions = {
   }
 }
 
+const rmQuery = (path) => {
+  return path.split('?')[0]
+}
+
+const getQuery = (path) => {
+  const sp = path.split('?')
+  if (sp.length === 2) {
+    return sp[1]
+  }
+  return ''
+}
+
 const generator = (routerMap, parent) => {
   console.log('菜单', routerMap)
   return routerMap.map(item => {
     const { name, type, spread, code, href, icon } = item || {}
     const currentRouter = {
       // 如果路由设置了 path，则作为默认 path，否则 路由地址 动态拼接生成如 /dashboard/workplace
-      path: `${item.path}`,
+      path: `${rmQuery(item.path)}/${item.id}`,
       // path: item.path ? item.path.replace('/sys', '') : item.route + Math.random(),
       // 路由名称，建议唯一
       name: item.path || '',
@@ -108,7 +120,8 @@ const generator = (routerMap, parent) => {
         noCache: true,
         type,
         href,
-        code
+        code,
+        query: getQuery(item.path)
       }
     }
     // // 是否设置了隐藏菜单

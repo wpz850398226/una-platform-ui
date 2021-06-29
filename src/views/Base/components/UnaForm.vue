@@ -147,12 +147,14 @@ import CkEditor from '@/components/CKEditor/index.vue'
 
 import { chPut, chDelete, chGet, chPost } from '@/api/index'
 import * as fieldPort from '@/api/una/sys_field'
+import UnaDocument from '@/layout/components/UnaDocument.vue'
 
 export default {
   name: 'UnaForm',
   components: {
     UnaSingleSelect, UnaTreeNode, UnaArea,
-    CkEditor, UnaLocation, UnaUpload, UnaEntitySelect
+    CkEditor, UnaLocation, UnaUpload, UnaEntitySelect,
+    UnaDocument
   },
   props: {
     entity: {
