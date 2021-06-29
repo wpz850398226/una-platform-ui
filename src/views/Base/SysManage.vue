@@ -6,7 +6,8 @@
       width="550px"
       :append-to-body="true"
     >
-      <Form ref="formController" :entity="entity" @saveSuccess="saveSuccess" /></el-dialog>
+      <una-form ref="formController" :entity="entity" @saveSuccess="saveSuccess" />
+    </el-dialog>
 
     <ClientArea v-if="entity">
       <div slot="content" style="height:100%">
@@ -22,13 +23,13 @@
             :span="Array.isArray(relationList) && relationList.length > 0 ? 18: 24"
             style="height: 100%;"
           >
-            <Table
+            <una-table
               ref="tableController"
               :entity="entity"
-              :selectable="true"
-              multiply
               @showAddDialog="showAddDialog"
               @tableRowEdit="handleEdit"
+              @tableRowDelete="handleDelete"
+              @tableRowSortUp="handleUp"
               @submitSelect="submitSelect"
             />
           </el-col>
@@ -46,13 +47,13 @@ import { chPut, chDelete, chGet, chPost } from '../../api/index'
 
 // 分解代码
 import Tree from './components/Tree.vue'
-import Table from './components/Table.vue'
-import Form from './components/Form.vue'
+import UnaTable from './components/UnaTable.vue'
+import UnaForm from './components/UnaForm.vue'
 
 export default {
   name: 'SysManage',
   components: {
-    Tree, Table, Form,
+    Tree, UnaTable, UnaForm,
     ClientArea
   },
   data() {
@@ -98,7 +99,7 @@ export default {
     handleUp(e) {
       chPut(this.entity.path + `/ascend/${e.id}`).then((resolve) => {
         this.$message.success('保存成功')
-        this.getPublicList()
+        this.updateTableData(this.treeQuery)
       })
     },
     handleDelete(e) {
@@ -107,7 +108,7 @@ export default {
       }).then(() => {
         chDelete(this.entity.path + `/${e.id}`).then((resolve) => {
           this.$message.success('删除成功!')
-          this.getPublicList()
+          this.updateTableData(this.treeQuery)
         })
       })
     },

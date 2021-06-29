@@ -69,13 +69,13 @@
         @selection-change="selectionChange"
       >
         <el-table-column
-          v-if="selectable && multiply"
+          v-if="selectable && multiple"
           type="selection"
           width="55"
         />
 
         <el-table-column
-          v-if="selectable && !multiply"
+          v-if="selectable && !multiple"
           width="55"
         >
           <template slot-scope="scope">
@@ -84,21 +84,46 @@
 
         </el-table-column>
 
-        <el-table-column v-for="field in fieldList" :key="field.id" :prop="field.assignmentCode" :label="field.name">
+        <el-table-column
+          v-for="field in fieldList"
+          :key="field.id"
+          sortable
+          :prop="field.assignmentCode"
+          :label="field.name"
+        >
           <template slot-scope="scope">
             {{ field.displayModeDcode }}
             <div v-if="field.displayModeDcode === 'field_display_area'">
               {{ code2Text(scope.row[field.assignmentCode]) }}
             </div>
-            <div v-else>
-
+            <div v-else-if="field.displayModeDcode === 'field_display_whether'">
               <div v-if="typeof scope.row[field.assignmentCode] === 'boolean'">
                 <el-tag v-if="scope.row[field.assignmentCode]" type="primary">是</el-tag>
                 <el-tag v-else type="danger">否</el-tag>
               </div>
-              <div v-else>
-                {{ scope.row[field.assignmentCode] }}
-              </div>
+            </div>
+            <div v-else-if="field.displayModeDcode === 'field_display_map'">
+              <UnaMap :value="scope.row[field.assignmentCode]" />
+            </div>
+            <div v-else-if="field.displayModeDcode === 'field_display_img'">
+              <el-image
+                style="width: 100px; height: 100px;"
+                :src="scope.row[field.assignmentCode]"
+                :fit="'cover'"
+              />
+            </div>
+            <div v-else-if="field.displayModeDcode === 'field_display_prograss'">
+              <el-progress v-if="scope.row[field.assignmentCode]" :percentage="parseInt(scope.row[field.assignmentCode], 10)" />
+            </div>
+            <div v-else-if="field.displayModeDcode === 'field_display_link'">
+              <el-link v-if="scope.row[field.assignmentCode]" type="primary" :href="scope.row[field.assignmentCode]">点击跳转</el-link>
+            </div>
+            <div v-else-if="field.displayModeDcode === 'field_display_icon'">
+              <i v-if="scope.row[field.assignmentCode]" :class="scope.row[field.assignmentCode]" />
+            </div>
+
+            <div v-else>
+              {{ scope.row[field.assignmentCode] }}
             </div>
           </template>
         </el-table-column>
@@ -132,9 +157,12 @@ import { CodeToText } from 'element-china-area-data'
 import { chPut, chDelete, chGet, chPost } from '@/api/index'
 import * as fieldPort from '@/api/una/sys_field'
 
+import UnaMap from '@/layout/components/UnaMap.vue'
+
 export default {
-  name: 'Table',
+  name: 'UnaTable',
   components: {
+    UnaMap
   },
   props: {
     entity: {
@@ -145,7 +173,7 @@ export default {
       type: Boolean,
       default: false
     },
-    multiply: { // 支持多选
+    multiple: { // 支持多选
       type: Boolean,
       default: false
     }
@@ -156,10 +184,12 @@ export default {
       tableData: [],
       tableReady: false, // 表格数据是否处理完成
       queryFields: {}, // 查询条件
+      pageCurrent: 1,
       pageTotal: 0,
       pageSize: 10,
       singleSelectValue: '',
-      selectedData: []
+      selectedData: [],
+      otherCondition: {}
     }
   },
   computed: {
@@ -203,8 +233,16 @@ export default {
     getFieldList() {
       return fieldPort.fieldList({ 'entityId': this.entity.id })
     },
-    getPublicList(e) {
-      chGet(this.entity.path + '/page', { 'pageNum': 1, 'pageSize': this.pageSize, ...e }).then((result) => {
+    getPublicList(e, m) {
+      if (e) {
+        this.otherCondition = e
+      }
+      chGet(this.entity.path + '/page', {
+        'pageNum': this.pageCurrent,
+        'pageSize': this.pageSize,
+        ...this.otherCondition,
+        ...m
+      }).then((result) => {
         this.pageTotal = result.count
         this.tableData = result.data.map(record => {
           this.fieldList.forEach(field => {
@@ -219,16 +257,17 @@ export default {
       })
     },
     switchPage(e) {
-      this.getPublicList({})
+      this.pageCurrent = e
+      this.getPublicList()
     },
-    handleSizeChange(e) {
-      this.getPublicList({})
+    handleSizeChange() {
+      this.getPublicList()
     },
     goQuery() {
-      this.getPublicList(this.queryFields)
+      this.getPublicList('', this.queryFields)
     },
     resetQuery() {
-      this.getPublicList({ })
+      this.getPublicList()
     },
     handleEdit(e) {
       this.$emit('tableRowEdit', e)

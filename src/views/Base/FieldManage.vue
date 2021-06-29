@@ -145,7 +145,7 @@
         </div>
         {{ dataForm.assignmentModeDcode }}
         <div
-          v-if="dataForm.assignmentModeDcode === 'field_assignment_singleselect' || dataForm.assignmentModeDcode ==='field_assignment_multiselect'"
+          v-if="dataForm.assignmentModeDcode === 'field_assignment_singleselect' || dataForm.assignmentModeDcode ==='field_assignment_multiselect' || dataForm.assignmentModeDcode ==='field_assignment_entityRecord'"
           class="flex justify-between"
         >
           <el-form-item label="选项实体" prop="optionEntityId">
@@ -285,11 +285,13 @@
             :span="Array.isArray(relationList) && relationList.length > 0 ? 18: 24"
             style="height: 100%;"
           >
-            <Table
+            <una-table
               ref="tableController"
               :entity="entity"
               @showAddDialog="showAddDialog"
               @tableRowEdit="handleEdit"
+              @tableRowDelete="handleDelete"
+              @tableRowSortUp="handleUp"
             />
           </el-col>
         </el-row>
@@ -307,12 +309,12 @@ import { chDelete, chGet, chPost, chPut } from '../../api/index'
 import UnaDicSelect from '@/layout/components/UnaDicSelect.vue'
 
 import Tree from './components/Tree.vue'
-import Table from './components/Table.vue'
+import UnaTable from './components/UnaTable.vue'
 
 export default {
   name: 'FieldManage',
   components: {
-    Tree, Table,
+    Tree, UnaTable,
     ClientArea, UnaDicSelect
   },
   data() {
@@ -342,6 +344,7 @@ export default {
   mounted() {
     this.entity = getEntity(this.$route.meta.code)
     this.relationList = this.entity.relationList
+    this.getEntityListAll()
   },
   methods: {
     syncName(e) {
@@ -392,15 +395,26 @@ export default {
       }
     },
     handleEdit(e) {
+      console.log(e.id)
       chGet(this.entity.path + `/${e.id}`).then((resolve) => {
         this.defaultFormDialogVisible = true
-        this.dataForm = resolve.data
-        this.$nextTick(() => {
-          console.log(this.$refs)
-          if (this.$refs.fieldForm) {
-            this.$refs.fieldForm.resetFields()
-          }
+        this.dataForm = { ...resolve.data }
+      })
+    },
+    handleDelete(e) {
+      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+        confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+      }).then(() => {
+        chDelete(this.entity.path + `/${e.id}`).then((resolve) => {
+          this.$message.success('删除成功!')
+          this.updateTableData(this.treeQuery)
         })
+      })
+    },
+    handleUp(e) {
+      chPut(this.entity.path + `/ascend/${e.id}`).then((resolve) => {
+        this.$message.success('保存成功')
+        this.updateTableData(this.treeQuery)
       })
     },
     submitField(formName) {

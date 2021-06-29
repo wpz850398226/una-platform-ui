@@ -1,5 +1,6 @@
 <template>
   <div class="Form">
+    <!-- {{ entity }} -->
     <el-form
       ref="publicForm"
       :model="dataForm"
@@ -41,6 +42,17 @@
           v-model="dataForm[field.assignmentCode]"
         />
         <el-input
+          v-else-if="field.assignmentModeDcode === 'field_assignment_textarea'"
+          v-model="dataForm[field.assignmentCode]"
+          type="textarea"
+          :rows="2"
+        />
+        <el-input
+          v-else-if="field.assignmentModeDcode === 'field_assignment_password'"
+          v-model="dataForm[field.assignmentCode]"
+          show-password
+        />
+        <el-input
           v-else-if="field.assignmentModeDcode === 'field_assignment_hidden'"
           v-model="dataForm[field.assignmentCode]"
         />
@@ -48,6 +60,12 @@
           v-else-if="field.assignmentModeDcode === 'field_assignment_singleselect'"
           v-model="dataForm[field.assignmentCode]"
           :field="field"
+        />
+        <una-single-select
+          v-else-if="field.assignmentModeDcode === 'field_assignment_multiselect'"
+          v-model="dataForm[field.assignmentCode]"
+          :field="field"
+          multiple
         />
         <una-area
           v-else-if="field.assignmentModeDcode === 'field_assignment_gangedRegion'"
@@ -62,6 +80,11 @@
           v-model="dataForm[field.assignmentCode]"
           :show-file-list="false"
         />
+        <una-entity-select
+          v-else-if="field.assignmentModeDcode === 'field_assignment_entityRecord'"
+          v-model="dataForm[field.assignmentCode]"
+          :field="field"
+        />
         <el-switch
           v-else-if="field.assignmentModeDcode === 'field_assignment_switch'"
           v-model="dataForm[field.assignmentCode]"
@@ -71,11 +94,24 @@
           inactive-color="#ff4949"
         />
         <el-date-picker
+          v-else-if="field.assignmentModeDcode === 'field_assignment_date'"
+          v-model="dataForm[field.assignmentCode]"
+          type="date"
+          :placeholder="field.annotation"
+          value-format="yyyy-MM-dd"
+        />
+        <el-date-picker
           v-else-if="field.assignmentModeDcode === 'field_assignment_datetime'"
           v-model="dataForm[field.assignmentCode]"
           type="datetime"
           :placeholder="field.annotation"
           value-format="yyyy-MM-dd HH:mm:ss"
+        />
+        <el-date-picker
+          v-else-if="field.assignmentModeDcode === 'field_assignment_yearMonth'"
+          v-model="dataForm[field.assignmentCode]"
+          type="month"
+          placeholder="选择年月"
         />
         <el-input-number
           v-else-if="field.assignmentModeDcode === 'field_assignment_number'"
@@ -93,7 +129,7 @@
         <div>{{ field.assignmentModeDcode }}</div>
       </el-form-item>
     </el-form>
-    <span slot="footer" class="dialog-footer">
+    <span v-if="entity.code !='SysFile'" slot="footer" class="dialog-footer flex justify-end">
       <el-button :loading="loading" type="primary" @click="submitPublic('publicForm')">确 定</el-button>
     </span>
   </div>
@@ -105,16 +141,18 @@ import UnaArea from '@/layout/components/UnaArea.vue'
 import UnaTreeNode from '@/layout/components/UnaTreeNode.vue'
 import UnaLocation from '@/layout/components/UnaLocation.vue'
 import UnaUpload from '@/layout/components/UnaUpload.vue'
+import UnaEntitySelect from '@/layout/components/UnaEntitySelect.vue'
+
 import CkEditor from '@/components/CKEditor/index.vue'
 
 import { chPut, chDelete, chGet, chPost } from '@/api/index'
 import * as fieldPort from '@/api/una/sys_field'
 
 export default {
-  name: 'Form',
+  name: 'UnaForm',
   components: {
     UnaSingleSelect, UnaTreeNode, UnaArea,
-    CkEditor, UnaLocation, UnaUpload
+    CkEditor, UnaLocation, UnaUpload, UnaEntitySelect
   },
   props: {
     entity: {
@@ -134,7 +172,11 @@ export default {
   computed: {
     formItemVisible() {
       return (e) => {
-        const exclude = ['field_assignment_treeNode']
+        const exclude = [
+          'field_assignment_treeNode',
+          'field_assignment_autoCount',
+          'field_assignment_hidden'
+        ]
         return !exclude.includes(e)
       }
     }

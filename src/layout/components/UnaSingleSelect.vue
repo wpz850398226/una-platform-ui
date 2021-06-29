@@ -6,6 +6,7 @@
       v-model="selVal"
       :placeholder="field.annotation"
       filterable
+      :multiple="multiple"
       style="width: 100%;"
       @change="updateVal"
     >
@@ -31,6 +32,10 @@ export default {
     // eslint-disable-next-line vue/require-prop-types
     value: {
       required: true
+    },
+    multiple: {
+      type: Boolean,
+      default: false
     }
 
   },

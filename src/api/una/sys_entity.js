@@ -1,7 +1,7 @@
 import { chGet, chPost, chPut, chDelete } from '../index'
-export function entityList(page = 1, limit = 10) {
+export function entityList(pageNum = 1, pageSize = 10, query) {
   return chGet('/sys/entity/page', {
-    page, limit
+    pageNum, pageSize, ...query
   })
 }
 

@@ -13,7 +13,7 @@
       :class="{'hide-exec':hideUpload}"
     >
       <i v-if="showFileList" class="el-icon-plus" />
-      <el-button v-else type="primary" size="mini">上传文件</el-button>
+      <el-button v-else type="primary" size="medium">上传文件</el-button>
     </el-upload>
   </div>
 </template>

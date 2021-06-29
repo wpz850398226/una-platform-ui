@@ -1,6 +1,5 @@
 <template>
   <div>
-    @{{ selVal }}@
     <el-select
       v-model="selVal"
       :placeholder="placeholder"
@@ -48,6 +47,11 @@ export default {
     return {
       selVal: '',
       options: []
+    }
+  },
+  watch: {
+    value() {
+      this.selVal = this.value
     }
   },
   mounted() {
