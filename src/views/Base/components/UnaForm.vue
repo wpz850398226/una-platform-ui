@@ -178,7 +178,8 @@ export default {
       defaultFormRules: {},
       dataForm: {}, // 数据表单，绑定数据的
       loading: false,
-      formButtonList: [] // 表单通用按钮
+      formButtonList: [], // 表单通用按钮
+      isEdit: false
     }
   },
   computed: {
@@ -207,7 +208,9 @@ export default {
     initForm(oldData, mergeData) {
       if (oldData) {
         this.dataForm = oldData
+        this.isEdit = true
       } else {
+        this.isEdit = false
         this.dataForm = { ...this.defaultForm }
         if (mergeData) { // 合并默认值
           console.log(mergeData, 'mergeData')
@@ -242,14 +245,25 @@ export default {
           const { children, map, ...commitData } = this.dataForm // 删除无用字段
           console.log('提交检查', commitData)
 
-          chPost(this.entity.path + '/save', commitData).then((resolve) => {
-            this.defaultFormDialogVisible = false
-            this.$message.success('保存成功')
-            this.$emit('saveSuccess')
-            this.loading = false
-          }, (e) => {
-            this.loading = false
-          })
+          if (!this.isEdit) {
+            chPost(this.entity.path, commitData).then((resolve) => {
+              this.defaultFormDialogVisible = false
+              this.$message.success('保存成功')
+              this.$emit('saveSuccess')
+              this.loading = false
+            }, (e) => {
+              this.loading = false
+            })
+          } else {
+            chPut(this.entity.path, commitData).then((resolve) => {
+              this.defaultFormDialogVisible = false
+              this.$message.success('保存成功')
+              this.$emit('saveSuccess')
+              this.loading = false
+            }, (e) => {
+              this.loading = false
+            })
+          }
         }
       })
     },

@@ -68,7 +68,7 @@ export default {
       data.append('file', await e.file)
       console.log(data, '文件表单')
       const res = await axios({
-        url: `/api/sys/file/save`,
+        url: `/api/sys/file`,
         method: 'POST',
         // headers: {
         //   'Authorization': getToken(),

@@ -338,7 +338,8 @@ export default {
       treeSelected: '',
       treeNode: '',
       treeQuery: {},
-      loading: false
+      loading: false,
+      isEdit: false
     }
   },
   mounted() {
@@ -384,6 +385,7 @@ export default {
       }
 
       this.defaultFormDialogVisible = true
+      this.isEdit = false
 
       this.dataForm = { ...this.defaultForm }
       this.dataForm.entityId = this.treeSelected
@@ -396,6 +398,7 @@ export default {
     },
     handleEdit(e) {
       console.log(e.id)
+      this.isEdit = true
       chGet(this.entity.path + `/${e.id}`).then((resolve) => {
         this.defaultFormDialogVisible = true
         this.dataForm = { ...resolve.data }
@@ -422,15 +425,25 @@ export default {
         if (valid) {
           this.loading = true
           delete this.dataForm.map
-          chPost(this.entity.path + '/save', this.dataForm
-          ).then((resolve) => {
-            this.defaultFormDialogVisible = false
-            this.$message.success('保存成功')
-            this.updateTableData(this.treeQuery)
-            this.loading = false
-          }, (e) => {
-            this.loading = false
-          })
+          if (!this.isEdit) {
+            chPost(this.entity.path, this.dataForm).then((resolve) => {
+              this.defaultFormDialogVisible = false
+              this.$message.success('保存成功')
+              this.updateTableData(this.treeQuery)
+              this.loading = false
+            }, (e) => {
+              this.loading = false
+            })
+          } else {
+            chPut(this.entity.path, this.dataForm).then((resolve) => {
+              this.defaultFormDialogVisible = false
+              this.$message.success('保存成功')
+              this.updateTableData(this.treeQuery)
+              this.loading = false
+            }, (e) => {
+              this.loading = false
+            })
+          }
         }
       })
     }

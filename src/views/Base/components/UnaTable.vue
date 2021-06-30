@@ -165,6 +165,9 @@
             <div v-else-if="field.displayModeDcode === 'field_display_link'">
               <el-link v-if="scope.row[field.assignmentCode]" type="primary" :href="scope.row[field.assignmentCode]">点击跳转</el-link>
             </div>
+            <div v-else-if="field.displayModeDcode === 'field_display_download'">
+              <el-link v-if="scope.row[field.assignmentCode]" type="primary" :href="scope.row[field.assignmentCode]">点击下载</el-link>
+            </div>
             <div v-else-if="field.displayModeDcode === 'field_display_icon'">
               <i v-if="scope.row[field.assignmentCode]" :class="scope.row[field.assignmentCode]" />
             </div>

@@ -33,7 +33,7 @@ export function getUserMenu() {
 }
 
 export function changePwd(query) {
-  return chPost(`/sys/account/save`, query)
+  return chPut(`/sys/account`, query)
 }
 
 export function logout() {
