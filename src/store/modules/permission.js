@@ -75,6 +75,9 @@ const actions = {
         const { data } = response
 
         const routes = generator(data)
+
+        console.log('生成结果', routes)
+
         routes.push({ path: '*', redirect: '/404', hidden: true })
 
         commit('SET_ROUTES', routes)

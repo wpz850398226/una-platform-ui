@@ -37,6 +37,14 @@
         </el-row>
       </div>
     </ClientArea>
+
+    <div v-else>
+      <ClientArea>
+        <div slot="content" style="height:100%">
+          页面未配置
+        </div>
+      </ClientArea>
+    </div>
   </div>
 </template>
 
