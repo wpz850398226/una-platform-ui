@@ -20,3 +20,8 @@ export function editEntity(form) {
 export function deleteEntity(id) {
   return chDelete(`/sys/entity/${id}`)
 }
+
+export function importTemplateDownload(className) {
+  return chGet(`/sys/importTemplate/${className}`)
+}
+

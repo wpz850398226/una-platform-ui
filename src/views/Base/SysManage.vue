@@ -27,6 +27,8 @@
               ref="tableController"
               :entity="entity"
               :query="dataQuery"
+              selectable
+              multiple
               @showAddDialog="showAddDialog"
               @tableRowEdit="handleEdit"
               @tableRowDelete="handleDelete"

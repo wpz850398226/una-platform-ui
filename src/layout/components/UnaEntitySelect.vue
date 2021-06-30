@@ -17,6 +17,7 @@
           <una-table
             ref="tableController"
             :entity="entity"
+            select-sure-btn
             :selectable="true"
             :multiple="multiple"
             @submitSelect="submitSelect"

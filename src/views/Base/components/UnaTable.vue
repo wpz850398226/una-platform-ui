@@ -1,8 +1,8 @@
 <template>
   <div class="Table">
     <el-card v-if="tableReady" class="box-content" shadow="never">
-      <el-row :gutter="10" type="flex" justify="space-between">
-        <el-col v-if="selectable" :span="3">
+      <el-row :gutter="10" type="flex">
+        <el-col v-if="selectSureBtn" :span="3">
           <el-button
             icon="el-icon-finished"
             size="small"
@@ -11,8 +11,17 @@
           >确认选中</el-button>
         </el-col>
 
-        <el-col :span="3">
+        <el-col :span="4">
           <el-button size="small" type="primary" @click="showAddDialog">添加{{ entity.name }}</el-button>
+        </el-col>
+
+        <el-col :span="3">
+          <el-button
+            icon="el-icon-finished"
+            size="small"
+            type="danger"
+            @click="submitSelectDel"
+          >批量删除</el-button>
         </el-col>
 
         <el-col v-for="btn in tableAboveButton" :key="btn.id" :span="3">
@@ -219,7 +228,7 @@
       </el-upload>
 
       <div class="margin-top-sm flex justify-end">
-        <el-button type="text">下载模板</el-button>
+        <el-button type="text" @click="downloadTemplate">下载模板</el-button>
       </div>
 
     </el-dialog>
@@ -237,6 +246,7 @@ import UnaDocument from '@/layout/components/UnaDocument.vue'
 import UnaMap from '@/layout/components/UnaMap.vue'
 
 import { buttonList } from '@/api/una/sys_button'
+import { importTemplateDownload } from '@/api/una/sys_entity'
 
 export default {
   name: 'UnaTable',
@@ -252,6 +262,10 @@ export default {
       required: false,
       type: String,
       default: ''
+    },
+    selectSureBtn: {
+      type: Boolean,
+      default: false
     },
     selectable: { // 支持选择
       type: Boolean,
@@ -338,6 +352,11 @@ export default {
     this.getButtonList()
   },
   methods: {
+    downloadTemplate() {
+      importTemplateDownload(this.entity.code).then(res => {
+        console.log(res, '模板')
+      })
+    },
     getButtonList() {
       buttonList({ 'entityId': this.entity.id }).then(res => {
         this.generalButtonList = res.data.filter(v => v.positionDcode === 'entity_buttonPosition_tableheadLeft' || v.positionDcode === 'entity_buttonPosition_inLine')
@@ -420,6 +439,23 @@ export default {
     },
     submitSelect() {
       this.$emit('submitSelect', this.selectedData.map(v => v.id).join(','))
+    },
+    submitSelectDel() {
+      const ids = this.selectedData.map(v => v.id)
+      if (ids.length > 0) {
+        this.$confirm(`此操作将删除${ids.length}记录, 是否继续?`, '提示', {
+          confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+        }).then(() => {
+          chDelete(`${this.entity.path}/${ids}`).then(() => {
+            this.getPublicList()
+            this.$message.success('批量删除完成')
+          })
+        })
+      } else {
+        this.$message.warning('未选中任何记录')
+      }
+
+      // this.$emit('submitSelectDel', this.selectedData.map(v => v.id).join(','))
     },
     // 通用按钮事件处理器
     reflectFun(handler, extra) {
