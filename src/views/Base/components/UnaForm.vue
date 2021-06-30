@@ -129,7 +129,16 @@
         <div>{{ field.assignmentModeDcode }}</div>
       </el-form-item>
     </el-form>
-    <span v-if="entity.code !='SysFile'" slot="footer" class="dialog-footer flex justify-end">
+    <span v-if="entity.code !='SysFile'" slot="footer" class="dialog-footer flex justify-between">
+      <div>
+        <el-button
+          v-for="btn in formButtonList"
+          :key="btn.id"
+          size="small"
+          :icon="btn.iconDcode"
+          @click="reflectFun(btn.event)"
+        >{{ btn.name }}</el-button>
+      </div>
       <el-button :loading="loading" type="primary" @click="submitPublic('publicForm')">确 定</el-button>
     </span>
   </div>
@@ -147,14 +156,14 @@ import CkEditor from '@/components/CKEditor/index.vue'
 
 import { chPut, chDelete, chGet, chPost } from '@/api/index'
 import * as fieldPort from '@/api/una/sys_field'
-import UnaDocument from '@/layout/components/UnaDocument.vue'
+
+import { buttonList } from '@/api/una/sys_button'
 
 export default {
   name: 'UnaForm',
   components: {
     UnaSingleSelect, UnaTreeNode, UnaArea,
-    CkEditor, UnaLocation, UnaUpload, UnaEntitySelect,
-    UnaDocument
+    CkEditor, UnaLocation, UnaUpload, UnaEntitySelect
   },
   props: {
     entity: {
@@ -168,7 +177,8 @@ export default {
       defaultForm: {}, // 默认表单
       defaultFormRules: {},
       dataForm: {}, // 数据表单，绑定数据的
-      loading: false
+      loading: false,
+      formButtonList: [] // 表单通用按钮
     }
   },
   computed: {
@@ -185,8 +195,15 @@ export default {
   },
   mounted() {
     this.getFieldList()
+    this.getButtonList()
   },
   methods: {
+    getButtonList() {
+      buttonList({ 'entityId': this.entity.id }).then(res => {
+        this.formButtonList = res.data.filter(v => v.positionDcode === 'entity_buttonPosition_formBottom')
+        console.log('按钮列表', this.formButtonList)
+      })
+    },
     initForm(oldData, mergeData) {
       if (oldData) {
         this.dataForm = oldData
@@ -207,6 +224,13 @@ export default {
     getFieldList() {
       fieldPort.fieldList({ 'entityId': this.entity.id })
         .then((result) => {
+          console.log(result, '字段啊啊啊')
+          result.forEach(e => {
+            if (e.isRequired) {
+              this.defaultFormRules[e.assignmentCode] = [{ required: true, message: `请输入或选择${e.name}`, trigger: 'change' }]
+            }
+          })
+
           this.fieldList = result
         })
     },
@@ -228,6 +252,24 @@ export default {
           })
         }
       })
+    },
+    // 通用按钮事件处理器
+    reflectFun(handler, extra) {
+      console.log(handler)
+      const methodCenter = {
+        'checkForm': () => {
+          this.$refs.publicForm.validate()
+          this.$message.success('表单检查完成')
+        },
+        'sendGoldCard': (extra) => {
+          this.$message.success(`给${extra.name}发放金卡成功`)
+        }
+      }
+      if (Object.prototype.hasOwnProperty.call(methodCenter, handler)) {
+        return methodCenter[handler](extra)
+      } else {
+        this.$message.error('指定事件未绑定')
+      }
     }
   }
 }

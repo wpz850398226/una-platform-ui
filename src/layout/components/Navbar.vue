@@ -197,18 +197,18 @@ export default {
     ])
   },
   mounted() {
-    this.isfirstLogin()
+    // this.isfirstLogin()
     this.pwdForm.id = this.userinfo.id
   },
   methods: {
     chImg,
-    isfirstLogin() {
-      if (this.userinfo.firstLogin === '1') {
-        this.$alert('首次登陆请修改密码', { close: () => {
-          this.changePwd()
-        }, showClose: false })
-      }
-    },
+    // isfirstLogin() {
+    //   if (this.userinfo.firstLogin === '1') {
+    //     this.$alert('首次登陆请修改密码', { close: () => {
+    //       this.changePwd()
+    //     }, showClose: false })
+    //   }
+    // },
     isCellPhone(val) {
       if (!/^1\d{10}$/.test(val)) {
         return false
@@ -275,9 +275,13 @@ export default {
     submitChangePwd(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          changePwd(this.pwdForm).then(res => {
-            console.log('修改结果', res)
-          })
+          if (this.pwdForm.password === this.pwdForm.surepwd) {
+            changePwd(this.pwdForm).then(res => {
+              console.log('修改结果', res)
+            })
+          } else {
+            this.$message.error('两次密码输入不一致')
+          }
         }
       })
     }

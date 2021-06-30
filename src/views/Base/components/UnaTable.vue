@@ -1,16 +1,7 @@
 <template>
   <div class="Table">
     <el-card v-if="tableReady" class="box-content" shadow="never">
-      <div class="flex margin-bottom-xs">
-        <el-popover placement="left-start" title="列筛选" trigger="click">
-          <el-checkbox-group v-model="checkList" @change="columnFilter">
-            <el-checkbox v-for="(item, index) in fieldList" :key="index" :label="item.id">{{ item.name }}</el-checkbox>
-          </el-checkbox-group>
-          <el-button slot="reference" title="列筛选" size="mini"><i class="el-icon-menu" /></el-button>
-        </el-popover>
-
-      </div>
-      <el-row :gutter="10">
+      <el-row :gutter="10" type="flex" justify="space-between">
         <el-col v-if="selectable" :span="3">
           <el-button
             icon="el-icon-finished"
@@ -19,6 +10,46 @@
             @click="submitSelect"
           >确认选中</el-button>
         </el-col>
+
+        <el-col :span="3">
+          <el-button size="small" type="primary" @click="showAddDialog">添加{{ entity.name }}</el-button>
+        </el-col>
+
+        <el-col v-for="btn in tableAboveButton" :key="btn.id" :span="3">
+          <el-button size="small" :icon="btn.iconDcode" @click="reflectFun(btn.event)">{{ btn.name }}</el-button>
+        </el-col>
+
+        <el-col :span="6">
+          <div class="flex justify-end clr-btn">
+            <el-popover placement="left-start" title="列筛选" trigger="click">
+              <el-checkbox-group v-model="checkList" @change="columnFilter">
+                <el-checkbox v-for="(item, index) in fieldList" :key="index" :label="item.id">{{ item.name }}</el-checkbox>
+              </el-checkbox-group>
+              <el-button slot="reference" title="列筛选" size="mini"><i class="el-icon-menu" /></el-button>
+            </el-popover>
+
+            <el-button
+              title="数据导入"
+              size="mini"
+              @click="dataImportDialogVisible = true"
+            >
+              <i class="el-icon-upload2" />
+            </el-button>
+
+            <el-dropdown>
+              <el-button title="数据导出" size="mini"><i class="el-icon-download" /></el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item>导出到CSV文件</el-dropdown-item>
+                <el-dropdown-item>导出到Excel文件</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+
+          </div>
+        </el-col>
+
+      </el-row>
+
+      <el-row :gutter="10">
 
         <el-col v-for="(item,index) in entity.queryList" :key="index" :span="8" class="flex">
           <div class="flex align-center">
@@ -65,9 +96,7 @@
           <el-button size="small" type="primary" @click="goQuery">搜索</el-button>
           <el-button size="small" type="primary" @click="resetQuery">重置</el-button>
         </el-col>
-        <el-col :span="3">
-          <el-button size="small" type="primary" @click="showAddDialog">添加{{ entity.name }}</el-button>
-        </el-col>
+
       </el-row>
 
       <el-table
@@ -143,11 +172,20 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="150" fixed="right">
+        <el-table-column label="操作" fixed="right">
           <template slot-scope="scope">
             <el-button type="text" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button type="text" @click="handleDelete(scope.row)">删除</el-button>
             <el-button type="text" @click="handleUp(scope.row)">升序</el-button>
+
+            <el-button
+              v-for="btn in tableInlineButton"
+              :key="btn.id"
+              type="text"
+              :icon="btn.iconDcode"
+              @click="reflectFun(btn.event, scope.row)"
+            >{{ btn.name }}</el-button>
+
           </template>
         </el-table-column>
       </el-table>
@@ -162,8 +200,30 @@
           @size-change="handleSizeChange"
         />
       </div>
-
     </el-card>
+
+    <el-dialog
+      title="数据导入"
+      :visible.sync="dataImportDialogVisible"
+      width="550px"
+      :append-to-body="true"
+    >
+      <el-upload
+        class="upload-demo"
+        action="https://jsonplaceholder.typicode.com/posts/"
+        :limit="1"
+        :file-list="uploadFileList"
+      >
+        <el-button size="small" type="primary">点击上传</el-button>
+        <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+      </el-upload>
+
+      <div class="margin-top-sm flex justify-end">
+        <el-button type="text">下载模板</el-button>
+      </div>
+
+    </el-dialog>
+
   </div>
 </template>
 
@@ -175,6 +235,8 @@ import * as fieldPort from '@/api/una/sys_field'
 import UnaDocument from '@/layout/components/UnaDocument.vue'
 
 import UnaMap from '@/layout/components/UnaMap.vue'
+
+import { buttonList } from '@/api/una/sys_button'
 
 export default {
   name: 'UnaTable',
@@ -213,7 +275,12 @@ export default {
       singleSelectValue: '',
       selectedData: [],
       otherCondition: {},
-      dataQueryCondition: {}
+      dataQueryCondition: {},
+      // 数据导入
+      dataImportDialogVisible: false,
+      uploadFileList: [],
+      // 通用按钮
+      generalButtonList: []
     }
   },
   computed: {
@@ -230,6 +297,12 @@ export default {
         }
         return ''
       }
+    },
+    tableInlineButton() {
+      return this.generalButtonList.filter(v => v.positionDcode === 'entity_buttonPosition_inLine')
+    },
+    tableAboveButton() {
+      return this.generalButtonList.filter(v => v.positionDcode === 'entity_buttonPosition_tableheadLeft')
     }
   },
   mounted() {
@@ -250,10 +323,10 @@ export default {
 
     // 处理模糊查询条件
 
-    if (this.entity.id) {
-      // const p = qs.parse(`?${this.query}`)
-      this.dataQueryCondition = { entityId: this.entity.id }
-    }
+    // if (this.entity.id) {
+    //   // const p = qs.parse(`?${this.query}`)
+    //   this.dataQueryCondition = { entityId: this.entity.id }
+    // } 有问题暂时注释
 
     this.getFieldList().then((result) => {
       console.log('字段列表', result)
@@ -261,8 +334,17 @@ export default {
       this.getPublicList()
       this.columnFilter()
     })
+
+    this.getButtonList()
   },
   methods: {
+    getButtonList() {
+      buttonList({ 'entityId': this.entity.id }).then(res => {
+        this.generalButtonList = res.data.filter(v => v.positionDcode === 'entity_buttonPosition_tableheadLeft' || v.positionDcode === 'entity_buttonPosition_inLine')
+        console.log('按钮列表', this.generalButtonList)
+      })
+    },
+
     getFieldList() {
       return fieldPort.fieldList({ 'entityId': this.entity.id })
     },
@@ -273,12 +355,14 @@ export default {
         })
       }
     },
-    getPublicList(e, m) {
+    getPublicList(e, m = {}) {
       if (e) {
         this.otherCondition = e
       } else {
         this.otherCondition = this.dataQueryCondition
+        console.log('s1')
       }
+      console.log(this.otherCondition, 'm')
       chGet(this.entity.path + '/page', {
         'pageNum': this.pageCurrent,
         'pageSize': this.pageSize,
@@ -336,6 +420,23 @@ export default {
     },
     submitSelect() {
       this.$emit('submitSelect', this.selectedData.map(v => v.id).join(','))
+    },
+    // 通用按钮事件处理器
+    reflectFun(handler, extra) {
+      console.log(handler)
+      const methodCenter = {
+        'refreshResource': () => {
+          this.$message.success('刷新资源成功')
+        },
+        'sendGoldCard': (extra) => {
+          this.$message.success(`给${extra.name}发放金卡成功`)
+        }
+      }
+      if (Object.prototype.hasOwnProperty.call(methodCenter, handler)) {
+        return methodCenter[handler](extra)
+      } else {
+        this.$message.error('指定事件未绑定')
+      }
     }
   }
 }
@@ -354,6 +455,12 @@ export default {
   .el-popover .el-checkbox {
     display: block;
     margin-bottom: 5px;
+  }
+
+  .clr-btn {
+    .el-button+.el-button {
+      margin-left: 0;
+    }
   }
 
 </style>
