@@ -323,10 +323,10 @@ export default {
 
     // 处理模糊查询条件
 
-    // if (this.entity.id) {
-    //   // const p = qs.parse(`?${this.query}`)
-    //   this.dataQueryCondition = { entityId: this.entity.id }
-    // } 有问题暂时注释
+    if (this.entity.id && this.entity.isVirtual) {
+      // const p = qs.parse(`?${this.query}`)
+      this.dataQueryCondition = { entityId: this.entity.id }
+    }
 
     this.getFieldList().then((result) => {
       console.log('字段列表', result)

@@ -74,6 +74,20 @@ export const constantRoutes = [
     ]
   },
 
+  {
+    path: '/map-query',
+    component: Layout,
+    redirect: '/dashboard',
+    children: [
+      {
+        path: '/map-query',
+        name: 'MapQuery',
+        component: () => import('@/views/Extend/MapQuery'),
+        meta: { title: '地图查询', icon: 'dashboard', breadcrumb: false }
+      }
+    ]
+  },
+
   // {
   //   path: '/sys/systemManage',
   //   component: Layout,
