@@ -35,6 +35,9 @@
           <el-form-item label="取值编码" prop="displayCode">
             <el-input v-model="dataForm.displayCode" />
           </el-form-item>
+          <el-form-item label="转换值编码" prop="transformDisplayCode">
+            <el-input v-model="dataForm.transformDisplayCode" />
+          </el-form-item>
         </div>
         <div class="flex justify-between">
           <el-form-item label="sql代码" prop="dqlName">
@@ -219,14 +222,14 @@
           </el-form-item>
         </div>
         <div class="flex justify-between">
-          <el-form-item label="触发隐藏" prop="switchHideOption">
+          <el-form-item label="触发隐藏字段" prop="hideFieldId">
             <el-select
-              v-model="dataForm.switchHideOption"
+              v-model="dataForm.hideFieldId"
             />
           </el-form-item>
-          <el-form-item label="被隐藏字段" prop="switchHideIds">
+          <el-form-item label="触发隐藏值" prop="hideFieldValue">
             <el-input
-              v-model="dataForm.switchHideIds"
+              v-model="dataForm.hideFieldValue"
             />
           </el-form-item>
         </div>

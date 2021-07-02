@@ -1,4 +1,4 @@
-import { chGet, chPost, chPut, chDelete } from '../index'
+import { chGet, chPost, chPut, chDelete, jsonPut } from '../index'
 export function entityList(pageNum = 1, pageSize = 10, query) {
   return chGet('/sys/entity/page', {
     pageNum, pageSize, ...query
@@ -23,5 +23,13 @@ export function deleteEntity(id) {
 
 export function importTemplateDownload(className) {
   return chGet(`/sys/importTemplate/${className}`)
+}
+
+export function rolePermission(query) {
+  return chGet(`/sys/rolePermission/list`, query)
+}
+
+export function grantPermission(query) {
+  return jsonPut(`/sys/rolePermission/batch`, query)
 }
 

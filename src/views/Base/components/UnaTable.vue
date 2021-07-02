@@ -11,6 +11,16 @@
           >确认选中</el-button>
         </el-col>
 
+        <el-col v-if="entity.filterList.length>0" :span="4">
+          <el-link
+            v-for="filter in entity.filterList"
+            :key="filter.id"
+            type="primary"
+            @click="setFilterCond(filter.fieldCode, filter.value)"
+          >{{ filter.name }}</el-link>
+
+        </el-col>
+
         <el-col :span="4">
           <el-button size="small" type="primary" @click="showAddDialog">添加{{ entity.name }}</el-button>
         </el-col>
@@ -236,12 +246,63 @@
 
     </el-dialog>
 
+    <el-dialog
+      :title="'角色授权 - '+grantTitle"
+      :visible.sync="grantRoleDialogVisible"
+      width="550px"
+      fullscreen
+      :append-to-body="true"
+    >
+
+      <template slot="title">
+        <div class="flex justify-between">
+          <div>角色授权 - {{ grantTitle }}</div>
+          <div class="margin-right">
+            <el-button size="medium" type="primary" @click="savePermission">保存</el-button>
+          </div>
+        </div>
+      </template>
+
+      <el-row :gutter="30">
+        <el-col v-for="item in entityList" :key="item.id" :span="8">
+          <el-collapse v-if="item.permissionList.length>0">
+            <el-collapse-item :title="item.name" :name="item.name">
+              <div class="padding-sm">
+                <div v-for="p in item.permissionList" :key="p.id">
+                  <div class="flex justify-between">
+                    <div>{{ p.name }} {{ p.level }}</div>
+                    <div>
+                      <el-tag type="primary">
+                        {{ formatTooltip(p.level) }}
+                      </el-tag>
+                    </div>
+                  </div>
+                  <el-slider
+                    v-model="p.level"
+                    show-stops
+                    :min="0"
+                    :max="grantLevel.length - 1"
+                    :format-tooltip="formatTooltip"
+                    @change="grantJoinIds(p.id)"
+                  />
+                </div>
+              </div>
+
+            </el-collapse-item>
+          </el-collapse>
+        </el-col>
+      </el-row>
+
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
 import { CodeToText } from 'element-china-area-data'
 import { chPut, chDelete, chGet, chPost } from '@/api/index'
+import { findDictionaryList } from '@/utils/find-dictionary'
+
 import * as fieldPort from '@/api/una/sys_field'
 // import qs from 'query-string'
 import UnaDocument from '@/layout/components/UnaDocument.vue'
@@ -249,7 +310,14 @@ import UnaDocument from '@/layout/components/UnaDocument.vue'
 import UnaMap from '@/layout/components/UnaMap.vue'
 
 import { buttonList } from '@/api/una/sys_button'
-import { importTemplateDownload } from '@/api/una/sys_entity'
+import {
+  rolePermission, grantPermission,
+  importTemplateDownload
+} from '@/api/una/sys_entity'
+
+// 角色授权
+import { entityListAll } from '@/api/una/sys_entity'
+// 角色授权
 
 export default {
   name: 'UnaTable',
@@ -293,11 +361,19 @@ export default {
       selectedData: [],
       otherCondition: {},
       dataQueryCondition: {},
+      filterQueryCondition: {},
       // 数据导入
       dataImportDialogVisible: false,
       uploadFileList: [],
       // 通用按钮
-      generalButtonList: []
+      generalButtonList: [],
+      // 角色授权
+      grantRoleDialogVisible: false,
+      grantLevel: [],
+      grantTitle: '',
+      entityList: [],
+      grantChangedIds: []
+      // 角色授权
     }
   },
   computed: {
@@ -320,7 +396,17 @@ export default {
     },
     tableAboveButton() {
       return this.generalButtonList.filter(v => v.positionDcode === 'entity_buttonPosition_tableheadLeft')
+    },
+    permissionLevel() {
+      return (code) => {
+        let find = this.grantLevel.map(v => v.code).indexOf(code)
+        if (find === -1) {
+          find = 0
+        }
+        return find
+      }
     }
+
   },
   mounted() {
     console.log(this.entity, '接收到的')
@@ -353,8 +439,63 @@ export default {
     })
 
     this.getButtonList()
+
+    // 角色授权
+
+    // 角色授权
   },
   methods: {
+    initRoleManage(e) {
+      this.grantTitle = e.name
+      this.grantLevel = [...findDictionaryList('permission_scope')].reverse()
+      console.log(this.grantLevel, '等级')
+
+      rolePermission({ 'roleId': e.id }).then(roleData => {
+        console.log('角色', roleData)
+        entityListAll().then(res => {
+          this.entityList = res.map(entity => {
+            entity.permissionList.map(p => {
+              const find = roleData.filter(m => m.permissionId === p.id)
+              if (find.length > 0) {
+                p['scopeDcode'] = find[0].scopeDcode
+                p['level'] = this.permissionLevel(find[0].scopeDcode)
+              }
+              return p
+            })
+            return entity
+          })
+          console.log('全部实体', this.entityList)
+        })
+      })
+    },
+    grantJoinIds(id) {
+      if (this.grantChangedIds.indexOf(id) === -1) {
+        this.grantChangedIds.push(id)
+      }
+    },
+    savePermission() {
+      const submitData = []
+      console.log(this.grantChangedIds)
+      this.entityList.forEach(e => {
+        e.permissionList.forEach(k => {
+          if (this.grantChangedIds.includes(k.id)) {
+            submitData.push({ id: k.id, scopeDcode: this.grantLevel[k.level].code })
+          }
+        })
+      })
+      console.log('提交数据', submitData)
+      grantPermission(submitData).then(() => {
+        this.grantRoleDialogVisible = false
+        this.$message.success('保存成功')
+      })
+    },
+    formatTooltip(val) {
+      const q = val || 0
+      if (q >= 0 && q < this.grantLevel.length && this.grantLevel.length > 0) {
+        return this.grantLevel[q].name
+      }
+      return ''
+    },
     downloadTemplate() {
       importTemplateDownload(this.entity.code).then(res => {
         console.log(res, '模板')
@@ -377,6 +518,12 @@ export default {
         })
       }
     },
+    setFilterCond(key, value) {
+      const c = {}
+      c[key] = value
+      this.filterQueryCondition = c
+      this.getPublicList()
+    },
     getPublicList(e, m = {}) {
       if (e) {
         this.otherCondition = e
@@ -389,7 +536,8 @@ export default {
         'pageNum': this.pageCurrent,
         'pageSize': this.pageSize,
         ...this.otherCondition,
-        ...m
+        ...m,
+        ...this.filterQueryCondition
         // ...this.dataQueryCondition
       }).then((result) => {
         this.pageTotal = result.count
@@ -468,6 +616,11 @@ export default {
           this.$message.success('刷新资源成功')
         },
         'sendGoldCard': (extra) => {
+          this.$message.success(`给${extra.name}发放金卡成功`)
+        },
+        'authorization': (extra) => {
+          this.grantRoleDialogVisible = true
+          this.initRoleManage(extra)
           this.$message.success(`给${extra.name}发放金卡成功`)
         }
       }

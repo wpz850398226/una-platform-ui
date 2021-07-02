@@ -1,5 +1,6 @@
 // 网络请求
 import axios from '@/utils/request'
+import axiosJson from '@/utils/request-json'
 import axiosA from 'axios'
 import { getToken, getTentId, getAppKey } from '@/utils/auth'
 
@@ -128,6 +129,23 @@ async function chPut(url, data) {
   })
 }
 
+async function jsonPut(url, data) {
+  // const reqData = JSON.stringify(data)
+  data = JSON.stringify(removePropertyOfNull(data)) // 序列化
+
+  return new Promise((resolve, reject) => {
+    axiosJson({
+      url: `${reqUrl}${url}`,
+      method: 'PUT',
+      data: data
+    }).then((res) => {
+      resolve(res.data)
+    }).catch((err) => {
+      reject(err)
+    })
+  })
+}
+
 async function chDelete(url) {
   return new Promise((resolve, reject) => {
     axios({
@@ -221,7 +239,7 @@ async function chDownloadA(url) {
 }
 
 export {
-  chPost, chGet, chDelete, chPut, chUpload,
+  chPost, chGet, chDelete, chPut, chUpload, jsonPut,
   chImg, chUnImg, parseImg, base642Blob, blob2File,
   chDownloadAS
 }
