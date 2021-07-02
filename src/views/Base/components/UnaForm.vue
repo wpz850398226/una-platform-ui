@@ -10,7 +10,7 @@
     >
       <el-form-item
         v-for="field in fieldList"
-        v-show="formItemVisible(field.assignmentModeDcode)"
+        v-show="formItemVisible(field)"
         :key="field.id"
         :label="field.name"
         :prop="field.assignmentCode"
@@ -60,6 +60,7 @@
           v-else-if="field.assignmentModeDcode === 'field_assignment_singleselect'"
           v-model="dataForm[field.assignmentCode]"
           :field="field"
+          :union-field-value="pid2pVal(field)"
         />
         <una-single-select
           v-else-if="field.assignmentModeDcode === 'field_assignment_multiselect'"
@@ -185,12 +186,42 @@ export default {
   computed: {
     formItemVisible() {
       return (e) => {
+        let isShow = true
         const exclude = [
           'field_assignment_treeNode',
           'field_assignment_autoCount',
           'field_assignment_hidden'
         ]
-        return !exclude.includes(e)
+
+        if (exclude.includes(e.assignmentModeDcode)) {
+          isShow = false
+          return isShow // 快速判断
+        }
+
+        if (e.hideFieldId && e.hideFieldValue) { // 隐藏条件
+          const find = this.fieldList.filter(v => v.id === e.hideFieldId)
+
+          if (find.length > 0) {
+            const pVal = this.dataForm[find[0].assignmentCode] + '' // 父元素值
+            const sp = e.hideFieldValue.split(',')
+            if (sp.includes(pVal)) {
+              isShow = false
+            }
+          }
+        }
+
+        return isShow
+        // return !exclude.includes(e.assignmentModeDcode)
+      }
+    },
+    pid2pVal() { // 将子控件绑定的父id转换成表单父id对应得值
+      return (field) => {
+        if (field.selectParentId) {
+          const find = this.fieldList.filter(v => v.id === field.selectParentId)
+          if (find.length > 0) {
+            return this.dataForm[find[0].assignmentCode]
+          }
+        }
       }
     }
   },

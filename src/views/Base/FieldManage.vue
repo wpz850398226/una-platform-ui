@@ -225,7 +225,14 @@
           <el-form-item label="触发隐藏字段" prop="hideFieldId">
             <el-select
               v-model="dataForm.hideFieldId"
-            />
+            >
+              <el-option
+                v-for="item in entityLinkageFieldList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </el-select>
           </el-form-item>
           <el-form-item label="触发隐藏值" prop="hideFieldValue">
             <el-input
@@ -364,6 +371,8 @@ export default {
       this.treeQuery = obj
       this.treeNode = node
       this.updateTableData(obj)
+      console.log(node, 'klkkkk')
+      this.getEntityLinkageFieldList(node.id)
     },
     getEntityFieldList(e) {
       console.log(e)

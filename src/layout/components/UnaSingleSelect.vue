@@ -28,7 +28,7 @@ export default {
     event: 'updateVal'
   },
   props: {
-    field: { required: true },
+    field: { required: true, type: Object },
     // eslint-disable-next-line vue/require-prop-types
     value: {
       required: true
@@ -36,8 +36,10 @@ export default {
     multiple: {
       type: Boolean,
       default: false
+    },
+    // eslint-disable-next-line vue/require-default-prop
+    unionFieldValue: {
     }
-
   },
   data() {
     return {
@@ -45,15 +47,21 @@ export default {
       selVal: ''
     }
   },
+  watch: {
+    unionFieldValue(o, n) {
+      console.log('相连变了', o, n)
+    }
+  },
   mounted() {
     console.log(this.field, '检查')
     this.selVal = this.value
     this.queryOptions(this.field)
+    console.log('卡看默认', this.unionFieldValue)
   },
   methods: {
     async queryOptions(field) {
-      const optionName = field.optionParamName
-      const optionValue = field.optionParamValue
+      const optionName = field.optionParamName // 选项参数键
+      const optionValue = this.unionFieldValue || field.optionParamValue
       const obj = {}
       if (optionName && optionValue) {
         if (optionName.includes(',') && optionValue.includes(',')) {
