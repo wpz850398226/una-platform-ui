@@ -87,6 +87,19 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: '/mall-home',
+    component: Layout,
+    redirect: '/dashboard',
+    children: [
+      {
+        path: '/mall-home',
+        name: 'Mall',
+        component: () => import('@/views/Extend/Mall'),
+        meta: { title: '商城', icon: 'dashboard', breadcrumb: false }
+      }
+    ]
+  },
 
   // {
   //   path: '/sys/systemManage',
