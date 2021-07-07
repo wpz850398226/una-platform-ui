@@ -90,10 +90,10 @@ export const constantRoutes = [
   {
     path: '/mall-home',
     component: Layout,
-    redirect: '/dashboard',
+    redirect: '/mall',
     children: [
       {
-        path: '/mall-home',
+        path: '/mall',
         name: 'Mall',
         component: () => import('@/views/Extend/Mall'),
         meta: { title: '商城', icon: 'dashboard', breadcrumb: false }
