@@ -3,7 +3,7 @@
     <ClientArea>
       <div slot="content" style="height:100%">
         <div class="btn-ctl">
-          <el-button type="primary" size="medium">保存</el-button>
+          <el-button type="primary" size="medium" @click="saveData">保存</el-button>
         </div>
         <el-tabs
           v-model="activeName"
@@ -33,7 +33,9 @@
               <el-form-item label="行业" prop="industryDecode">
                 <el-cascader
                   v-model="dataForm.industryDecode"
-                  :options="options"
+                  :options="industryList"
+                  :props="dicProps"
+                  @change="industryChange"
                 />
               </el-form-item>
               <el-form-item label="状态" prop="statusDcode">
@@ -54,19 +56,19 @@
               <h3>价格</h3>
               <el-divider />
               <el-form-item label="平台价" prop="sellingPrice">
-                <el-input v-model="dataForm.sellingPrice" placeholder="请输入平台价" />
+                <el-input v-model="dataForm.sellingPrice" type="number" placeholder="请输入平台价" />
               </el-form-item>
               <el-form-item label="批发价" prop="wholesalePrice">
-                <el-input v-model="dataForm.wholesalePrice" placeholder="请输入批发价" />
+                <el-input v-model="dataForm.wholesalePrice" type="number" placeholder="请输入批发价" />
               </el-form-item>
               <el-form-item label="成本价" prop="costPrice">
-                <el-input v-model="dataForm.costPrice" placeholder="请输入成本价" />
+                <el-input v-model="dataForm.costPrice" type="number" placeholder="请输入成本价" />
               </el-form-item>
               <el-form-item label="最低限价" prop="floorPrice">
-                <el-input v-model="dataForm.floorPrice" placeholder="请输入最低限价" />
+                <el-input v-model="dataForm.floorPrice" type="number" placeholder="请输入最低限价" />
               </el-form-item>
               <el-form-item label="最高限价" prop="ceilingPrice">
-                <el-input v-model="dataForm.ceilingPrice" placeholder="请输入最高限价" />
+                <el-input v-model="dataForm.ceilingPrice" type="number" placeholder="请输入最高限价" />
               </el-form-item>
 
               <h3>商品属性</h3>
@@ -78,17 +80,17 @@
                 />
               </el-form-item>
               <el-form-item label="其他">
-                <el-checkbox v-model="dataForm.isPayOnDelivery" label="货到付款" />
-                <el-checkbox v-model="dataForm.isAuthenticGuaranteed" label="正品保证" />
-                <el-checkbox v-model="dataForm.isExchangeInSeven" label="7天无理由退还" />
-                <el-checkbox v-model="dataForm.isInvoice" label="发票" />
-                <el-checkbox v-model="dataForm.isRepair" label="保修" />
+                <el-checkbox v-model="dataForm.isPayOnDelivery" label="货到付款" true-label="1" false-label="0" />
+                <el-checkbox v-model="dataForm.isAuthenticGuaranteed" label="正品保证" true-label="1" false-label="0" />
+                <el-checkbox v-model="dataForm.isExchangeInSeven" label="7天无理由退还" true-label="1" false-label="0" />
+                <el-checkbox v-model="dataForm.isInvoice" label="发票" true-label="1" false-label="0" />
+                <el-checkbox v-model="dataForm.isRepair" label="保修" true-label="1" false-label="0" />
               </el-form-item>
 
               <el-form-item label="上架" prop="isAdded">
                 <el-radio-group v-model="dataForm.isAdded">
-                  <el-radio :label="true">是</el-radio>
-                  <el-radio :label="false">否</el-radio>
+                  <el-radio :label="1">是</el-radio>
+                  <el-radio :label="0">否</el-radio>
                 </el-radio-group>
               </el-form-item>
 
@@ -96,8 +98,8 @@
               <el-divider />
               <el-form-item label="审核" prop="isAudit">
                 <el-radio-group v-model="dataForm.isAudit">
-                  <el-radio :label="true">通过</el-radio>
-                  <el-radio :label="false">不通过</el-radio>
+                  <el-radio :label="1">通过</el-radio>
+                  <el-radio :label="0">不通过</el-radio>
                 </el-radio-group>
               </el-form-item>
 
@@ -123,7 +125,7 @@
               <h3>规格</h3>
               <el-divider />
               <div class="margin-left-lg">
-                <el-checkbox v-model="dataForm.isSpecification">启用商品规格</el-checkbox>
+                <el-checkbox v-model="dataForm.isSpecification" true-label="1" false-label="0">启用商品规格</el-checkbox>
               </div>
               <div class="margin-left-lg padding-left">
                 <span style="font-size: 12px;color: #909399;">启用商品规格后，商品的价格及库存以商品规格为准，库存设置为0则会到“已售罄”中，-1为不限制</span>
@@ -268,20 +270,25 @@
             <el-form label-width="80px">
               <h3>参数</h3>
               <el-divider />
-              <el-button type="primary" size="medium">添加参数</el-button>
+              <el-button type="primary" size="medium" @click="addParam">添加参数</el-button>
               <div class="flex  margin-top">
                 <div class="basis-xs">参数名</div>
                 <div class="basis-lg margin-left-sm">参数值</div>
               </div>
-              <div class="flex margin-top">
+              <div
+                v-for="(item,index) in keyParams"
+                :key="index"
+                class="flex margin-top-xs"
+              >
                 <div class="basis-xs">
-                  <el-input v-model="dataForm.name" placeholder="请输入参数名" />
+                  <el-input v-model="item.key" placeholder="请输入参数名" />
                 </div>
                 <div class="basis-lg margin-left-sm">
-                  <el-input v-model="dataForm.name" placeholder="请输入参数值" />
+                  <el-input v-model="item.value" placeholder="请输入参数值" />
                 </div>
               </div>
             </el-form>
+            <div style="height: 100px" />
           </el-tab-pane>
           <el-tab-pane label="描述" name="desc">
             <el-form label-width="80px">
@@ -301,6 +308,9 @@
 <script>
 import ClientArea from '../../layout/components/ClientArea'
 import CkEditor from '@/components/CKEditor/index.vue'
+import { entityList } from '@/api/una/sys_entity'
+import { chPost } from '@/api/index'
+import { findDictionaryList } from '@/utils/find-dictionary.js'
 
 const defaultForm = {
   code: '', // 编号
@@ -328,7 +338,7 @@ const defaultForm = {
   commentAmount: '', // 评论数量
   averageScore: '', // 平均评分
   adderId: '', // 上架人id
-  addedTime: '', // 上架时间
+  // addedTime: '', // 上架时间
   inventory: '', // 库存
   isShowInventory: '', // 是否显示库存
   isSpecification: '', // 是否启用规格
@@ -345,13 +355,14 @@ const defaultForm = {
   wholesalePrice: '', // 批发售价
   taxInclusiveMarketPrice: '', // 含税市场价
   taxExclusiveMarketPrice: '', // 不含税市场价
-  refreshTime: '', // 刷新时间
-  stickDeadline: '', // 置顶截止时间
+  // refreshTime: '', // 刷新时间
+  // stickDeadline: '', // 置顶截止时间
   fileId: '', // 商品图片
   companyId: '', // 所属组织id
   departmentId: '', // 所属部门id
   specificationList: [], // 规格列表
-  goodsAttributeList: [] // 规格属性列表
+  goodsAttributeList: [], // 规格属性列表
+  goodsParamStr: ''
 }
 
 export default {
@@ -361,6 +372,7 @@ export default {
   },
   data() {
     return {
+      entity: '',
       activeName: 'base',
       dataForm: defaultForm,
       options: [],
@@ -379,13 +391,49 @@ export default {
         floorPrice: '', // 最低限价
         taxInclusiveMarketPrice: '', // 含税市场价
         taxExclusiveMarketPrice: '' // 不含税市场价
-      }
+      },
+      keyParams: [{
+        key: '',
+        value: ''
+      }],
+      loading: false,
+      dicProps: {
+        label: 'name',
+        value: 'code',
+        children: 'children'
+      },
+      industryList: [] // 行业类型
+
     }
   },
   mounted() {
-
+    entityList(1, 1, { code: 'CpGoods' }).then((res) => {
+      if (res.data.length > 0) {
+        this.entity = res.data[0]
+      }
+    })
+    this.industryList = findDictionaryList('industry')
+    this.industryList = this.cleanEmptyChildren(this.industryList)
+    console.log(this.industryList, ';')
+    // industry
   },
   methods: {
+    industryChange(e) {
+      this.dataForm.primaryIndustryDcode = e[0] // 所属一级行业编码
+      this.dataForm.secondryIndustryDcode = e[1]// 所属二级行业编码
+      this.dataForm.thirdryIndustryDcode = e[2]// 所属三级行业编码
+      console.log(e)
+    },
+    cleanEmptyChildren(list) {
+      list.forEach(k => {
+        if (k.children && k.children.length > 0) {
+          this.cleanEmptyChildren(k.children)
+        } else {
+          k.children = ''
+        }
+      })
+      return list
+    },
     handleClick() {},
     addAttr(i) {
       this.specificationList[i].attrs.push('')
@@ -428,7 +476,8 @@ export default {
         sarr = tarr
       }
       console.log(sarr)
-      this.specificationTableData = sarr.map(v => {
+      this.specificationTableData = sarr.map((v, vi) => {
+        console.log(this.specificationList, 'pppp')
         return {
           attrs: v,
           attributeNames: v.join(','),
@@ -459,6 +508,41 @@ export default {
       this.specificationTableData.forEach((item, index) => {
         this.specificationTableData[index][e] = this.fastInput[e]
       })
+    },
+    saveData() {
+      console.log(this.dataForm)
+      // 处理参数goodsParam
+      const map = {}
+      this.keyParams.forEach(k => {
+        map[k.key] = k.value
+      })
+      this.dataForm.goodsParamStr = JSON.stringify(map)
+      // 处理参数
+
+      // 处理规格
+      this.dataForm.specificationList = JSON.stringify(this.specificationList.map(v => {
+        return {
+          name: v.key,
+          attributeNames: v.attrs.join(',')
+        }
+      }))
+      this.dataForm.goodsAttributeList = JSON.stringify(this.specificationTableData)
+      // 处理规格
+
+      chPost(this.entity.path, this.dataForm).then((resolve) => {
+        // this.defaultFormDialogVisible = false
+        this.$message.success('保存成功')
+        // this.updateTableData(this.treeQuery)
+        this.loading = false
+      }, (e) => {
+        this.loading = false
+      })
+    },
+    addParam() {
+      this.keyParams.push({
+        key: '',
+        value: ''
+      })
     }
   }
 }
@@ -481,6 +565,7 @@ export default {
   }
 
    .btn-ctl {
+     z-index: 2000;
      position: absolute;
      right: 20px;
   }
