@@ -155,7 +155,7 @@ import UnaEntitySelect from '@/layout/components/UnaEntitySelect.vue'
 
 import CkEditor from '@/components/CKEditor/index.vue'
 
-import { chPut, chDelete, chGet, chPost } from '@/api/index'
+import { jsonPut, chDelete, chGet, jsonPost } from '@/api/index'
 import * as fieldPort from '@/api/una/sys_field'
 
 import { buttonList } from '@/api/una/sys_button'
@@ -277,7 +277,7 @@ export default {
           console.log('提交检查', commitData)
 
           if (!this.isEdit) {
-            chPost(this.entity.path, commitData).then((resolve) => {
+            jsonPost(this.entity.path, commitData).then((resolve) => {
               this.defaultFormDialogVisible = false
               this.$message.success('保存成功')
               this.$emit('saveSuccess')
@@ -286,7 +286,7 @@ export default {
               this.loading = false
             })
           } else {
-            chPut(this.entity.path, commitData).then((resolve) => {
+            jsonPut(this.entity.path, commitData).then((resolve) => {
               this.defaultFormDialogVisible = false
               this.$message.success('保存成功')
               this.$emit('saveSuccess')

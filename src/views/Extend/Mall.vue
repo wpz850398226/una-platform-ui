@@ -309,7 +309,7 @@
 import ClientArea from '../../layout/components/ClientArea'
 import CkEditor from '@/components/CKEditor/index.vue'
 import { entityList } from '@/api/una/sys_entity'
-import { chPost } from '@/api/index'
+import { jsonPost } from '@/api/index'
 import { findDictionaryList } from '@/utils/find-dictionary.js'
 
 const defaultForm = {
@@ -520,16 +520,16 @@ export default {
       // 处理参数
 
       // 处理规格
-      this.dataForm.specificationList = JSON.stringify(this.specificationList.map(v => {
+      this.dataForm.specificationList = this.specificationList.map(v => {
         return {
           name: v.key,
           attributeNames: v.attrs.join(',')
         }
-      }))
-      this.dataForm.goodsAttributeList = JSON.stringify(this.specificationTableData)
+      })
+      this.dataForm.goodsAttributeList = this.specificationTableData
       // 处理规格
 
-      chPost(this.entity.path, this.dataForm).then((resolve) => {
+      jsonPost(this.entity.path, this.dataForm).then((resolve) => {
         // this.defaultFormDialogVisible = false
         this.$message.success('保存成功')
         // this.updateTableData(this.treeQuery)

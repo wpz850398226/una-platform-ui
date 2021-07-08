@@ -65,7 +65,7 @@ function removePropertyOfNull(obj) {
   // return ''
 }
 
-async function chGet(url, data) {
+function chGet(url, data) {
   //
   const reqData = qs.stringify(removePropertyOfNull(data))
   const g = reqData ? '?' : ''
@@ -87,7 +87,7 @@ async function chGet(url, data) {
   })
 }
 
-async function chPost(url, data) {
+function chPost(url, data) {
   data = qs.stringify(removePropertyOfNull(data)) // 序列化
   // const reqData = JSON.stringify(data)
 
@@ -96,9 +96,9 @@ async function chPost(url, data) {
   return new Promise((resolve, reject) => {
     axios({
       url: `${reqUrl}${url}`,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
+      // headers: {
+      //   'Content-Type': 'application/json'
+      // },
       method: 'POST',
       data: data
     }).then((res) => {
@@ -109,9 +109,31 @@ async function chPost(url, data) {
   })
 }
 
-async function chPut(url, data) {
-  // const reqData = JSON.stringify(data)
+function jsonPost(url, data) {
+  // data = qs.stringify(removePropertyOfNull(data)) // 序列化
+  const reqData = JSON.stringify(data)
+
+  console.log(`${reqUrl}${url}`)
+
+  return new Promise((resolve, reject) => {
+    axios({
+      url: `${reqUrl}${url}`,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      method: 'POST',
+      data: reqData
+    }).then((res) => {
+      resolve(res)
+    }).catch((err) => {
+      reject(err)
+    })
+  })
+}
+
+function chPut(url, data) {
   data = qs.stringify(removePropertyOfNull(data)) // 序列化
+  const reqData = JSON.stringify(data)
 
   return new Promise((resolve, reject) => {
     axios({
@@ -120,7 +142,7 @@ async function chPut(url, data) {
         'Content-Type': 'application/json'
       },
       method: 'PUT',
-      data: data
+      data: reqData
     }).then((res) => {
       resolve(res.data)
     }).catch((err) => {
@@ -129,7 +151,7 @@ async function chPut(url, data) {
   })
 }
 
-async function jsonPut(url, data) {
+function jsonPut(url, data) {
   // const reqData = JSON.stringify(data)
   data = JSON.stringify(removePropertyOfNull(data)) // 序列化
 
@@ -146,7 +168,7 @@ async function jsonPut(url, data) {
   })
 }
 
-async function chDelete(url) {
+function chDelete(url) {
   return new Promise((resolve, reject) => {
     axios({
       url: `${reqUrl}${url}`,
@@ -159,7 +181,7 @@ async function chDelete(url) {
   })
 }
 
-async function chUpload(file) {
+function chUpload(file) {
   const form = new FormData()
   form.append('file', file)
 
@@ -219,7 +241,7 @@ async function chDownloadAS(downloadUrl, filename) {
   document.body.removeChild(link)
 }
 
-async function chDownloadA(url) {
+function chDownloadA(url) {
   return new Promise((resolve, reject) => {
     axios({
       method: 'POST',
@@ -239,7 +261,7 @@ async function chDownloadA(url) {
 }
 
 export {
-  chPost, chGet, chDelete, chPut, chUpload, jsonPut,
+  chPost, chGet, chDelete, chPut, chUpload, jsonPut, jsonPost,
   chImg, chUnImg, parseImg, base642Blob, blob2File,
   chDownloadAS
 }

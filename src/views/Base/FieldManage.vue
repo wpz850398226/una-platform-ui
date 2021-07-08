@@ -315,7 +315,7 @@ import ClientArea from '../../layout/components/ClientArea'
 import { getEntity } from '@/utils/una/entity-util.js'
 import * as fieldPort from '../../api/una/sys_field'
 import * as entityData from '../../api/una/sys_entity'
-import { chDelete, chGet, chPost, chPut } from '../../api/index'
+import { chDelete, chGet, jsonPost, jsonPut } from '../../api/index'
 import UnaDicSelect from '@/layout/components/UnaDicSelect.vue'
 
 import Tree from './components/Tree.vue'
@@ -427,7 +427,7 @@ export default {
       })
     },
     handleUp(e) {
-      chPut(this.entity.path + `/ascend/${e.id}`).then((resolve) => {
+      jsonPut(this.entity.path + `/ascend/${e.id}`).then((resolve) => {
         this.$message.success('保存成功')
         this.updateTableData(this.treeQuery)
       })
@@ -438,7 +438,7 @@ export default {
           this.loading = true
           delete this.dataForm.map
           if (!this.isEdit) {
-            chPost(this.entity.path, this.dataForm).then((resolve) => {
+            jsonPost(this.entity.path, this.dataForm).then((resolve) => {
               this.defaultFormDialogVisible = false
               this.$message.success('保存成功')
               this.updateTableData(this.treeQuery)
@@ -447,7 +447,7 @@ export default {
               this.loading = false
             })
           } else {
-            chPut(this.entity.path, this.dataForm).then((resolve) => {
+            jsonPut(this.entity.path, this.dataForm).then((resolve) => {
               this.defaultFormDialogVisible = false
               this.$message.success('保存成功')
               this.updateTableData(this.treeQuery)
