@@ -17,13 +17,17 @@
       :append-to-body="true"
       fullscreen
     >
-      <una-form
-        v-for="(item,index) in approvalDataList"
-        :key="index"
-        :entity="item.entity"
-        :default-data="item.data"
-        :action-bar="false"
-      />
+
+      <div style="pointer-events: none;">
+        <una-form
+          v-for="(item,index) in approvalDataList"
+          :key="index"
+          :entity="item.entity"
+          :default-data="item.data"
+          :action-bar="false"
+        />
+      </div>
+
       <el-form :model="approvalForm">
         <el-form-item label="审批意见" prop="isAgree">
           <el-radio-group v-model="approvalForm.isAgree">

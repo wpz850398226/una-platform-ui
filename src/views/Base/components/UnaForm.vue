@@ -173,7 +173,7 @@ export default {
     },
     defaultData: {
       type: Object,
-      default: () => ''
+      default: () => {}
     },
     readonly: {
       type: Boolean,
@@ -240,7 +240,7 @@ export default {
   mounted() {
     this.getFieldList()
     this.getButtonList()
-    if (this.defaultData) {
+    if (this.defaultData && Object.keys(this.defaultData).length > 0) {
       this.initForm(this.defaultData)
     }
   },
