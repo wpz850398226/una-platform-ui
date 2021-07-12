@@ -1,0 +1,176 @@
+<template>
+  <div>
+    <el-dialog
+      v-if="entity"
+      :title="entity.name"
+      :visible.sync="defaultFormDialogVisible"
+      width="550px"
+      :append-to-body="true"
+    >
+      <una-form ref="formController" :entity="entity" @saveSuccess="saveSuccess" />
+    </el-dialog>
+
+    <el-dialog
+      title="审批任务"
+      :visible.sync="approvalDialogVisible"
+      width="550px"
+      :append-to-body="true"
+      fullscreen
+    >
+      <una-form
+        v-for="(item,index) in approvalDataList"
+        :key="index"
+        :entity="item.entity"
+        :default-data="item.data"
+        :action-bar="false"
+      />
+      <el-form :model="approvalForm">
+        <el-form-item label="审批意见" prop="isAgree">
+          <el-radio-group v-model="approvalForm.isAgree">
+            <el-radio :label="1">同意</el-radio>
+            <el-radio :label="0">拒绝</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="备注" prop="opinion">
+          <el-input v-model="approvalForm.opinion" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="submitApproval">提交</el-button>
+        </el-form-item>
+      </el-form>
+
+    </el-dialog>
+
+    <div v-for="item in workflowList" :key="item.id">
+      <el-button type="primary" @click="startAct(item)">{{ item.name }}</el-button>
+    </div>
+    <div v-for="item in taskList" :key="item.id">
+      <div>所属流程：{{ item.map.instanceName }}</div>
+      <div>节点：{{ item.map.nodeName }}</div>
+      <div>开始时间：{{ item.activateTime }}</div>
+      <el-button @click="handleTask(item)">处理</el-button>
+    </div>
+
+  </div>
+</template>
+
+<script>
+import { workflowList, creatInstance, taskList, finishTask } from '@/api/una/sys_workflow'
+import { entityList } from '@/api/una/sys_entity'
+import UnaForm from './components/UnaForm.vue'
+import { chGet } from '@/api/index'
+
+export default {
+  name: 'WorkFlowManage',
+  components: {
+    UnaForm
+  },
+  data() {
+    return {
+      userInfo: '',
+      entity: '',
+      workInfo: '',
+      workflowList: [],
+      taskList: [],
+      defaultFormDialogVisible: false,
+      approvalDialogVisible: false,
+      approvalDataList: [],
+      approvalForm: {
+        id: '',
+        recordId: '',
+        isAgree: '',
+        opinion: ''
+      }
+    }
+  },
+  mounted() {
+    this.userInfo = this.$store.getters.userinfo
+    console.log(this.userInfo)
+    this.getWorkflowList()
+    this.getTaskList()
+  },
+  methods: {
+    getWorkflowList() {
+      workflowList().then(res => {
+        console.log(res)
+        this.workflowList = res
+      })
+    },
+    startAct(e) {
+      creatInstance(e.id).then(res => {
+        console.log(res)
+        this.$message.success(`发起工作流 - ${e.name} 成功`)
+        this.getTaskList()
+      })
+    },
+    getTaskList() {
+      taskList(this.userInfo.id).then(res => {
+        console.log('待办', res)
+        this.taskList = res.data
+        console.log('ssss', this.taskList)
+      })
+    },
+    handleTask(e) {
+      console.log(e)
+      this.workInfo = e
+      this.approvalForm.id = e.id
+      if (e.nodeTypeDcode === 'flow_nudeType_submit') {
+        entityList(1, 1, { id: e.nodeEntityId }).then((res) => {
+          if (res.data.length > 0) {
+            this.entity = res.data[0]
+            console.log('反查实体', this.entity)
+            this.defaultFormDialogVisible = true
+          }
+        })
+      }
+      if (e.nodeTypeDcode === 'flow_nudeType_audit') {
+        //
+        this.approvalDataList = []
+        e.submitTaskList.forEach(task => {
+          entityList(1, 1, { id: task.nodeEntityId }).then((res) => {
+            if (res.data.length > 0) {
+              const entity = res.data[0]
+              chGet(`${entity.path}/page`, {
+                id: task.recordId
+              }).then(entityData => {
+                if (entityData.data.length > 0) {
+                  this.approvalDataList.push({
+                    entity: entity,
+                    data: entityData.data[0]
+                  })
+                  this.approvalForm.recordId = task.recordId
+                }
+                console.log(entityData, '反查实体数据')
+              })
+              console.log('反查实体', this.entity)
+            }
+          })
+        })
+        this.approvalDialogVisible = true
+      }
+    },
+    saveSuccess(e) {
+      finishTask({
+        id: this.workInfo.id,
+        recordId: e.data
+      }).then(res => {
+        console.log(res, '完成任务')
+        this.$message.success('处理任务完成')
+        this.getTaskList()
+        this.defaultFormDialogVisible = false
+      })
+    },
+    submitApproval() {
+      finishTask(this.approvalForm).then(res => {
+        this.$message.success('处理任务完成')
+        this.getTaskList()
+        this.approvalDialogVisible = false
+      })
+    }
+  }
+}
+</script>
+
+<style lang="scss">
+
+</style>

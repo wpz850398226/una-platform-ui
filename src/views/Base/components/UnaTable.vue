@@ -309,7 +309,7 @@ import UnaDocument from '@/layout/components/UnaDocument.vue'
 
 import UnaMap from '@/layout/components/UnaMap.vue'
 
-import { buttonList } from '@/api/una/sys_button'
+import { buttonList, flushRedis } from '@/api/una/sys_button'
 import {
   rolePermission, grantPermission,
   importTemplateDownload
@@ -617,6 +617,12 @@ export default {
         },
         'sendGoldCard': (extra) => {
           this.$message.success(`给${extra.name}发放金卡成功`)
+        },
+        'flushCache': (extra) => {
+          flushRedis().then(() => {
+            this.$message.success('清空缓存完成')
+          })
+          // this.$message.success(`给${extra.name}发放金卡成功`)
         },
         'authorization': (extra) => {
           this.grantRoleDialogVisible = true

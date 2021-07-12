@@ -130,7 +130,7 @@
         <div>{{ field.assignmentModeDcode }}</div>
       </el-form-item>
     </el-form>
-    <span v-if="entity.code !='SysFile'" slot="footer" class="dialog-footer flex justify-between">
+    <span v-if="entity.code !='SysFile' && actionBar" slot="footer" class="dialog-footer flex justify-between">
       <div>
         <el-button
           v-for="btn in formButtonList"
@@ -170,6 +170,18 @@ export default {
     entity: {
       required: true,
       type: Object
+    },
+    defaultData: {
+      type: Object,
+      default: () => ''
+    },
+    readonly: {
+      type: Boolean,
+      default: false
+    },
+    actionBar: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -228,6 +240,9 @@ export default {
   mounted() {
     this.getFieldList()
     this.getButtonList()
+    if (this.defaultData) {
+      this.initForm(this.defaultData)
+    }
   },
   methods: {
     getButtonList() {
@@ -280,7 +295,7 @@ export default {
             jsonPost(this.entity.path, commitData).then((resolve) => {
               this.defaultFormDialogVisible = false
               this.$message.success('保存成功')
-              this.$emit('saveSuccess')
+              this.$emit('saveSuccess', resolve)
               this.loading = false
             }, (e) => {
               this.loading = false
@@ -289,7 +304,7 @@ export default {
             jsonPut(this.entity.path, commitData).then((resolve) => {
               this.defaultFormDialogVisible = false
               this.$message.success('保存成功')
-              this.$emit('saveSuccess')
+              this.$emit('saveSuccess', resolve)
               this.loading = false
             }, (e) => {
               this.loading = false
