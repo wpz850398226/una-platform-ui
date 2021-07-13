@@ -1,7 +1,7 @@
 <!-- my-component.vue -->
 <template>
   <div class="una-single-select">
-    ##{{ field.optionNameFieldCode }}##{{ field.optionValueFieldCode }}##
+    <!-- ##{{ field.optionNameFieldCode }}##{{ field.optionValueFieldCode }}## -->
     <el-select
       v-model="selVal"
       :placeholder="field.annotation"

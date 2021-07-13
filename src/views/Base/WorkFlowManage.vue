@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="app-container">
     <el-dialog
       v-if="entity"
       :title="entity.name"
@@ -45,20 +45,37 @@
 
     </el-dialog>
 
-    <div v-for="item in workflowList" :key="item.id">
-      <el-button type="primary" @click="startAct(item)">{{ item.name }}</el-button>
-    </div>
-    <div v-for="item in taskList" :key="item.id">
+    <ClientArea>
+      <div slot="content" style="height:100%">
+        <div class="margin-bottom">
+          <div v-for="item in workflowList" :key="item.id">
+            <el-button type="primary" @click="startAct(item)">{{ item.name }}</el-button>
+          </div>
+        </div>
+        <el-table :data="taskList" style="width: 100%;" height="85%">
+          <el-table-column prop="map.instanceName" label="所属流程" width="350" />
+          <el-table-column prop="map.nodeName" label="节点" width="150" />
+          <el-table-column prop="activateTime" label="开始时间" width="150" />
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button type="text" @click="handleTask(scope.row)">处理</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </ClientArea>
+    <!-- <div v-for="item in taskList" :key="item.id">
       <div>所属流程：{{ item.map.instanceName }}</div>
       <div>节点：{{ item.map.nodeName }}</div>
       <div>开始时间：{{ item.activateTime }}</div>
       <el-button @click="handleTask(item)">处理</el-button>
-    </div>
+    </div> -->
 
   </div>
 </template>
 
 <script>
+import ClientArea from '../../layout/components/ClientArea'
 import { workflowList, creatInstance, taskList, finishTask } from '@/api/una/sys_workflow'
 import { entityList } from '@/api/una/sys_entity'
 import UnaForm from './components/UnaForm.vue'
@@ -67,7 +84,7 @@ import { chGet } from '@/api/index'
 export default {
   name: 'WorkFlowManage',
   components: {
-    UnaForm
+    ClientArea, UnaForm
   },
   data() {
     return {

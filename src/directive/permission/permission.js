@@ -16,7 +16,7 @@ function checkPermission(el, binding) {
     const permissionElement = value
 
     // const hasPermission = elements.filter((item) => item.code === permissionElement)
-    const hasPermission = elements.reduce((t, v) => v.code === permissionElement ? [...t, v] : t, [])
+    const hasPermission = elements.reduce((t, v) => v === permissionElement ? [...t, v] : t, [])
 
     //
     // const hasPermission = roles.some(role => {

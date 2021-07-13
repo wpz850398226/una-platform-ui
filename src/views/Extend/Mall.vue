@@ -50,11 +50,19 @@
               </el-form-item>
 
               <el-form-item label="商品图片" prop="fileId">
-                实体选择器
+                <una-upload
+                  v-model="dataForm.fileId"
+                />
               </el-form-item>
 
               <h3>价格</h3>
               <el-divider />
+              <el-form-item label="运费" prop="freightPrice">
+                <el-input v-model="dataForm.freightPrice" type="number" placeholder="请输入运费" />
+              </el-form-item>
+              <el-form-item label="免运费最小额" prop="freeFreightPrice">
+                <el-input v-model="dataForm.freeFreightPrice" type="number" placeholder="请输入免运费最小额" />
+              </el-form-item>
               <el-form-item label="平台价" prop="sellingPrice">
                 <el-input v-model="dataForm.sellingPrice" type="number" placeholder="请输入平台价" />
               </el-form-item>
@@ -307,6 +315,7 @@
 
 <script>
 import ClientArea from '../../layout/components/ClientArea'
+import UnaUpload from '@/layout/components/UnaUpload.vue'
 import CkEditor from '@/components/CKEditor/index.vue'
 import { entityList } from '@/api/una/sys_entity'
 import { jsonPost } from '@/api/index'
@@ -342,7 +351,7 @@ const defaultForm = {
   inventory: '', // 库存
   isShowInventory: '', // 是否显示库存
   isSpecification: '', // 是否启用规格
-  isReductionType: '', // 减库存方式
+  isInventoryReduce: '', // 减库存方式
   isPayOnDelivery: '', // 是否支持货到付款
   isAuthenticGuaranteed: '', // 是否正品保证
   isExchangeInSeven: '', // 是否支持7天无理由退换
@@ -362,13 +371,14 @@ const defaultForm = {
   departmentId: '', // 所属部门id
   specificationList: [], // 规格列表
   goodsAttributeList: [], // 规格属性列表
-  goodsParamStr: ''
+  freightPrice: '', // 运费
+  freeFreightPrice: '' // 免运费最小额
 }
 
 export default {
   name: 'Mall',
   components: {
-    ClientArea, CkEditor
+    ClientArea, CkEditor, UnaUpload
   },
   data() {
     return {
@@ -516,7 +526,7 @@ export default {
       this.keyParams.forEach(k => {
         map[k.key] = k.value
       })
-      this.dataForm.goodsParamStr = JSON.stringify(map)
+      this.dataForm.goodsParam = map
       // 处理参数
 
       // 处理规格

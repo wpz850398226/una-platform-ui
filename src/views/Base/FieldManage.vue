@@ -88,14 +88,14 @@
         </div>
         <div class="flex justify-between">
           <el-form-item label="展示方式" prop="displayModeDcode">
-            <UnaDicSelect v-model="dataForm.displayModeDcode" parent-code="field_display" />
+            <UnaDicSelect v-model="dataForm.displayModeDcode" parent-code="field_display" auto-pick-first />
           </el-form-item>
-          <el-form-item label="展示长度" prop="displayLength">
+          <!-- <el-form-item label="展示长度" prop="displayLength">
             <el-input
               v-model="dataForm.displayLength"
               type="number"
             />
-          </el-form-item>
+          </el-form-item> -->
         </div>
         <h3>表单相关</h3>
         <div class="flex justify-between">
@@ -129,7 +129,7 @@
         </div>
         <div class="flex justify-between">
           <el-form-item label="赋值方式" prop="assignmentModeDcode">
-            <UnaDicSelect v-model="dataForm.assignmentModeDcode" parent-code="field_assignment" />
+            <UnaDicSelect v-model="dataForm.assignmentModeDcode" parent-code="field_assignment" auto-pick-first />
           </el-form-item>
           <el-form-item label="可选上限" prop="selectableLimitNum">
             <el-input
@@ -396,16 +396,19 @@ export default {
         return false
       }
 
-      this.defaultFormDialogVisible = true
       this.isEdit = false
 
       this.dataForm = { ...this.defaultForm }
       this.dataForm.entityId = this.treeSelected
       this.dataForm.entityIdName = this.treeNode.title
+      this.dataForm.selectableLimitNum = 1
       this.dataForm.isEffect = 1
+
+      this.defaultFormDialogVisible = true
 
       if (this.$refs.fieldForm) {
         this.$refs.fieldForm.resetFields()
+        this.$refs.fieldForm.clearValidate()
       }
     },
     handleEdit(e) {

@@ -132,6 +132,7 @@ const actions = {
         commit('SET_USERINFO', data)
         commit('SET_USERNAME', username)
         commit('SET_NAME', name)
+        commit('SET_NAME', name)
         // commit('SET_AVATAR', attr1)
 
         // resolve()

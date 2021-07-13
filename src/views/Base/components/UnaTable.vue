@@ -1,44 +1,45 @@
 <template>
   <div class="Table">
     <el-card v-if="tableReady" class="box-content" shadow="never">
-      <el-row :gutter="10" type="flex">
-        <el-col v-if="selectSureBtn" :span="3">
-          <el-button
-            icon="el-icon-finished"
-            size="small"
-            type="success"
-            @click="submitSelect"
-          >确认选中</el-button>
-        </el-col>
+      <div class="flex justify-between" :gutter="10">
+        <div class="flex">
+          <div v-if="selectSureBtn" class="margin-right-xs">
+            <el-button
+              icon="el-icon-finished"
+              size="small"
+              type="success"
+              @click="submitSelect"
+            >确认选中</el-button>
+          </div>
 
-        <el-col v-if="entity.filterList.length>0" :span="4">
-          <el-link
-            v-for="filter in entity.filterList"
-            :key="filter.id"
-            type="primary"
-            @click="setFilterCond(filter.fieldCode, filter.value)"
-          >{{ filter.name }}</el-link>
+          <div v-if="entity.filterList.length>0" class="margin-right-xs">
+            <el-link
+              v-for="filter in entity.filterList"
+              :key="filter.id"
+              type="primary"
+              @click="setFilterCond(filter.fieldCode, filter.value)"
+            >{{ filter.name }}</el-link>
+          </div>
 
-        </el-col>
+          <div class="margin-right-xs">
+            <el-button size="small" type="primary" @click="showAddDialog">添加{{ entity.name }}</el-button>
+          </div>
 
-        <el-col :span="4">
-          <el-button size="small" type="primary" @click="showAddDialog">添加{{ entity.name }}</el-button>
-        </el-col>
+          <div :span="3">
+            <el-button
+              icon="el-icon-finished"
+              size="small"
+              type="danger"
+              @click="submitSelectDel"
+            >批量删除</el-button>
+          </div>
 
-        <el-col :span="3">
-          <el-button
-            icon="el-icon-finished"
-            size="small"
-            type="danger"
-            @click="submitSelectDel"
-          >批量删除</el-button>
-        </el-col>
+          <div v-for="btn in tableAboveButton" :key="btn.id" :span="3">
+            <el-button size="small" :icon="btn.iconDcode" @click="reflectFun(btn.event)">{{ btn.name }}</el-button>
+          </div>
+        </div>
 
-        <el-col v-for="btn in tableAboveButton" :key="btn.id" :span="3">
-          <el-button size="small" :icon="btn.iconDcode" @click="reflectFun(btn.event)">{{ btn.name }}</el-button>
-        </el-col>
-
-        <el-col :span="6">
+        <div>
           <div class="flex justify-end clr-btn">
             <el-popover placement="left-start" title="列筛选" trigger="click">
               <el-checkbox-group v-model="checkList" @change="columnFilter">
@@ -64,9 +65,9 @@
             </el-dropdown>
 
           </div>
-        </el-col>
+        </div>
 
-      </el-row>
+      </div>
 
       <el-row :gutter="10">
 
@@ -149,7 +150,7 @@
           :label="field.name"
         >
           <template slot-scope="scope">
-            {{ field.displayModeDcode }}
+            <!-- {{ field.displayModeDcode }} -->
             <div v-if="field.displayModeDcode === 'field_display_area'">
               {{ code2Text(scope.row[field.assignmentCode]) }}
             </div>
@@ -194,7 +195,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" fixed="right">
+        <el-table-column label="操作" fixed="right" width="150">
           <template slot-scope="scope">
             <el-button type="text" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button type="text" @click="handleDelete(scope.row)">删除</el-button>

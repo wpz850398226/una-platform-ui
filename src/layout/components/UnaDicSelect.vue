@@ -41,6 +41,10 @@ export default {
     },
     clearable: {
       type: Boolean
+    },
+    autoPickFirst: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -57,6 +61,10 @@ export default {
   mounted() {
     this.selVal = this.value
     this.options = findDictionaryList(this.parentCode)
+    if (!this.selVal && this.autoPickFirst) {
+      this.selVal = this.options[0].code
+      this.updateVal(this.selVal)
+    }
   },
   methods: {
     updateVal(e) {
