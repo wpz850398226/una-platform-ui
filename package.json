@@ -33,6 +33,7 @@
     "vue-aliplayer-v2": "^1.2.7",
     "vue-awesome": "^4.1.0",
     "vue-clipboard2": "^0.3.1",
+    "vue-count-to": "^1.0.13",
     "vue-image-crop-upload": "^2.5.0",
     "vue-router": "3.0.6",
     "vuex": "3.1.0"
