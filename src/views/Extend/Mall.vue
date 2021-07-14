@@ -462,6 +462,9 @@ export default {
     // 表格业务操作
     showAddDialog() {
       this.defaultFormDialogVisible = true
+      this.keyParams = []
+      this.specificationList = []
+      this.specificationTableData = []
       this.dataForm = { ...this.defaultForm }
     },
     handleEdit(e) {
@@ -487,6 +490,26 @@ export default {
         })
       })
       // 处理规格回显
+
+      // 处理规格表格回显
+      this.specificationTableData = []
+      e.goodsAttributeList.forEach(item => {
+        this.specificationTableData.push(
+          {
+            attrs: item.name.split(','),
+            // attributeNames: v.join(','),
+            name: item.name,
+            inventory: item.inventory, // 库存
+            wholesalePrice: item.wholesalePrice, // 批发售价
+            costPrice: item.costPrice, // 成本价
+            ceilingPrice: item.ceilingPrice, // 最高限价
+            floorPrice: item.floorPrice, // 最低限价
+            taxInclusiveMarketPrice: item.taxInclusiveMarketPrice, // 含税市场价
+            taxExclusiveMarketPrice: item.taxExclusiveMarketPrice // 不含税市场价
+          }
+        )
+      })
+      // 处理规格表格回显
 
       this.defaultFormDialogVisible = true
     },

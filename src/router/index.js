@@ -100,19 +100,19 @@ export const constantRoutes = [
   //     }
   //   ]
   // },
-  {
-    path: '/workflow',
-    component: Layout,
-    redirect: '/workflow-home',
-    children: [
-      {
-        path: '/workflow-home',
-        name: 'Workflow',
-        component: () => import('@/views/Base/WorkFlowManage'),
-        meta: { title: '工作流', icon: 'dashboard', breadcrumb: false }
-      }
-    ]
-  },
+  // {
+  //   path: '/workflow',
+  //   component: Layout,
+  //   redirect: '/workflow-home',
+  //   children: [
+  //     {
+  //       path: '/workflow-home',
+  //       name: 'Workflow',
+  //       component: () => import('@/views/Base/WorkFlowManage'),
+  //       meta: { title: '工作流', icon: 'dashboard', breadcrumb: false }
+  //     }
+  //   ]
+  // },
 
   // {
   //   path: '/sys/systemManage',
