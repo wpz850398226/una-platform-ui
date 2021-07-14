@@ -10,7 +10,7 @@ export function creatInstance(definitionId) {
 
 export function taskList(userId) {
   return chGet('/flow/task/page', {
-    // 'in:candidateAccountId': userId,
+    'in:candidateAccountId': userId,
     isNull: 'offTime',
     orderByDesc: 'activateTime'
   })

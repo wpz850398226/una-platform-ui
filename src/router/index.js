@@ -87,19 +87,19 @@ export const constantRoutes = [
       }
     ]
   },
-  {
-    path: '/mall-home',
-    component: Layout,
-    redirect: '/mall',
-    children: [
-      {
-        path: '/mall',
-        name: 'Mall',
-        component: () => import('@/views/Extend/Mall'),
-        meta: { title: '商城', icon: 'dashboard', breadcrumb: false }
-      }
-    ]
-  },
+  // {
+  //   path: '/mall-home',
+  //   component: Layout,
+  //   redirect: '/mall',
+  //   children: [
+  //     {
+  //       path: '/mall',
+  //       name: 'Mall',
+  //       component: () => import('@/views/Extend/Mall'),
+  //       meta: { title: '商城', icon: 'dashboard', breadcrumb: false }
+  //     }
+  //   ]
+  // },
   {
     path: '/workflow',
     component: Layout,

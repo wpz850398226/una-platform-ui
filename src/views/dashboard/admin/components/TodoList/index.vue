@@ -1,26 +1,87 @@
 <template>
   <section class="todoapp">
+
+    <el-dialog
+      v-if="entity"
+      :title="entity.name"
+      :visible.sync="defaultFormDialogVisible"
+      width="550px"
+      :append-to-body="true"
+    >
+      <una-form ref="formController" :entity="entity" @saveSuccess="saveSuccess" />
+    </el-dialog>
+
+    <el-dialog
+      title="审批任务"
+      :visible.sync="approvalDialogVisible"
+      width="550px"
+      :append-to-body="true"
+      fullscreen
+    >
+
+      <div style="pointer-events: none;">
+        <una-form
+          v-for="(item,index) in approvalDataList"
+          :key="index"
+          :entity="item.entity"
+          :default-data="item.data"
+          :action-bar="false"
+        />
+      </div>
+
+      <el-form :model="approvalForm">
+        <el-form-item label="审批意见" prop="isAgree">
+          <el-radio-group v-model="approvalForm.isAgree">
+            <el-radio :label="1">同意</el-radio>
+            <el-radio :label="0">拒绝</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="备注" prop="opinion">
+          <el-input v-model="approvalForm.opinion" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="submitApproval">提交</el-button>
+        </el-form-item>
+      </el-form>
+
+    </el-dialog>
     <!-- header -->
     <header class="header">
-      <input class="new-todo" autocomplete="off" placeholder="Todo List" @keyup.enter="addTodo">
+      <div class="flex align-center justify-between">
+        <h3 class="margin-left">Todo List</h3>
+        <div class="margin-right-xs">
+          <el-dropdown>
+            <el-button type="primary" size="mini">
+              发起流程<i class="el-icon-arrow-down el-icon--right" />
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <!-- <div >
+                <el-button type="primary" @click="startAct(item)">{{ item.name }}</el-button>
+              </div> -->
+              <el-dropdown-item
+                v-for="item in workflowList"
+                :key="item.id"
+                @click.native="startAct(item)"
+              >{{ item.name }}</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
+      </div>
     </header>
     <!-- main section -->
-    <section v-show="todos.length" class="main">
-      <input id="toggle-all" :checked="allChecked" class="toggle-all" type="checkbox" @change="toggleAll({ done: !allChecked })">
+    <section v-show="taskList.length" class="main">
       <label for="toggle-all" />
       <ul class="todo-list">
         <todo
-          v-for="(todo, index) in filteredTodos"
+          v-for="(todo, index) in taskList"
           :key="index"
           :todo="todo"
-          @toggleTodo="toggleTodo"
-          @editTodo="editTodo"
-          @deleteTodo="deleteTodo"
+          @toggleTodo="handleTask"
         />
       </ul>
     </section>
     <!-- footer -->
-    <footer v-show="todos.length" class="footer">
+    <!-- <footer v-show="todos.length" class="footer">
       <span class="todo-count">
         <strong>{{ remaining }}</strong>
         {{ remaining | pluralize('item') }} left
@@ -30,92 +91,119 @@
           <a :class="{ selected: visibility === key }" @click.prevent="visibility = key">{{ key | capitalize }}</a>
         </li>
       </ul>
-      <!-- <button class="clear-completed" v-show="todos.length > remaining" @click="clearCompleted">
-        Clear completed
-      </button> -->
-    </footer>
+    </footer> -->
   </section>
 </template>
 
 <script>
+import { workflowList, creatInstance, taskList, finishTask } from '@/api/una/sys_workflow'
+import { entityList } from '@/api/una/sys_entity'
+import UnaForm from '@/views/Base/components/UnaForm.vue'
+import { chGet } from '@/api/index'
 import Todo from './Todo.vue'
 
-const STORAGE_KEY = 'todos'
-const filters = {
-  all: todos => todos,
-  active: todos => todos.filter(todo => !todo.done),
-  completed: todos => todos.filter(todo => todo.done)
-}
-const defalutList = [
-  { text: 'star this repository', done: false },
-  { text: 'fork this repository', done: false },
-  { text: 'follow author', done: false },
-  { text: 'vue-element-admin', done: true },
-  { text: 'vue', done: true },
-  { text: 'element-ui', done: true },
-  { text: 'axios', done: true },
-  { text: 'webpack', done: true }
-]
 export default {
-  components: { Todo },
-  filters: {
-    pluralize: (n, w) => n === 1 ? w : w + 's',
-    capitalize: s => s.charAt(0).toUpperCase() + s.slice(1)
-  },
+  components: { Todo, UnaForm },
   data() {
     return {
-      visibility: 'all',
-      filters,
-      // todos: JSON.parse(window.localStorage.getItem(STORAGE_KEY)) || defalutList
-      todos: defalutList
+      userInfo: '',
+      entity: '',
+      workInfo: '',
+      workflowList: [],
+      taskList: [],
+      defaultFormDialogVisible: false,
+      approvalDialogVisible: false,
+      approvalDataList: [],
+      approvalForm: {
+        id: '',
+        recordId: '',
+        isAgree: '',
+        opinion: ''
+      }
     }
   },
-  computed: {
-    allChecked() {
-      return this.todos.every(todo => todo.done)
-    },
-    filteredTodos() {
-      return filters[this.visibility](this.todos)
-    },
-    remaining() {
-      return this.todos.filter(todo => !todo.done).length
-    }
+  mounted() {
+    this.userInfo = this.$store.getters.userinfo
+    console.log(this.userInfo)
+    this.getWorkflowList()
+    this.getTaskList()
   },
   methods: {
-    setLocalStorage() {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(this.todos))
+    getWorkflowList() {
+      workflowList().then(res => {
+        console.log(res)
+        this.workflowList = res
+      })
     },
-    addTodo(e) {
-      const text = e.target.value
-      if (text.trim()) {
-        this.todos.push({
-          text,
-          done: false
+    startAct(e) {
+      creatInstance(e.id).then(res => {
+        console.log(res)
+        this.$message.success(`发起工作流 - ${e.name} 成功`)
+        this.getTaskList()
+      })
+    },
+    getTaskList() {
+      taskList(this.userInfo.id).then(res => {
+        console.log('待办', res)
+        this.taskList = res.data
+        console.log('ssss', this.taskList)
+      })
+    },
+    handleTask(e) {
+      console.log(e)
+      this.workInfo = e
+      this.approvalForm.id = e.id
+      if (e.nodeTypeDcode === 'flow_nudeType_submit') {
+        entityList(1, 1, { id: e.nodeEntityId }).then((res) => {
+          if (res.data.length > 0) {
+            this.entity = res.data[0]
+            console.log('反查实体', this.entity)
+            this.defaultFormDialogVisible = true
+          }
         })
-        this.setLocalStorage()
       }
-      e.target.value = ''
+      if (e.nodeTypeDcode === 'flow_nudeType_audit') {
+        //
+        this.approvalDataList = []
+        e.submitTaskList.forEach(task => {
+          entityList(1, 1, { id: task.nodeEntityId }).then((res) => {
+            if (res.data.length > 0) {
+              const entity = res.data[0]
+              chGet(`${entity.path}/page`, {
+                id: task.recordId
+              }).then(entityData => {
+                if (entityData.data.length > 0) {
+                  this.approvalDataList.push({
+                    entity: entity,
+                    data: entityData.data[0]
+                  })
+                  this.approvalForm.recordId = task.recordId
+                }
+                console.log(entityData, '反查实体数据')
+              })
+              console.log('反查实体', this.entity)
+            }
+          })
+        })
+        this.approvalDialogVisible = true
+      }
     },
-    toggleTodo(val) {
-      val.done = !val.done
-      this.setLocalStorage()
+    saveSuccess(e) {
+      finishTask({
+        id: this.workInfo.id,
+        recordId: e.data
+      }).then(res => {
+        console.log(res, '完成任务')
+        this.$message.success('处理任务完成')
+        this.getTaskList()
+        this.defaultFormDialogVisible = false
+      })
     },
-    deleteTodo(todo) {
-      this.todos.splice(this.todos.indexOf(todo), 1)
-      this.setLocalStorage()
-    },
-    editTodo({ todo, value }) {
-      todo.text = value
-      this.setLocalStorage()
-    },
-    clearCompleted() {
-      this.todos = this.todos.filter(todo => !todo.done)
-      this.setLocalStorage()
-    },
-    toggleAll({ done }) {
-      this.todos.forEach(todo => {
-        todo.done = done
-        this.setLocalStorage()
+    submitApproval() {
+      finishTask(this.approvalForm).then(res => {
+        this.$message.success('处理任务完成')
+        this.getTaskList()
+        this.approvalDialogVisible = false
       })
     }
   }

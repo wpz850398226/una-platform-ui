@@ -88,6 +88,16 @@ const actions = {
   }
 }
 
+const getComponent = (code, route) => {
+  if (code === 'SysField') {
+    return () => import('@/views/Base/FieldManage')
+  } else if (code === 'CpGoods') {
+    return () => import('@/views/Extend/Mall')
+  }
+
+  return constantRouterComponents[route]
+}
+
 const rmQuery = (path) => {
   return path.split('?')[0]
 }
@@ -111,7 +121,7 @@ const generator = (routerMap, parent) => {
       // 路由名称，建议唯一
       name: item.path || '',
       // 该路由对应页面的 组件 :方案1
-      component: item.code === 'SysField' ? () => import('@/views/Base/FieldManage') : constantRouterComponents[item.route],
+      component: getComponent(item.code, item.route),
 
       // 该路由对应页面的 组件 :方案2 (动态加载)
       // component: (constantRouterComponents[item.component || item.key]) || (() => import(`@/views/${item.component}`)),

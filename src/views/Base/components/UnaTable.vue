@@ -12,13 +12,19 @@
             >确认选中</el-button>
           </div>
 
-          <div v-if="entity.filterList.length>0" class="margin-right-xs">
-            <el-link
+          <div v-if="entity.filterList.length>0" class="flex margin-right-xs">
+            <div
               v-for="filter in entity.filterList"
               :key="filter.id"
-              type="primary"
-              @click="setFilterCond(filter.fieldCode, filter.value)"
-            >{{ filter.name }}</el-link>
+            >
+              <el-link
+                type="primary"
+                @click="setFilterCond(filter.fieldCode, filter.value)"
+              >{{ filter.name }}</el-link>
+              <el-divider direction="vertical" />
+
+            </div>
+
           </div>
 
           <div class="margin-right-xs">
