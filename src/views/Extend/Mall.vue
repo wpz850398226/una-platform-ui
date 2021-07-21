@@ -88,10 +88,20 @@
             <h3>商品属性</h3>
             <el-divider />
             <el-form-item label="所在地">
-              <el-cascader
+              <!-- <el-cascader
                 v-model="dataForm.fullName"
                 :options="options"
+              /> -->
+
+              <el-cascader
+                v-model="dataForm.areas"
+                placeholder="请选择省市区(县)"
+                style="width: 200px;"
+                size="large"
+                :options="areaOptions"
+                @change="updateAreaData"
               />
+
             </el-form-item>
             <el-form-item label="其他">
               <el-checkbox v-model="dataForm.isPayOnDelivery" label="货到付款" :true-label="1" :false-label="0" />
@@ -344,6 +354,7 @@ import { getEntity } from '@/utils/una/entity-util.js'
 import { jsonPost } from '@/api/index'
 import { findDictionaryList } from '@/utils/find-dictionary.js'
 import { chPut, chDelete, chGet, chPost } from '../../api/index'
+import { regionData } from 'element-china-area-data'
 
 const defaultForm = {
   code: '', // 编号
@@ -362,6 +373,10 @@ const defaultForm = {
   description: '', // 描述
   content: '', // 内容
   regionId: '', // 所属区域id
+  areas: [],
+  provinceRegionId: '', // 所属省份id
+  cityRegionId: '', // 所属城市id
+  areaRegionId: '', // 所属区域id
   isStick: '', // 是否置顶
   isHot: '', // 是否热门
   isAdded: '', // 是否上架
@@ -441,8 +456,9 @@ export default {
       industryList: [], // 行业类型
 
       // 表格业务
-      dataQuery: {}
+      dataQuery: {},
       // 表格业务
+      areaOptions: regionData
     }
   },
   mounted() {
@@ -473,12 +489,15 @@ export default {
       // 处理参数回显
       console.log(e, '参数')
       this.keyParams = []
-      Object.keys(e.goodsParam).forEach(k => {
-        this.keyParams.push({
-          key: k,
-          value: e.goodsParam[k]
+      if (e.goodsParam) {
+        Object.keys(e.goodsParam).forEach(k => {
+          this.keyParams.push({
+            key: k,
+            value: e.goodsParam[k]
+          })
         })
-      })
+      }
+
       // 处理参数回显
 
       // 处理规格回显
@@ -644,6 +663,11 @@ export default {
         key: '',
         value: ''
       })
+    },
+    updateAreaData(e) {
+      this.dataForm.provinceRegionId = e[0]
+      this.dataForm.cityRegionId = e[1]
+      this.dataForm.areaRegionId = e[2]
     }
   }
 }

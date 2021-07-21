@@ -39,6 +39,10 @@ export default {
     },
     // eslint-disable-next-line vue/require-default-prop
     unionFieldValue: {
+    },
+    // eslint-disable-next-line vue/require-default-prop
+    rowData: {
+      type: Object
     }
   },
   data() {
@@ -61,10 +65,10 @@ export default {
   methods: {
     async queryOptions(field) {
       const optionName = field.optionParamName // 选项参数键
-      const optionValue = this.unionFieldValue || field.optionParamValue
+      const optionValue = this.unionFieldValue || field.optionParamValue // 选项参数值
       const obj = {}
       if (optionName && optionValue) {
-        if (optionName.includes(',') && optionValue.includes(',')) {
+        if (optionName.includes(',') && optionValue.includes(',')) { // 自定义数组了
           const optionNameArray = optionName.split(',')
           const optionValueArray = optionValue.split(',')
           optionNameArray.forEach((v, i) => {
@@ -76,7 +80,23 @@ export default {
         console.log(obj, 'obj')
       }
       if (field.optionEntityPath) {
-        const result = await chGet(field.optionEntityPath + '/list', obj)
+        const userInfo = this.$store.getters.userinfo
+        const dsdu = {}
+        if (optionValue.indexOf('$s') !== -1) {
+          const k = optionValue.substring(3)
+          if (Object.prototype.hasOwnProperty.call(this.rowData, k)) {
+            dsdu[optionName] = this.rowData[k]
+          }
+        }
+
+        if (optionValue.indexOf('$u') !== -1) {
+          const k = optionValue.substring(3)
+          if (Object.prototype.hasOwnProperty.call(userInfo, k)) {
+            dsdu[optionName] = userInfo[k]
+          }
+        }
+
+        const result = await chGet(field.optionEntityPath + '/list', { ...obj, ...dsdu })
         this.optionList = result
         console.log(this.optionList, 'asp')
       }

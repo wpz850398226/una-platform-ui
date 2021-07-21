@@ -30,7 +30,7 @@
         </div>
         <div class="flex justify-between">
           <el-form-item label="赋值编码" prop="assignmentCode">
-            <el-input v-model="dataForm.assignmentCode" @input="syncName" />
+            <el-input v-model="dataForm.assignmentCode" />
           </el-form-item>
           <el-form-item label="取值编码" prop="displayCode">
             <el-input v-model="dataForm.displayCode" />
@@ -53,8 +53,6 @@
             <el-switch
               v-model="dataForm.isEffect"
               active-color="#13ce66"
-              :active-value="1"
-              :inactive-value="0"
               inactive-color="#ff4949"
             />
           </el-form-item>
@@ -62,8 +60,6 @@
             <el-switch
               v-model="dataForm.isSort"
               active-color="#13ce66"
-              :active-value="1"
-              :inactive-value="0"
               inactive-color="#ff4949"
             />
           </el-form-item>
@@ -71,8 +67,6 @@
             <el-switch
               v-model="dataForm.isImport"
               active-color="#13ce66"
-              :active-value="1"
-              :inactive-value="0"
               inactive-color="#ff4949"
             />
           </el-form-item>
@@ -80,8 +74,6 @@
             <el-switch
               v-model="dataForm.isExport"
               active-color="#13ce66"
-              :active-value="1"
-              :inactive-value="0"
               inactive-color="#ff4949"
             />
           </el-form-item>
@@ -103,8 +95,6 @@
             <el-switch
               v-model="dataForm.isRequired"
               active-color="#13ce66"
-              :active-value="1"
-              :inactive-value="0"
               inactive-color="#ff4949"
             />
           </el-form-item>
@@ -112,8 +102,6 @@
             <el-switch
               v-model="dataForm.isUpdate"
               active-color="#13ce66"
-              :active-value="1"
-              :inactive-value="0"
               inactive-color="#ff4949"
             />
           </el-form-item>
@@ -121,8 +109,6 @@
             <el-switch
               v-model="dataForm.isBatchUpdate"
               active-color="#13ce66"
-              :active-value="1"
-              :inactive-value="0"
               inactive-color="#ff4949"
             />
           </el-form-item>
@@ -359,7 +345,7 @@ export default {
   },
   methods: {
     syncName(e) {
-      this.dataForm.displayCode = e
+      this.dataForm.displayCode = JSON.stringify(e)
     },
     updateTableData(query) {
       this.$refs.tableController.getPublicList(query)

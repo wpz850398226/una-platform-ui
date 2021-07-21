@@ -88,7 +88,12 @@ const actions = {
   }
 }
 
-const getComponent = (code, route) => {
+const getComponent = (code, route, path) => {
+  if (path.indexOf('sys/form') !== -1) {
+    console.log('命中form', code, path)
+    return () => import('@/views/Base/FormPage')
+  }
+
   if (code === 'SysField') {
     return () => import('@/views/Base/FieldManage')
   } else if (code === 'CpGoods') {
@@ -113,7 +118,7 @@ const getQuery = (path) => {
 const generator = (routerMap, parent) => {
   console.log('菜单', routerMap)
   return routerMap.map(item => {
-    const { name, type, spread, code, href, icon } = item || {}
+    const { name, type, spread, code, href, icon, path } = item || {}
     const currentRouter = {
       // 如果路由设置了 path，则作为默认 path，否则 路由地址 动态拼接生成如 /dashboard/workplace
       path: `${rmQuery(item.path)}/${item.id}`,
@@ -121,7 +126,7 @@ const generator = (routerMap, parent) => {
       // 路由名称，建议唯一
       name: item.path || '',
       // 该路由对应页面的 组件 :方案1
-      component: getComponent(item.code, item.route),
+      component: getComponent(item.code, item.route, item.path),
 
       // 该路由对应页面的 组件 :方案2 (动态加载)
       // component: (constantRouterComponents[item.component || item.key]) || (() => import(`@/views/${item.component}`)),
@@ -134,6 +139,7 @@ const generator = (routerMap, parent) => {
         type,
         href,
         code,
+        path,
         query: getQuery(item.path)
       }
     }

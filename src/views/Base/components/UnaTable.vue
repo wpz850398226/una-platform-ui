@@ -40,7 +40,7 @@
             >批量删除</el-button>
           </div>
 
-          <div v-for="btn in tableAboveButton" :key="btn.id" :span="3">
+          <div v-for="btn in tableAboveButton" :key="btn.id" class="margin-left-xs" :span="3">
             <el-button size="small" :icon="btn.iconDcode" @click="reflectFun(btn.event)">{{ btn.name }}</el-button>
           </div>
         </div>
@@ -274,6 +274,20 @@
         <el-col v-for="item in entityList" :key="item.id" :span="8">
           <el-collapse v-if="item.permissionList.length>0">
             <el-collapse-item :title="item.name" :name="item.name">
+              <template slot="title">
+                <div class="flex justify-between" style="width: 100%;">
+                  <div>{{ item.name }}</div>
+                  <div class="flex align-center">
+                    <div v-for="p in item.permissionList" :key="p.id">
+                      <div v-if="p.level == 0" class="square black" />
+                      <div v-if="p.level == 1" class="square green" />
+                      <div v-if="p.level == 2" class="square blue" />
+                      <div v-if="p.level == 3" class="square purple" />
+                      <div v-if="p.level == 4" class="square orange" />
+                    </div>
+                  </div>
+                </div>
+              </template>
               <div class="padding-sm">
                 <div v-for="p in item.permissionList" :key="p.id">
                   <div class="flex justify-between">
@@ -665,6 +679,29 @@ export default {
   .clr-btn {
     .el-button+.el-button {
       margin-left: 0;
+    }
+  }
+
+  .square {
+    height: 15px;
+    width: 15px;
+    border-radius: 4px;
+
+      margin-right: 5px;
+    &.black {
+      background-color: black;
+    }
+    &.green {
+      background-color: green;
+    }
+    &.blue {
+      background-color: blue;
+    }
+    &.purple {
+      background-color: purple;
+    }
+    &.orange {
+      background-color: orange;
     }
   }
 

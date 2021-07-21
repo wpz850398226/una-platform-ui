@@ -15,7 +15,7 @@
         :label="field.name"
         :prop="field.assignmentCode"
       >
-        {{ field.assignmentCode }}
+        <!-- {{ field.assignmentCode }} -->
         <!-- {{ field }} -->
         <!-- defaultValue -->
 
@@ -127,7 +127,7 @@
           >
           <i v-else class="el-icon-plus avatar-uploader-icon" />
         </div>
-        <div>{{ field.assignmentModeDcode }}</div>
+        <!-- <div>{{ field.assignmentModeDcode }}</div> -->
       </el-form-item>
     </el-form>
     <span v-if="entity.code !='SysFile' && actionBar" slot="footer" class="dialog-footer flex justify-between">
