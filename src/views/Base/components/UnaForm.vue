@@ -41,6 +41,11 @@
           v-else-if="field.assignmentModeDcode === 'field_assignment_text'"
           v-model="dataForm[field.assignmentCode]"
         />
+        <el-rate
+          v-else-if="field.assignmentModeDcode === 'field_assignment_score'"
+          v-model="dataForm[field.assignmentCode]"
+          show-score
+        />
         <el-input
           v-else-if="field.assignmentModeDcode === 'field_assignment_textarea'"
           v-model="dataForm[field.assignmentCode]"

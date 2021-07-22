@@ -179,6 +179,9 @@
             <div v-else-if="field.displayModeDcode === 'field_display_prograss'">
               <el-progress v-if="scope.row[field.assignmentCode]" :percentage="parseInt(scope.row[field.assignmentCode], 10)" />
             </div>
+            <div v-else-if="field.displayModeDcode === 'field_assignment_score'">
+              <el-rate v-if="scope.row[field.assignmentCode]" v-model="scope.row[field.assignmentCode]" disabled show-score />
+            </div>
             <div v-else-if="field.displayModeDcode === 'field_display_link'">
               <el-link v-if="scope.row[field.assignmentCode]" type="primary" :href="scope.row[field.assignmentCode]">点击跳转</el-link>
             </div>
@@ -584,10 +587,10 @@ export default {
     },
     switchPage(e) {
       this.pageCurrent = e
-      this.getPublicList()
+      this.getPublicList(this.otherCondition)
     },
     handleSizeChange() {
-      this.getPublicList()
+      this.getPublicList(this.otherCondition)
     },
     goQuery() {
       this.getPublicList('', this.queryFields)
