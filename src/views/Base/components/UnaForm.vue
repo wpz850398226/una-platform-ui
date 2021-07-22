@@ -61,12 +61,14 @@
           v-model="dataForm[field.assignmentCode]"
           :field="field"
           :union-field-value="pid2pVal(field)"
+          :row-data="dataForm"
         />
         <una-single-select
           v-else-if="field.assignmentModeDcode === 'field_assignment_multiselect'"
           v-model="dataForm[field.assignmentCode]"
           :field="field"
           multiple
+          :row-data="dataForm"
         />
         <una-area
           v-else-if="field.assignmentModeDcode === 'field_assignment_gangedRegion'"

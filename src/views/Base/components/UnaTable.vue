@@ -27,11 +27,11 @@
 
           </div>
 
-          <div class="margin-right-xs">
+          <div v-permission="entity.code+':create'" class="margin-right-xs">
             <el-button size="small" type="primary" @click="showAddDialog">添加{{ entity.name }}</el-button>
           </div>
 
-          <div :span="3">
+          <div v-if="checkPermission(entity.code +':delete')" :span="3">
             <el-button
               icon="el-icon-finished"
               size="small"
@@ -203,9 +203,9 @@
 
         <el-table-column label="操作" fixed="right" width="150">
           <template slot-scope="scope">
-            <el-button type="text" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button type="text" @click="handleDelete(scope.row)">删除</el-button>
-            <el-button type="text" @click="handleUp(scope.row)">升序</el-button>
+            <el-button v-if="checkPermission(entity.code +':update')" type="text" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button v-if="checkPermission(entity.code +':delete')" type="text" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button v-if="checkPermission(entity.code +':update')" type="text" @click="handleUp(scope.row)">升序</el-button>
 
             <el-button
               v-for="btn in tableInlineButton"
@@ -276,7 +276,7 @@
             <el-collapse-item :title="item.name" :name="item.name">
               <template slot="title">
                 <div class="flex justify-between" style="width: 100%;">
-                  <div>{{ item.name }}</div>
+                  <div>{{ item.name }} }</div>
                   <div class="flex align-center">
                     <div v-for="p in item.permissionList" :key="p.id">
                       <div v-if="p.level == 0" class="square black" />
@@ -291,7 +291,7 @@
               <div class="padding-sm">
                 <div v-for="p in item.permissionList" :key="p.id">
                   <div class="flex justify-between">
-                    <div>{{ p.name }} {{ p.level }}</div>
+                    <div>{{ p.name }} {{ p.level }} </div>
                     <div>
                       <el-tag type="primary">
                         {{ formatTooltip(p.level) }}
@@ -304,7 +304,7 @@
                     :min="0"
                     :max="grantLevel.length - 1"
                     :format-tooltip="formatTooltip"
-                    @change="grantJoinIds(p.id)"
+                    @change="grantJoinIds(p.pid)"
                   />
                 </div>
               </div>
@@ -339,12 +339,15 @@ import {
 // 角色授权
 import { entityListAll } from '@/api/una/sys_entity'
 // 角色授权
+import permission from '@/directive/permission/index.js' // 权限判断指令
+import checkPermission from '@/utils/permission.js'
 
 export default {
   name: 'UnaTable',
   components: {
     UnaMap, UnaDocument
   },
+  directives: { permission },
   props: {
     entity: {
       required: true,
@@ -466,6 +469,7 @@ export default {
     // 角色授权
   },
   methods: {
+    checkPermission,
     initRoleManage(e) {
       this.grantTitle = e.name
       this.grantLevel = [...findDictionaryList('permission_scope')].reverse()
@@ -478,6 +482,8 @@ export default {
             entity.permissionList.map(p => {
               const find = roleData.filter(m => m.permissionId === p.id)
               if (find.length > 0) {
+                console.log(find[0], 'sssssskkkk')
+                p['pid'] = find[0].id
                 p['scopeDcode'] = find[0].scopeDcode
                 p['level'] = this.permissionLevel(find[0].scopeDcode)
               }
@@ -489,9 +495,9 @@ export default {
         })
       })
     },
-    grantJoinIds(id) {
-      if (this.grantChangedIds.indexOf(id) === -1) {
-        this.grantChangedIds.push(id)
+    grantJoinIds(pid) {
+      if (this.grantChangedIds.indexOf(pid) === -1) {
+        this.grantChangedIds.push(pid)
       }
     },
     savePermission() {
@@ -499,8 +505,8 @@ export default {
       console.log(this.grantChangedIds)
       this.entityList.forEach(e => {
         e.permissionList.forEach(k => {
-          if (this.grantChangedIds.includes(k.id)) {
-            submitData.push({ id: k.id, scopeDcode: this.grantLevel[k.level].code })
+          if (this.grantChangedIds.includes(k.pid)) {
+            submitData.push({ id: k.pid, scopeDcode: this.grantLevel[k.level].code })
           }
         })
       })

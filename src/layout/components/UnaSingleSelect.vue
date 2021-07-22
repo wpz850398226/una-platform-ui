@@ -42,7 +42,8 @@ export default {
     },
     // eslint-disable-next-line vue/require-default-prop
     rowData: {
-      type: Object
+      type: Object,
+      default: () => {}
     }
   },
   data() {
@@ -84,6 +85,7 @@ export default {
         const dsdu = {}
         if (optionValue.indexOf('$s') !== -1) {
           const k = optionValue.substring(3)
+          console.log('$sssssss', this.rowData)
           if (Object.prototype.hasOwnProperty.call(this.rowData, k)) {
             dsdu[optionName] = this.rowData[k]
           }
