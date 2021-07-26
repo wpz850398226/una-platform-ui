@@ -22,7 +22,7 @@ export default function checkPermission(value) {
     // const hasPermission = roles.some(role => {
     //   return permissionRoles.includes(role)
     // })
-    const hasPermission = elements.reduce((t, v) => v.code === permissionElement ? [...t, v] : t, [])
+    const hasPermission = elements.reduce((t, v) => v === permissionElement ? [...t, v] : t, [])
     return hasPermission.length > 0
   } else {
     console.error(`need roles! Like v-permission="['admin','editor']"`)
