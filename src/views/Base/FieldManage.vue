@@ -39,26 +39,11 @@
             <el-input v-model="dataForm.transformDisplayCode" />
           </el-form-item>
         </div>
-        <div class="flex justify-between">
-          <el-form-item label="sql代码" prop="dqlName">
-            <el-input v-model="dataForm.dqlName" />
-          </el-form-item>
-          <el-form-item label="顺序" prop="sortOrder">
-            <el-input v-model="dataForm.sortOrder" />
-          </el-form-item>
-        </div>
         <h3>表格相关</h3>
         <div class="flex justify-between">
           <el-form-item label="展示" prop="isEffect">
             <el-switch
               v-model="dataForm.isEffect"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-            />
-          </el-form-item>
-          <el-form-item label="排序" prop="isSort">
-            <el-switch
-              v-model="dataForm.isSort"
               active-color="#13ce66"
               inactive-color="#ff4949"
             />
@@ -132,7 +117,6 @@
             <UnaDicSelect v-model="dataForm.dataCheckTypeDcode" parent-code="field_dataDetection" />
           </el-form-item>
         </div>
-        {{ dataForm.assignmentModeDcode }}
         <div
           v-if="dataForm.assignmentModeDcode === 'field_assignment_singleselect' || dataForm.assignmentModeDcode ==='field_assignment_multiselect' || dataForm.assignmentModeDcode ==='field_assignment_entityRecord'"
           class="flex justify-between"
