@@ -170,10 +170,8 @@
               <UnaMap :value="scope.row[field.assignmentCode]" />
             </div>
             <div v-else-if="field.displayModeDcode === 'field_display_img'">
-              <el-image
-                style="width: 100px; height: 100px;"
-                :src="scope.row[field.assignmentCode]"
-                :fit="'cover'"
+              <UnaImage
+                :img-url="scope.row[field.assignmentCode]"
               />
             </div>
             <div v-else-if="field.displayModeDcode === 'field_display_prograss'">
@@ -330,6 +328,7 @@ import { findDictionaryList } from '@/utils/find-dictionary'
 import * as fieldPort from '@/api/una/sys_field'
 // import qs from 'query-string'
 import UnaDocument from '@/layout/components/UnaDocument.vue'
+import UnaImage from '@/layout/components/UnaImage.vue'
 
 import UnaMap from '@/layout/components/UnaMap.vue'
 
@@ -352,7 +351,7 @@ import checkPermission from '@/utils/permission.js'
 export default {
   name: 'UnaTable',
   components: {
-    UnaMap, UnaDocument
+    UnaMap, UnaDocument, UnaImage
   },
   directives: { permission },
   props: {
