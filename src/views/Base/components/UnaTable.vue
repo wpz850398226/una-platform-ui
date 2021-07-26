@@ -542,7 +542,7 @@ export default {
     },
 
     getFieldList() {
-      return fieldPort.fieldList({ 'entityId': this.entity.id })
+      return fieldPort.fieldList({ 'entityId': this.entity.id, 'isEffect': 1 })
     },
     columnFilter(val) {
       if (!val) {
