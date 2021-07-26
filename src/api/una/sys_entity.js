@@ -33,3 +33,6 @@ export function grantPermission(query) {
   return jsonPut(`/sys/rolePermission/batch`, query)
 }
 
+export function permissionList(query) {
+  return chGet(`/sys/permission/list`, query)
+}

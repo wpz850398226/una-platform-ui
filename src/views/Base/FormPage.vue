@@ -42,14 +42,26 @@ export default {
   methods: {
     initData() {
       const query = this.$route.meta.query
+
       if (query) {
-        chGet(`${this.entity.path}/${qs.parse(this.$route.meta.query).id}`
+        const userInfo = this.$store.getters.userinfo
+        const queryId = qs.parse(this.$route.meta.query).id
+        let queryRealId = queryId
+        if (queryId.indexOf('$u') !== -1) {
+          const q = queryId.substring(3)
+          if (Object.prototype.hasOwnProperty.call(userInfo, q)) {
+            queryRealId = userInfo[q]
+          }
+        }
+        console.log(query, '踩踩踩踩踩')
+
+        chGet(`${this.entity.path}/${queryRealId}`
           // , {
           //   ...qs.parse(this.$route.meta.query),
           //   entityId: this.entity.id
           // }
         ).then(res => {
-          this.$refs.formController.initForm(res.data.value)
+          this.$refs.formController.initForm(res.data)
           console.log('suhuju', res)
         })
       }

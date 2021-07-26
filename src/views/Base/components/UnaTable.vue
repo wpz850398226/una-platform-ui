@@ -333,7 +333,11 @@ import UnaDocument from '@/layout/components/UnaDocument.vue'
 
 import UnaMap from '@/layout/components/UnaMap.vue'
 
-import { buttonList, flushRedis } from '@/api/una/sys_button'
+import {
+  buttonList, flushRedis,
+  stickGoods, refreshGoods
+
+} from '@/api/una/sys_button'
 import {
   rolePermission, grantPermission,
   importTemplateDownload
@@ -658,6 +662,18 @@ export default {
           this.grantRoleDialogVisible = true
           this.initRoleManage(extra)
           this.$message.success(`给${extra.name}发放金卡成功`)
+        },
+        'stickGoods': (extra) => {
+          stickGoods(extra.id).then(res => {
+            this.resetQuery()
+            this.$message.success('置顶完成')
+          })
+        },
+        'refreshGoods': (extra) => {
+          refreshGoods(extra.id).then(res => {
+            this.resetQuery()
+            this.$message.success('刷新完成')
+          })
         }
       }
       if (Object.prototype.hasOwnProperty.call(methodCenter, handler)) {

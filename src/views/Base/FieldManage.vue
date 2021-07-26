@@ -35,8 +35,24 @@
           <el-form-item label="取值编码" prop="displayCode">
             <el-input v-model="dataForm.displayCode" />
           </el-form-item>
+
+        </div>
+        <div class="flex justify-between">
           <el-form-item label="转换值编码" prop="transformDisplayCode">
             <el-input v-model="dataForm.transformDisplayCode" />
+          </el-form-item>
+          <el-form-item label="所属权限" prop="permissionId">
+            <el-select
+              v-model="dataForm.permissionId"
+            >
+              <el-option
+                v-for="item in permissionList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+
+            </el-select>
           </el-form-item>
         </div>
         <h3>表格相关</h3>
@@ -319,7 +335,8 @@ export default {
       treeNode: '',
       treeQuery: {},
       loading: false,
-      isEdit: false
+      isEdit: false,
+      permissionList: []
     }
   },
   mounted() {
@@ -328,6 +345,11 @@ export default {
     this.getEntityListAll()
   },
   methods: {
+    getPermissionList(entityId) {
+      entityData.permissionList({ entityId: entityId }).then(res => {
+        this.permissionList = res
+      })
+    },
     syncName(e) {
       this.dataForm.displayCode = JSON.stringify(e)
     },
@@ -343,6 +365,7 @@ export default {
       this.updateTableData(obj)
       console.log(node, 'klkkkk')
       this.getEntityLinkageFieldList(node.id)
+      this.getPermissionList(node.id)
     },
     getEntityFieldList(e) {
       console.log(e)
