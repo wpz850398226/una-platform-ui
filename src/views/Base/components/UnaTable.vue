@@ -214,7 +214,7 @@
               :key="btn.id"
               type="text"
               :icon="btn.iconDcode"
-              @click="reflectFun(btn.event, scope.row)"
+              @click="reflectFun(btn.event, scope.row, btn.warning)"
             >{{ btn.name }}</el-button>
 
           </template>
@@ -335,7 +335,7 @@ import UnaMap from '@/layout/components/UnaMap.vue'
 
 import {
   buttonList, flushRedis,
-  stickGoods, refreshGoods
+  stickGoods, refreshGoods, stickShop, refreshShop
 
 } from '@/api/una/sys_button'
 import {
@@ -643,36 +643,60 @@ export default {
       // this.$emit('submitSelectDel', this.selectedData.map(v => v.id).join(','))
     },
     // 通用按钮事件处理器
-    reflectFun(handler, extra) {
+    reflectFun(handler, extra, warning) {
       console.log(handler)
       const methodCenter = {
         'refreshResource': () => {
           this.$message.success('刷新资源成功')
         },
-        'sendGoldCard': (extra) => {
-          this.$message.success(`给${extra.name}发放金卡成功`)
-        },
         'flushCache': (extra) => {
           flushRedis().then(() => {
             this.$message.success('清空缓存完成')
           })
-          // this.$message.success(`给${extra.name}发放金卡成功`)
         },
         'authorization': (extra) => {
           this.grantRoleDialogVisible = true
           this.initRoleManage(extra)
-          this.$message.success(`给${extra.name}发放金卡成功`)
+          // this.$message.success(`给${extra.name}发放金卡成功`)
         },
         'stickGoods': (extra) => {
-          stickGoods(extra.id).then(res => {
-            this.resetQuery()
-            this.$message.success('置顶完成')
+          this.$confirm(warning, '提示', {
+            confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+          }).then(() => {
+            stickGoods(extra.id).then(res => {
+              this.resetQuery()
+              this.$message.success('置顶完成')
+            })
           })
         },
         'refreshGoods': (extra) => {
-          refreshGoods(extra.id).then(res => {
-            this.resetQuery()
-            this.$message.success('刷新完成')
+          this.$confirm(warning, '提示', {
+            confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+          }).then(() => {
+            refreshGoods(extra.id).then(res => {
+              this.resetQuery()
+              this.$message.success('刷新完成')
+            })
+          })
+        },
+        'stickShop': (extra) => {
+          this.$confirm(warning, '提示', {
+            confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+          }).then(() => {
+            stickShop(extra.id).then(res => {
+              this.resetQuery()
+              this.$message.success('置顶完成')
+            })
+          })
+        },
+        'refreshShop': (extra) => {
+          this.$confirm(warning, '提示', {
+            confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+          }).then(() => {
+            refreshShop(extra.id).then(res => {
+              this.resetQuery()
+              this.$message.success('刷新完成')
+            })
           })
         }
       }

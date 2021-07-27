@@ -17,3 +17,11 @@ export function refreshGoods(id) {
   return jsonPut(`/cp/goods/refresh/${id}`)
 }
 
+export function stickShop(id) {
+  return jsonPut(`/cp/shop/stick/${id}`)
+}
+
+export function refreshShop(id) {
+  return jsonPut(`/cp/shop/refresh/${id}`)
+}
+
