@@ -1,6 +1,9 @@
 <template>
   <div>
     <el-button type="primary" @click="openEntityDialog">去选择</el-button>
+    <div class="flex">
+      {{ selectedName }}
+    </div>
 
     <div v-if="entity">
       <el-dialog
@@ -67,7 +70,8 @@ export default {
       entityDialogVisible: false,
       defaultFormDialogVisible: false,
       selVal: '',
-      entity: ''
+      entity: '',
+      selectedName: ''
     }
   },
   mounted() {
@@ -81,9 +85,10 @@ export default {
     openEntityDialog() {
       this.entityDialogVisible = true
     },
-    submitSelect(e) {
+    submitSelect(e, en) {
       console.log(e)
       this.entityDialogVisible = false
+      this.selectedName = en
       this.updateVal(e)
     },
     updateVal(e) {

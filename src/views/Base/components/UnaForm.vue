@@ -10,135 +10,145 @@
     >
       <div
         v-for="field in fieldList"
-        v-show="formItemVisible(field)"
         :key="field.id"
       >
         <h3 v-if="field.groupName">{{ field.groupName }}</h3>
-        <el-form-item
-          :label="field.name"
-          :prop="field.assignmentCode"
+
+        <!-- 权限检查 -->
+        <div
+          v-if="Object.prototype.hasOwnProperty.call(field, 'permissionCode')
+            && checkPermission(field.permissionCode)
+            || !Object.prototype.hasOwnProperty.call(field, 'permissionCode')"
         >
-          <!-- {{ field.assignmentCode }} -->
-          <!-- {{ field }} -->
-          <!-- defaultValue -->
-
-          <UnaTreeNode
-            v-if="field.assignmentModeDcode === 'field_assignment_treeNode'"
-            v-model="dataForm[field.assignmentCode]"
-            :dafault-value="field.defaultValue"
-          />
-
-          <el-radio-group
-            v-else-if="field.assignmentModeDcode === 'field_assignment_radio'"
-            v-model="dataForm[field.assignmentCode]"
+          <el-form-item
+            v-show="formItemVisible(field)"
+            :label="field.name"
+            :prop="field.assignmentCode"
           >
-            <el-radio v-for="(item, index) in field.radioOptionArray" :key="'radio'+index" :label="item">{{ item }}</el-radio>
-          </el-radio-group>
+            <!-- {{ field.assignmentCode }} -->
+            <!-- {{ field }} -->
+            <!-- defaultValue -->
 
-          <CkEditor
-            v-else-if="field.assignmentModeDcode === 'field_assignment_editor'"
-            v-model="dataForm[field.assignmentCode]"
-          />
+            <UnaTreeNode
+              v-if="field.assignmentModeDcode === 'field_assignment_treeNode'"
+              v-model="dataForm[field.assignmentCode]"
+              :dafault-value="field.defaultValue"
+            />
 
-          <el-input
-            v-else-if="field.assignmentModeDcode === 'field_assignment_text'"
-            v-model="dataForm[field.assignmentCode]"
-          />
-          <el-rate
-            v-else-if="field.assignmentModeDcode === 'field_assignment_score'"
-            v-model="dataForm[field.assignmentCode]"
-            show-score
-          />
-          <el-input
-            v-else-if="field.assignmentModeDcode === 'field_assignment_textarea'"
-            v-model="dataForm[field.assignmentCode]"
-            type="textarea"
-            :rows="2"
-          />
-          <el-input
-            v-else-if="field.assignmentModeDcode === 'field_assignment_password'"
-            v-model="dataForm[field.assignmentCode]"
-            show-password
-          />
-          <el-input
-            v-else-if="field.assignmentModeDcode === 'field_assignment_hidden'"
-            v-model="dataForm[field.assignmentCode]"
-          />
-          <una-single-select
-            v-else-if="field.assignmentModeDcode === 'field_assignment_singleselect'"
-            v-model="dataForm[field.assignmentCode]"
-            :field="field"
-            :union-field-value="pid2pVal(field)"
-            :row-data="dataForm"
-          />
-          <una-single-select
-            v-else-if="field.assignmentModeDcode === 'field_assignment_multiselect'"
-            v-model="dataForm[field.assignmentCode]"
-            :field="field"
-            multiple
-            :row-data="dataForm"
-          />
-          <una-area
-            v-else-if="field.assignmentModeDcode === 'field_assignment_gangedRegion'"
-            v-model="dataForm[field.assignmentCode]"
-          />
-          <una-location
-            v-else-if="field.assignmentModeDcode === 'field_assignment_map'"
-            v-model="dataForm[field.assignmentCode]"
-          />
-          <una-upload
-            v-else-if="field.assignmentModeDcode === 'field_assignment_multiUpload'"
-            v-model="dataForm[field.assignmentCode]"
-            :show-file-list="false"
-          />
-          <una-entity-select
-            v-else-if="field.assignmentModeDcode === 'field_assignment_entityRecord'"
-            v-model="dataForm[field.assignmentCode]"
-            :field="field"
-          />
-          <el-switch
-            v-else-if="field.assignmentModeDcode === 'field_assignment_switch'"
-            v-model="dataForm[field.assignmentCode]"
-            active-color="#13ce66"
-            :active-value="1"
-            :inactive-value="0"
-            inactive-color="#ff4949"
-          />
-          <el-date-picker
-            v-else-if="field.assignmentModeDcode === 'field_assignment_date'"
-            v-model="dataForm[field.assignmentCode]"
-            type="date"
-            :placeholder="field.annotation"
-            value-format="yyyy-MM-dd"
-          />
-          <el-date-picker
-            v-else-if="field.assignmentModeDcode === 'field_assignment_datetime'"
-            v-model="dataForm[field.assignmentCode]"
-            type="datetime"
-            :placeholder="field.annotation"
-            value-format="yyyy-MM-dd HH:mm:ss"
-          />
-          <el-date-picker
-            v-else-if="field.assignmentModeDcode === 'field_assignment_yearMonth'"
-            v-model="dataForm[field.assignmentCode]"
-            type="month"
-            placeholder="选择年月"
-          />
-          <el-input-number
-            v-else-if="field.assignmentModeDcode === 'field_assignment_number'"
-            v-model="dataForm[field.assignmentCode]"
-            :label="field.annotation"
-          />
-          <div v-else-if="field.assignmentModeDcode === 'field_assignment_image'" class="avatar avatar-uploader" @click="showAvatar = true">
-            <img
-              v-if="busUserForm.accountImg"
-              class="img"
-              :src="dataForm[field.assignmentCode]"
+            <el-radio-group
+              v-else-if="field.assignmentModeDcode === 'field_assignment_radio'"
+              v-model="dataForm[field.assignmentCode]"
             >
-            <i v-else class="el-icon-plus avatar-uploader-icon" />
-          </div>
-        <!-- <div>{{ field.assignmentModeDcode }}</div> -->
-        </el-form-item>
+              <el-radio v-for="(item, index) in field.radioOptionArray" :key="'radio'+index" :label="item">{{ item }}</el-radio>
+            </el-radio-group>
+
+            <CkEditor
+              v-else-if="field.assignmentModeDcode === 'field_assignment_editor'"
+              v-model="dataForm[field.assignmentCode]"
+            />
+
+            <el-input
+              v-else-if="field.assignmentModeDcode === 'field_assignment_text'"
+              v-model="dataForm[field.assignmentCode]"
+            />
+            <el-rate
+              v-else-if="field.assignmentModeDcode === 'field_assignment_score'"
+              v-model="dataForm[field.assignmentCode]"
+              show-score
+            />
+            <el-input
+              v-else-if="field.assignmentModeDcode === 'field_assignment_textarea'"
+              v-model="dataForm[field.assignmentCode]"
+              type="textarea"
+              :rows="2"
+            />
+            <el-input
+              v-else-if="field.assignmentModeDcode === 'field_assignment_password'"
+              v-model="dataForm[field.assignmentCode]"
+              show-password
+            />
+            <el-input
+              v-else-if="field.assignmentModeDcode === 'field_assignment_hidden'"
+              v-model="dataForm[field.assignmentCode]"
+            />
+            <una-single-select
+              v-else-if="field.assignmentModeDcode === 'field_assignment_singleselect'"
+              v-model="dataForm[field.assignmentCode]"
+              :field="field"
+              :union-field-value="pid2pVal(field)"
+              :row-data="dataForm"
+            />
+            <una-single-select
+              v-else-if="field.assignmentModeDcode === 'field_assignment_multiselect'"
+              v-model="dataForm[field.assignmentCode]"
+              :field="field"
+              multiple
+              :row-data="dataForm"
+            />
+            <una-area
+              v-else-if="field.assignmentModeDcode === 'field_assignment_gangedRegion'"
+              v-model="dataForm[field.assignmentCode]"
+            />
+            <una-location
+              v-else-if="field.assignmentModeDcode === 'field_assignment_map'"
+              v-model="dataForm[field.assignmentCode]"
+            />
+            <una-upload
+              v-else-if="field.assignmentModeDcode === 'field_assignment_multiUpload'"
+              v-model="dataForm[field.assignmentCode]"
+              :show-file-list="false"
+            />
+            <una-entity-select
+              v-else-if="field.assignmentModeDcode === 'field_assignment_entityRecord'"
+              v-model="dataForm[field.assignmentCode]"
+              :field="field"
+            />
+            <el-switch
+              v-else-if="field.assignmentModeDcode === 'field_assignment_switch'"
+              v-model="dataForm[field.assignmentCode]"
+              active-color="#13ce66"
+              :active-value="1"
+              :inactive-value="0"
+              inactive-color="#ff4949"
+            />
+            <el-date-picker
+              v-else-if="field.assignmentModeDcode === 'field_assignment_date'"
+              v-model="dataForm[field.assignmentCode]"
+              type="date"
+              :placeholder="field.annotation"
+              value-format="yyyy-MM-dd"
+            />
+            <el-date-picker
+              v-else-if="field.assignmentModeDcode === 'field_assignment_datetime'"
+              v-model="dataForm[field.assignmentCode]"
+              type="datetime"
+              :placeholder="field.annotation"
+              value-format="yyyy-MM-dd HH:mm:ss"
+            />
+            <el-date-picker
+              v-else-if="field.assignmentModeDcode === 'field_assignment_yearMonth'"
+              v-model="dataForm[field.assignmentCode]"
+              type="month"
+              placeholder="选择年月"
+            />
+            <el-input-number
+              v-else-if="field.assignmentModeDcode === 'field_assignment_number'"
+              v-model="dataForm[field.assignmentCode]"
+              :label="field.annotation"
+            />
+            <div v-else-if="field.assignmentModeDcode === 'field_assignment_image'" class="avatar avatar-uploader" @click="showAvatar = true">
+              <img
+                v-if="busUserForm.accountImg"
+                class="img"
+                :src="dataForm[field.assignmentCode]"
+              >
+              <i v-else class="el-icon-plus avatar-uploader-icon" />
+            </div>
+            <!-- <div>{{ field.assignmentModeDcode }}</div> -->
+          </el-form-item>
+        </div>
+        <!-- 权限检查 -->
+
       </div>
 
     </el-form>
@@ -171,6 +181,7 @@ import { jsonPut, chDelete, chGet, jsonPost } from '@/api/index'
 import * as fieldPort from '@/api/una/sys_field'
 
 import { buttonList } from '@/api/una/sys_button'
+import checkPermission from '@/utils/permission.js'
 
 export default {
   name: 'UnaForm',
@@ -257,6 +268,7 @@ export default {
     }
   },
   methods: {
+    checkPermission,
     getButtonList() {
       buttonList({ 'entityId': this.entity.id }).then(res => {
         this.formButtonList = res.data.filter(v => v.positionDcode === 'entity_buttonPosition_formBottom')

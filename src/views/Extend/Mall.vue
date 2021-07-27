@@ -27,7 +27,7 @@
                 <el-input v-model="dataForm.name" placeholder="请输入商品名称" />
               </el-form-item>
               <el-form-item label="单位" prop="unitDcode">
-                <el-input v-model="dataForm.unitDcode" placeholder="请输入单位" />
+                <UnaDicSelect v-model="dataForm.unitDcode" placeholder="请选择单位" parent-code="measureUnit" />
               </el-form-item>
             </div>
             <el-form-item label="商品全称" class="basis-lg" prop="fullName">
@@ -56,9 +56,13 @@
             </el-form-item>
 
             <el-form-item label="商品图片" prop="fileId">
-              <una-upload
+
+              <una-entity-select
                 v-model="dataForm.fileId"
+                multiple
+                :field="{optionEntityId: '100020'}"
               />
+
             </el-form-item>
 
             <h3>价格</h3>
@@ -118,14 +122,16 @@
               </el-radio-group>
             </el-form-item>
 
-            <h3>审核</h3>
-            <el-divider />
-            <el-form-item label="审核" prop="isAudit">
-              <el-radio-group v-model="dataForm.isAudit">
-                <el-radio :label="1">通过</el-radio>
-                <el-radio :label="0">不通过</el-radio>
-              </el-radio-group>
-            </el-form-item>
+            <div v-permission="'CpGoods:audit'">
+              <h3>审核</h3>
+              <el-divider />
+              <el-form-item label="审核" prop="isAudit">
+                <el-radio-group v-model="dataForm.isAudit">
+                  <el-radio :label="1">通过</el-radio>
+                  <el-radio :label="0">不通过</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </div>
 
           </el-form>
         </el-tab-pane>
@@ -171,6 +177,7 @@
                 <div class="flex">
                   <el-input v-model="item.key" class="margin-right" placeholder="请输入规格类型" />
                   <el-button type="primary" @click="addAttr(index)">添加规格属性</el-button>
+                  <el-button type="danger" @click="delSpecification(index)">删除规格</el-button>
                 </div>
                 <div class="flex margin-top-xs">
                   <div v-for="(attr, aid) in item.attrs" :key="'aid'+aid" class="margin-right-sm">
@@ -349,12 +356,15 @@ import ClientArea from '../../layout/components/ClientArea'
 import UnaTable from '../Base/components/UnaTable.vue'
 import UnaUpload from '@/layout/components/UnaUpload.vue'
 import CkEditor from '@/components/CKEditor/index.vue'
+import UnaDicSelect from '@/layout/components/UnaDicSelect.vue'
+import UnaEntitySelect from '@/layout/components/UnaEntitySelect.vue'
 import { entityList } from '@/api/una/sys_entity'
 import { getEntity } from '@/utils/una/entity-util.js'
 import { jsonPost } from '@/api/index'
 import { findDictionaryList } from '@/utils/find-dictionary.js'
 import { chPut, chDelete, chGet, chPost } from '../../api/index'
 import { regionData } from 'element-china-area-data'
+import permission from '@/directive/permission/index.js' // 权限判断指令
 
 const defaultForm = {
   code: '', // 编号
@@ -379,7 +389,7 @@ const defaultForm = {
   areaRegionId: '', // 所属区域id
   isStick: '', // 是否置顶
   isHot: '', // 是否热门
-  isAdded: '', // 是否上架
+  isAdded: 1, // 是否上架
   isAudit: '', // 是否已审核
   viewAmount: '', // 浏览次数
   collectAmount: '', // 收藏数量
@@ -418,8 +428,10 @@ const defaultForm = {
 export default {
   name: 'Mall',
   components: {
-    ClientArea, CkEditor, UnaUpload, UnaTable
+    ClientArea, CkEditor, UnaUpload, UnaTable, UnaDicSelect,
+    UnaEntitySelect
   },
+  directives: { permission },
   data() {
     return {
       entity: '',
@@ -482,6 +494,7 @@ export default {
       this.specificationList = []
       this.specificationTableData = []
       this.dataForm = { ...this.defaultForm }
+      this.dataForm.isAdded = 1
     },
     handleEdit(e) {
       this.dataForm = e
@@ -575,6 +588,9 @@ export default {
         key: '治理',
         attrs: ['轻度', '中毒', '知名']
       })
+    },
+    delSpecification(e) {
+      this.specificationList.splice(e, 1)
     },
     refreshSpecification() {
       // const sLength = 1

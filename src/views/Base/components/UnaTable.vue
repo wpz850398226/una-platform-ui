@@ -623,7 +623,7 @@ export default {
       console.log(e)
     },
     submitSelect() {
-      this.$emit('submitSelect', this.selectedData.map(v => v.id).join(','))
+      this.$emit('submitSelect', this.selectedData.map(v => v.id).join(','), this.selectedData.map(v => v.name).join(','))
     },
     submitSelectDel() {
       const ids = this.selectedData.map(v => v.id)
