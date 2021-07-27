@@ -358,11 +358,10 @@ import UnaUpload from '@/layout/components/UnaUpload.vue'
 import CkEditor from '@/components/CKEditor/index.vue'
 import UnaDicSelect from '@/layout/components/UnaDicSelect.vue'
 import UnaEntitySelect from '@/layout/components/UnaEntitySelect.vue'
-import { entityList } from '@/api/una/sys_entity'
+// import { entityList } from '@/api/una/sys_entity'
 import { getEntity } from '@/utils/una/entity-util.js'
-import { jsonPost } from '@/api/index'
+import { jsonPost, jsonPut, chDelete } from '@/api/index'
 import { findDictionaryList } from '@/utils/find-dictionary.js'
-import { chPut, chDelete, chGet, chPost } from '../../api/index'
 import { regionData } from 'element-china-area-data'
 import permission from '@/directive/permission/index.js' // 权限判断指令
 
@@ -460,6 +459,7 @@ export default {
         value: ''
       }],
       loading: false,
+      isEdit: false,
       dicProps: {
         label: 'name',
         value: 'code',
@@ -489,14 +489,16 @@ export default {
 
     // 表格业务操作
     showAddDialog() {
+      this.isEdit = false
       this.defaultFormDialogVisible = true
       this.keyParams = []
       this.specificationList = []
       this.specificationTableData = []
       this.dataForm = { ...this.defaultForm }
-      this.dataForm.isAdded = 1
+      this.dataForm.isAdded = true
     },
     handleEdit(e) {
+      this.isEdit = true
       this.dataForm = { ...e }
 
       // 处理参数回显
@@ -664,15 +666,27 @@ export default {
       this.dataForm.goodsAttributeList = this.specificationTableData
       // 处理规格
 
-      jsonPost(this.entity.path, this.dataForm).then((resolve) => {
-        this.defaultFormDialogVisible = false
-        this.$message.success('保存成功')
-        this.$refs.tableController.getPublicList()
-        // this.updateTableData(this.treeQuery)
-        this.loading = false
-      }, (e) => {
-        this.loading = false
-      })
+      if (this.isEdit) {
+        jsonPut(this.entity.path, this.dataForm).then((resolve) => {
+          this.defaultFormDialogVisible = false
+          this.$message.success('保存成功')
+          this.$refs.tableController.getPublicList()
+          // this.updateTableData(this.treeQuery)
+          this.loading = false
+        }, (e) => {
+          this.loading = false
+        })
+      } else {
+        jsonPost(this.entity.path, this.dataForm).then((resolve) => {
+          this.defaultFormDialogVisible = false
+          this.$message.success('保存成功')
+          this.$refs.tableController.getPublicList()
+          // this.updateTableData(this.treeQuery)
+          this.loading = false
+        }, (e) => {
+          this.loading = false
+        })
+      }
     },
     addParam() {
       this.keyParams.push({
