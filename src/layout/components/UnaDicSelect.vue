@@ -59,8 +59,9 @@ export default {
     }
   },
   mounted() {
-    this.selVal = this.value
     this.options = findDictionaryList(this.parentCode)
+    this.selVal = this.value
+
     if (!this.selVal && this.autoPickFirst) {
       this.selVal = this.options[0].code
       this.updateVal(this.selVal)

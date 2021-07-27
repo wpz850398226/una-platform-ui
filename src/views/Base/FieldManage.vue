@@ -407,10 +407,10 @@ export default {
     handleEdit(e) {
       console.log(e.id)
       this.isEdit = true
-      chGet(this.entity.path + `/${e.id}`).then((resolve) => {
-        this.defaultFormDialogVisible = true
-        this.dataForm = { ...resolve.data }
-      })
+      // chGet(this.entity.path + `/${e.id}`).then((resolve) => {
+      this.defaultFormDialogVisible = true
+      this.dataForm = { ...e }
+      // })
     },
     handleDelete(e) {
       this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {

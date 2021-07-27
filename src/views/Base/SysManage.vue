@@ -103,12 +103,12 @@ export default {
     // 新增分散处理
 
     handleEdit(e) {
-      chGet(this.entity.path + `/${e.id}`).then((resolve) => {
-        this.defaultFormDialogVisible = true
-        this.$nextTick(() => {
-          this.$refs.formController.initForm(resolve.data)
-        })
+      // chGet(this.entity.path + `/${e.id}`).then((resolve) => {
+      this.defaultFormDialogVisible = true
+      this.$nextTick(() => {
+        this.$refs.formController.initForm(e)
       })
+      // })
     },
     handleUp(e) {
       chPut(this.entity.path + `/ascend/${e.id}`).then((resolve) => {

@@ -603,7 +603,9 @@ export default {
       this.getPublicList()
     },
     handleEdit(e) {
-      this.$emit('tableRowEdit', e)
+      chGet(this.entity.path + `/${e.id}`).then((resolve) => {
+        this.$emit('tableRowEdit', { ...resolve.data })
+      })
     },
     handleDelete(e) {
       this.$emit('tableRowDelete', e)

@@ -497,7 +497,7 @@ export default {
       this.dataForm.isAdded = 1
     },
     handleEdit(e) {
-      this.dataForm = e
+      this.dataForm = { ...e }
 
       // 处理参数回显
       console.log(e, '参数')
