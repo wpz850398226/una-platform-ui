@@ -171,6 +171,7 @@
             </div>
             <div v-else-if="field.displayModeDcode === 'field_display_img'">
               <UnaImage
+                v-if="scope.row[field.assignmentCode]"
                 :img-url="scope.row[field.assignmentCode]"
               />
             </div>

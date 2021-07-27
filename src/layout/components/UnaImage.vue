@@ -28,7 +28,9 @@ export default {
     }
   },
   mounted() {
-    this.images = this.imgUrl.split(',')
+    if (this.imgUrl) {
+      this.images = this.imgUrl.split(',')
+    }
   },
   methods: {
 
