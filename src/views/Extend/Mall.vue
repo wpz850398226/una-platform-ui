@@ -36,9 +36,9 @@
 
             <h3>商品信息</h3>
             <el-divider />
-            <el-form-item label="行业" prop="industryDecode">
+            <el-form-item label="行业" prop="industryDcode">
               <el-cascader
-                v-model="dataForm.industryDecode"
+                v-model="dataForm.industryDcode"
                 :options="industryList"
                 :props="dicProps"
                 @change="industryChange"
@@ -66,8 +66,8 @@
             <el-form-item label="运费" prop="freightPrice">
               <el-input v-model="dataForm.freightPrice" type="number" placeholder="请输入运费" />
             </el-form-item>
-            <el-form-item label="免运费最小额" prop="freeFreightPrice">
-              <el-input v-model="dataForm.freeFreightPrice" type="number" placeholder="请输入免运费最小额" />
+            <el-form-item label="免运费额" prop="freeFreightPrice">
+              <el-input v-model="dataForm.freeFreightPrice" type="number" placeholder="订单总价超过多少可以免运费" />
             </el-form-item>
             <el-form-item label="平台价" prop="sellingPrice">
               <el-input v-model="dataForm.sellingPrice" type="number" placeholder="请输入平台价" />

@@ -283,7 +283,7 @@ export default {
       }
     },
     getFieldList() {
-      fieldPort.fieldList({ 'entityId': this.entity.id })
+      fieldPort.fieldList({ 'entityId': this.entity.id, 'isUpdate': 1 })
         .then((result) => {
           console.log(result, '字段啊啊啊')
           result.forEach(e => {
