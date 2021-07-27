@@ -3,7 +3,7 @@
     <el-dialog
       :title="entity.name"
       :visible.sync="defaultFormDialogVisible"
-      width="550px"
+      width="1000px"
       :append-to-body="true"
     >
       <una-form ref="formController" :entity="entity" @saveSuccess="saveSuccess" />
@@ -14,13 +14,13 @@
         <el-row style="height: 100%;">
           <el-col
             v-if="Array.isArray(relationList) && relationList.length > 0"
-            :span="6"
+            :span="4"
             style="height: 100%;"
           >
             <Tree :entity="entity" @treeNodeClick="treeNodeClick" />
           </el-col>
           <el-col
-            :span="Array.isArray(relationList) && relationList.length > 0 ? 18: 24"
+            :span="Array.isArray(relationList) && relationList.length > 0 ? 20: 24"
             style="height: 100%;"
           >
             <una-table
