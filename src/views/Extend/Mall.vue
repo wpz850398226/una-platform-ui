@@ -412,7 +412,7 @@ const defaultForm = {
   companyId: '', // 所属组织id
   departmentId: '', // 所属部门id
   specificationList: [], // 规格列表
-  goodsAttributeList: [], // 规格属性列表
+  modelList: [], // 规格属性列表
   freightPrice: '', // 运费
   freeFreightPrice: '' // 免运费最小额
 }
@@ -520,7 +520,7 @@ export default {
 
       // 处理规格表格回显
       this.specificationTableData = []
-      e.goodsAttributeList.forEach(item => {
+      e.modelList.forEach(item => {
         this.specificationTableData.push(
           {
             attrs: item.name.split(','),
@@ -656,7 +656,7 @@ export default {
           attributeNames: v.attrs.join(',')
         }
       })
-      this.dataForm.goodsAttributeList = this.specificationTableData
+      this.dataForm.modelList = this.specificationTableData
       // 处理规格
 
       if (this.isEdit) {

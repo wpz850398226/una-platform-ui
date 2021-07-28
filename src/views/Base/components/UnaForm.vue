@@ -12,7 +12,6 @@
         v-for="field in fieldList"
         :key="field.id"
       >
-        <h3 v-if="field.groupName">{{ field.groupName }}</h3>
 
         <!-- 权限检查 -->
         <div
@@ -20,6 +19,8 @@
             && checkPermission(field.permissionCode)
             || !Object.prototype.hasOwnProperty.call(field, 'permissionCode')"
         >
+
+          <h3 v-if="field.groupName">{{ field.groupName }}</h3>
           <el-form-item
             v-show="formItemVisible(field)"
             :label="field.name"
