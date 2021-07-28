@@ -215,7 +215,8 @@ export default {
       dataForm: {}, // 数据表单，绑定数据的
       loading: false,
       formButtonList: [], // 表单通用按钮
-      isEdit: false
+      isEdit: false,
+      treeAddData: {} // 选择树后添加需要合并的数据
     }
   },
   computed: {
@@ -281,18 +282,21 @@ export default {
         this.isEdit = true
       } else {
         this.isEdit = false
-        this.dataForm = { ...this.defaultForm }
         if (mergeData) { // 合并默认值
           console.log(mergeData, 'mergeData')
           Object.keys(mergeData).map(v => {
             this.$set(this.defaultForm, v, mergeData[v])
           })
         }
+        this.dataForm = { ...this.defaultForm }
       }
 
       if (this.$refs.publicForm) {
         this.$refs.publicForm.resetFields()
       }
+    },
+    initTreeAddData(e) {
+      this.treeAddData = e
     },
     getFieldList() {
       fieldPort.fieldList({ 'entityId': this.entity.id, 'isUpdate': 1 })
@@ -315,8 +319,10 @@ export default {
           const { children, map, ...commitData } = this.dataForm // 删除无用字段
           console.log('提交检查', commitData)
 
+          const submitData = { ...commitData, ...this.treeAddData } // 合并树选择
+
           if (!this.isEdit) {
-            jsonPost(this.entity.path, commitData).then((resolve) => {
+            jsonPost(this.entity.path, submitData).then((resolve) => {
               this.defaultFormDialogVisible = false
               this.$message.success('保存成功')
               this.$emit('saveSuccess', resolve)

@@ -74,7 +74,9 @@ export default {
       entity: '',
       defaultFormDialogVisible: false,
       treeQuery: {},
-      dataQuery: {}
+      dataQuery: {},
+      treeAddData: {},
+      treeMergeData: {}
     }
   },
   mounted() {
@@ -86,12 +88,25 @@ export default {
   },
   methods: {
     // 新增分散处理
-    treeNodeClick(code, id) {
+    treeNodeClick(code, id, node) {
       const obj = {}
       obj[code] = id
       this.treeSelected = id
       this.treeQuery = obj
       this.updateTableData(obj)
+      console.log(this.relationList)
+      console.log(node, 'klkl', id)
+      if (this.relationList.length > 0) {
+        const map = {}
+        const rel = this.relationList[0]
+        map[rel.relatedFieldCode] = node.id
+        this.treeAddData = map
+        if (Object.prototype.hasOwnProperty.call(rel, 'extendFieldCode')) {
+          const mergeMap = {}
+          mergeMap[rel.extendFieldCode] = node[rel.extendFieldCode]
+          this.treeMergeData = mergeMap
+        }
+      }
     },
     updateTableData(query) {
       this.$refs.tableController.getPublicList(query)
@@ -133,7 +148,8 @@ export default {
       }
       this.defaultFormDialogVisible = true
       this.$nextTick(() => {
-        this.$refs.formController.initForm('', this.treeQuery)
+        this.$refs.formController.initTreeAddData(this.treeAddData)
+        this.$refs.formController.initForm('', { ...this.treeQuery, ...this.treeMergeData })
       })
     },
     submitSelect(e) {
