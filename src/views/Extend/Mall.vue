@@ -45,14 +45,7 @@
               />
             </el-form-item>
             <el-form-item label="状态" prop="statusDcode">
-              <el-select v-model="dataForm.statusDcode" placeholder="请选择状态">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
+              <UnaDicSelect v-model="dataForm.statusDcode" placeholder="请选择状态" parent-code="dh_goodsStatus" />
             </el-form-item>
 
             <el-form-item label="商品图片" prop="fileId">
@@ -117,8 +110,8 @@
 
             <el-form-item label="上架" prop="isAdded">
               <el-radio-group v-model="dataForm.isAdded">
-                <el-radio :label="1">是</el-radio>
-                <el-radio :label="0">否</el-radio>
+                <el-radio :label="true">是</el-radio>
+                <el-radio :label="false">否</el-radio>
               </el-radio-group>
             </el-form-item>
 
@@ -127,8 +120,8 @@
               <el-divider />
               <el-form-item label="审核" prop="isAudit">
                 <el-radio-group v-model="dataForm.isAudit">
-                  <el-radio :label="1">通过</el-radio>
-                  <el-radio :label="0">不通过</el-radio>
+                  <el-radio :label="true">通过</el-radio>
+                  <el-radio :label="false">不通过</el-radio>
                 </el-radio-group>
               </el-form-item>
             </div>
@@ -388,7 +381,7 @@ const defaultForm = {
   areaRegionId: '', // 所属区域id
   isStick: '', // 是否置顶
   isHot: '', // 是否热门
-  isAdded: 1, // 是否上架
+  isAdded: 'true', // 是否上架
   isAudit: '', // 是否已审核
   viewAmount: '', // 浏览次数
   collectAmount: '', // 收藏数量
