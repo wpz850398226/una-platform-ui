@@ -214,7 +214,7 @@
               :key="btn.id"
               type="text"
               :icon="btn.iconDcode"
-              @click="reflectFun(btn.event, scope.row, btn.warning)"
+              @click="reflectFun(btn.event, scope.row, btn)"
             >{{ btn.name }}</el-button>
 
           </template>
@@ -318,6 +318,15 @@
 
     </el-dialog>
 
+    <el-dialog
+      :title="extendEntity.name"
+      :visible.sync="extendFormDialogVisible"
+      width="1000px"
+      :append-to-body="true"
+    >
+      <una-form ref="formController" :entity="extendEntity" @saveSuccess="saveSuccess" />
+    </el-dialog>
+
   </div>
 </template>
 
@@ -330,6 +339,7 @@ import * as fieldPort from '@/api/una/sys_field'
 // import qs from 'query-string'
 import UnaDocument from '@/layout/components/UnaDocument.vue'
 import UnaImage from '@/layout/components/UnaImage.vue'
+import UnaForm from './UnaForm.vue'
 
 import UnaMap from '@/layout/components/UnaMap.vue'
 
@@ -339,6 +349,7 @@ import {
 
 } from '@/api/una/sys_button'
 import {
+  entityList,
   rolePermission, grantPermission,
   importTemplateDownload
 } from '@/api/una/sys_entity'
@@ -352,7 +363,7 @@ import checkPermission from '@/utils/permission.js'
 export default {
   name: 'UnaTable',
   components: {
-    UnaMap, UnaDocument, UnaImage
+    UnaForm, UnaMap, UnaDocument, UnaImage
   },
   directives: { permission },
   props: {
@@ -403,8 +414,10 @@ export default {
       grantLevel: [],
       grantTitle: '',
       entityList: [],
-      grantChangedIds: []
+      grantChangedIds: [],
       // 角色授权
+      extendEntity: '',
+      extendFormDialogVisible: false
     }
   },
   computed: {
@@ -645,8 +658,8 @@ export default {
       // this.$emit('submitSelectDel', this.selectedData.map(v => v.id).join(','))
     },
     // 通用按钮事件处理器
-    reflectFun(handler, extra, warning) {
-      console.log(handler)
+    reflectFun(handler, extra, btn) {
+      console.log(handler, extra, btn)
       const methodCenter = {
         'refreshResource': () => {
           this.$message.success('刷新资源成功')
@@ -662,7 +675,7 @@ export default {
           // this.$message.success(`给${extra.name}发放金卡成功`)
         },
         'stickGoods': (extra) => {
-          this.$confirm(warning, '提示', {
+          this.$confirm(btn.warning, '提示', {
             confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
           }).then(() => {
             stickGoods(extra.id).then(res => {
@@ -672,7 +685,7 @@ export default {
           })
         },
         'refreshGoods': (extra) => {
-          this.$confirm(warning, '提示', {
+          this.$confirm(btn.warning, '提示', {
             confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
           }).then(() => {
             refreshGoods(extra.id).then(res => {
@@ -682,7 +695,7 @@ export default {
           })
         },
         'stickShop': (extra) => {
-          this.$confirm(warning, '提示', {
+          this.$confirm(btn.warning, '提示', {
             confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
           }).then(() => {
             stickShop(extra.id).then(res => {
@@ -692,13 +705,28 @@ export default {
           })
         },
         'refreshShop': (extra) => {
-          this.$confirm(warning, '提示', {
+          this.$confirm(btn.warning, '提示', {
             confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
           }).then(() => {
             refreshShop(extra.id).then(res => {
               this.resetQuery()
               this.$message.success('刷新完成')
             })
+          })
+        },
+        'comment': (extra) => {
+          this.$confirm(btn.warning, '提示', {
+            confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+          }).then(() => {
+            if (Object.prototype.hasOwnProperty.call(btn, 'formEntityId')) {
+              const extMap = {}
+
+              if (Object.prototype.hasOwnProperty.call(btn, 'formFieldCode')) {
+                extMap[btn.formFieldCode] = extra.id
+              }
+
+              this.convertId2EntityAndOpenForm(btn.formEntityId, extMap)
+            }
           })
         }
       }
@@ -707,6 +735,22 @@ export default {
       } else {
         this.$message.error('指定事件未绑定')
       }
+    },
+    convertId2EntityAndOpenForm(entityId, extData = {}) {
+      entityList(1, 1, { id: entityId }).then((res) => {
+        if (res.data.length > 0) {
+          this.extendEntity = res.data[0]
+          console.log('反查实体', this.extendEntity)
+          this.extendFormDialogVisible = true
+          this.$nextTick(() => {
+            this.$refs.formController.initForm('', { ...extData })
+          })
+        }
+      })
+    },
+    saveSuccess() {
+      this.$message.success('保存成功')
+      this.extendFormDialogVisible = false
     }
   }
 }
