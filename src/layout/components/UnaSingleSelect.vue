@@ -2,6 +2,7 @@
 <template>
   <div class="una-single-select">
     <!-- ##{{ field.optionNameFieldCode }}##{{ field.optionValueFieldCode }}## -->
+    <!-- {{ selVal }} -->
     <el-select
       v-model="selVal"
       :placeholder="field.annotation"
@@ -20,6 +21,7 @@
   </div>
 </template>
 <script>
+import { parse } from 'path-to-regexp'
 import { chGet } from '../../api/index'
 export default {
   name: 'UnaSingleSelect',
@@ -55,18 +57,29 @@ export default {
   watch: {
     unionFieldValue(o, n) {
       console.log('相连变了', o, n)
+      this.queryOptions(this.field)
+      this.selVal = ''
     }
   },
-  mounted() {
+  async mounted() {
+    await this.queryOptions(this.field)
+
     console.log(this.field, '检查')
-    this.selVal = this.value
-    this.queryOptions(this.field)
+    console.log(this.value, '传过来的值', parseInt(this.value, 10))
+    if (parseInt(this.value, 10) !== 'NaN') { // 尝试一次转换
+      this.selVal = parseInt(this.value, 10)
+    } else {
+      this.selVal = this.value
+    }
+
+    console.log('已经选中', this.selVal)
     console.log('卡看默认', this.unionFieldValue)
   },
   methods: {
     async queryOptions(field) {
       const optionName = field.optionParamName // 选项参数键
       const optionValue = this.unionFieldValue || field.optionParamValue // 选项参数值
+
       const obj = {}
       if (optionName && optionValue) {
         if (optionName.includes(',') && optionValue.includes(',')) { // 自定义数组了
@@ -83,7 +96,8 @@ export default {
       if (field.optionEntityPath) {
         const userInfo = this.$store.getters.userinfo
         const dsdu = {}
-        if (optionValue.indexOf('$s') !== -1) {
+        console.log(optionValue, '检查 ni')
+        if (typeof optionValue === 'string' && optionValue.indexOf('$s') !== -1) {
           const k = optionValue.substring(3)
           console.log('$sssssss', this.rowData)
           if (Object.prototype.hasOwnProperty.call(this.rowData, k)) {
@@ -91,7 +105,7 @@ export default {
           }
         }
 
-        if (optionValue.indexOf('$u') !== -1) {
+        if (typeof optionValue === 'string' && optionValue.indexOf('$u') !== -1) {
           const k = optionValue.substring(3)
           if (Object.prototype.hasOwnProperty.call(userInfo, k)) {
             dsdu[optionName] = userInfo[k]

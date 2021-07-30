@@ -214,6 +214,9 @@
                     <td>
                       <div class="price-label">不含税市场价</div>
                     </td>
+                    <td>
+                      <div class="price-label">图片</div>
+                    </td>
                   </tr>
 
                   <!-- 快速填充 -->
@@ -280,6 +283,12 @@
                     </td>
                     <td>
                       <el-input v-model="item.taxExclusiveMarketPrice" placeholder="不含税市场价" />
+                    </td>
+                    <td>
+                      <una-entity-select
+                        v-model="item.fileId"
+                        :field="{optionEntityId: '100020'}"
+                      />
                     </td>
                   </tr>
                 </table>
@@ -420,7 +429,7 @@ const defaultForm = {
 export default {
   name: 'Mall',
   components: {
-    ClientArea, CkEditor, UnaUpload, UnaTable, UnaDicSelect,
+    ClientArea, CkEditor, UnaTable, UnaDicSelect,
     UnaEntitySelect
   },
   directives: { permission },
@@ -532,7 +541,8 @@ export default {
             ceilingPrice: item.ceilingPrice, // 最高限价
             floorPrice: item.floorPrice, // 最低限价
             taxInclusiveMarketPrice: item.taxInclusiveMarketPrice, // 含税市场价
-            taxExclusiveMarketPrice: item.taxExclusiveMarketPrice // 不含税市场价
+            taxExclusiveMarketPrice: item.taxExclusiveMarketPrice, // 不含税市场价
+            fileId: item.fileId // 规格图片
           }
         )
       })
@@ -628,7 +638,8 @@ export default {
           ceilingPrice: '', // 最高限价
           floorPrice: '', // 最低限价
           taxInclusiveMarketPrice: '', // 含税市场价
-          taxExclusiveMarketPrice: '' // 不含税市场价
+          taxExclusiveMarketPrice: '', // 不含税市场价
+          fileId: '' // 规格图片
         }
       })
 

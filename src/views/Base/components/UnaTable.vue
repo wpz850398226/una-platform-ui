@@ -12,7 +12,7 @@
             >确认选中</el-button>
           </div>
 
-          <div v-if="entity.filterList.length>0" class="flex margin-right-xs">
+          <div v-if="entity.filterList && entity.filterList.length>0" class="flex margin-right-xs">
             <div
               v-for="filter in entity.filterList"
               :key="filter.id"
