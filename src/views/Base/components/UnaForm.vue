@@ -86,6 +86,12 @@
               multiple
               :row-data="dataForm"
             />
+            <una-cascader
+              v-else-if="field.assignmentModeDcode === 'field_assignment_gangedDic'"
+              v-model="dataForm[field.assignmentCode]"
+              :field="field"
+              :row-data="dataForm"
+            />
             <una-area
               v-else-if="field.assignmentModeDcode === 'field_assignment_gangedRegion'"
               v-model="dataForm[field.assignmentCode]"
@@ -176,6 +182,7 @@ import UnaTreeNode from '@/layout/components/UnaTreeNode.vue'
 import UnaLocation from '@/layout/components/UnaLocation.vue'
 import UnaUpload from '@/layout/components/UnaUpload.vue'
 import UnaEntitySelect from '@/layout/components/UnaEntitySelect.vue'
+import UnaCascader from '@/layout/components/UnaCascader.vue'
 
 import CkEditor from '@/components/CKEditor/index.vue'
 
@@ -189,7 +196,8 @@ export default {
   name: 'UnaForm',
   components: {
     UnaSingleSelect, UnaTreeNode, UnaArea,
-    CkEditor, UnaLocation, UnaUpload, UnaEntitySelect
+    CkEditor, UnaLocation, UnaUpload, UnaEntitySelect,
+    UnaCascader
   },
   props: {
     entity: {

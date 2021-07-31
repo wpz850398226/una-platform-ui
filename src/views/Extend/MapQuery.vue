@@ -83,7 +83,9 @@ export default {
         }
       }).then((AMap) => {
         this.amapObj = AMap
-        const map = new AMap.Map('amap-container')
+        const map = new AMap.Map('amap-container', {
+          center: [114.515452, 38.046634]
+        })
         // const geocoder = new AMap.Geocoder({
         //   // city: "010", //城市设为北京，默认：“全国”
         //   // radius: 1000 //范围，默认：500

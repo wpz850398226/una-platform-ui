@@ -65,7 +65,7 @@ export default {
 
     console.log(this.field, '检查')
     console.log(this.value, '传过来的值', parseInt(this.value, 10))
-    if (parseInt(this.value, 10) !== 'NaN') { // 尝试一次转换
+    if (this.value && parseInt(this.value, 10) !== 'NaN') { // 尝试一次转换
       this.selVal = parseInt(this.value, 10)
     } else {
       this.selVal = this.value

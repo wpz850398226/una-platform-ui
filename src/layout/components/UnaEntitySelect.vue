@@ -1,7 +1,7 @@
 <template>
   <div>
-    <el-button type="primary" @click="openEntityDialog">去选择</el-button>
-    <div v-if="showImg" class="flex">
+    <el-link type="primary" @click="openEntityDialog">去选择</el-link>
+    <div v-if="!showImg" class="flex">
       {{ selectedName }}
     </div>
     <div v-else class="flex">

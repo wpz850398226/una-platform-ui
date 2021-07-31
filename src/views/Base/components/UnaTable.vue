@@ -330,6 +330,16 @@
       <una-form ref="formController" :entity="extendEntity" @saveSuccess="saveSuccess" />
     </el-dialog>
 
+    <el-dialog
+      title="地图查询"
+      :visible.sync="mapViewDialogVisible"
+      width="1000px"
+      :append-to-body="true"
+      fullscreen
+    >
+      <map-query />
+    </el-dialog>
+
   </div>
 </template>
 
@@ -346,6 +356,7 @@ import UnaForm from './UnaForm.vue'
 
 import UnaMap from '@/layout/components/UnaMap.vue'
 import UnaEntityView from '@/layout/components/UnaEntityView.vue'
+import MapQuery from '@/views/Extend/MapQuery.vue'
 
 import {
   buttonList, flushRedis,
@@ -367,7 +378,8 @@ import checkPermission from '@/utils/permission.js'
 export default {
   name: 'UnaTable',
   components: {
-    UnaForm, UnaMap, UnaDocument, UnaImage, UnaEntityView
+    UnaForm, UnaMap, UnaDocument, UnaImage, UnaEntityView,
+    MapQuery
   },
   directives: { permission },
   props: {
@@ -421,7 +433,8 @@ export default {
       grantChangedIds: [],
       // 角色授权
       extendEntity: '',
-      extendFormDialogVisible: false
+      extendFormDialogVisible: false,
+      mapViewDialogVisible: false
     }
   },
   computed: {
@@ -730,6 +743,10 @@ export default {
 
             this.convertId2EntityAndOpenForm(btn.formEntityId, extMap)
           }
+        },
+        'mapView': (extra) => {
+          this.$message.success('看地图了')
+          this.mapViewDialogVisible = true
         }
       }
       if (Object.prototype.hasOwnProperty.call(methodCenter, handler)) {
