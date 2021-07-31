@@ -1,6 +1,11 @@
 <template>
   <div>
-    <el-link type="primary" @click.native="openEntityDialog">去选择</el-link>
+    <el-link v-if="!showImg" type="primary" @click.native="openEntityDialog">去选择</el-link>
+    <div v-else>
+      <div v-if="selectedDatas.length<=0" class="img-upload-btn flex align-center justify-center" @click.native="openEntityDialog">
+        <i class="el-icon-plus avatar-uploader-icon" />
+      </div>
+    </div>
     <div v-if="!showImg" class="flex">
       {{ selectedName }}
     </div>
@@ -155,3 +160,15 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .img-upload-btn {
+    height: 100px;
+    width: 100px;
+
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    overflow: hidden;
+  }
+</style>

@@ -70,6 +70,9 @@
             <el-form-item label="平台价" prop="sellingPrice">
               <el-input v-model="dataForm.sellingPrice" type="number" placeholder="请输入平台价" />
             </el-form-item>
+            <el-form-item label="销售价" prop="sellingPrice">
+              <el-input v-model="dataForm.sellingPrice" type="number" placeholder="请输入销售价" />
+            </el-form-item>
             <el-form-item label="批发价" prop="wholesalePrice">
               <el-input v-model="dataForm.wholesalePrice" type="number" placeholder="请输入批发价" />
             </el-form-item>
@@ -198,6 +201,9 @@
                       <div class="price-label">库存</div>
                     </td>
                     <td>
+                      <div class="price-label">销售价</div>
+                    </td>
+                    <td>
                       <div class="price-label">批发价</div>
                     </td>
                     <td>
@@ -226,6 +232,11 @@
                     <td>
                       <el-input v-model="fastInput.inventory">
                         <el-button slot="append" icon="el-icon-bottom" @click="goFastInput('inventory')" />
+                      </el-input>
+                    </td>
+                    <td>
+                      <el-input v-model="fastInput.sellingPrice">
+                        <el-button slot="append" icon="el-icon-bottom" @click="goFastInput('sellingPrice')" />
                       </el-input>
                     </td>
                     <td>
@@ -266,6 +277,9 @@
                     </td>
                     <td>
                       <el-input v-model="item.inventory" placeholder="库存" />
+                    </td>
+                    <td>
+                      <el-input v-model="item.sellingPrice" placeholder="销售价" />
                     </td>
                     <td>
                       <el-input v-model="item.wholesalePrice" placeholder="批发价" />
@@ -532,6 +546,7 @@ export default {
             // attributeNames: v.join(','),
             name: item.name,
             inventory: item.inventory, // 库存
+            sellingPrice: item.sellingPrice, // 销售价
             wholesalePrice: item.wholesalePrice, // 批发售价
             costPrice: item.costPrice, // 成本价
             ceilingPrice: item.ceilingPrice, // 最高限价
@@ -629,6 +644,7 @@ export default {
           // attributeNames: v.join(','),
           name: v.join(','),
           inventory: '', // 库存
+          sellingPrice: '', // 销售价
           wholesalePrice: '', // 批发售价
           costPrice: '', // 成本价
           ceilingPrice: '', // 最高限价

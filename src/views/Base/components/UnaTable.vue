@@ -281,7 +281,7 @@
             <el-collapse-item :title="item.name" :name="item.name">
               <template slot="title">
                 <div class="flex justify-between" style="width: 100%;">
-                  <div>{{ item.name }} }</div>
+                  <div>{{ item.name }} </div>
                   <div class="flex align-center">
                     <div v-for="p in item.permissionList" :key="p.id">
                       <div v-if="p.level == 0" class="square black" />
