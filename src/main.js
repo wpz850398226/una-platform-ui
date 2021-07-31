@@ -22,6 +22,9 @@ import 'vue-awesome/icons'
 import Icon from 'vue-awesome/components/Icon'
 Vue.component('v-icon', Icon)
 
+import UnaTable from './views/Base/components/UnaTable.vue'
+Vue.component('una-table', UnaTable)
+
 import VueClipboard from 'vue-clipboard2'
 Vue.use(VueClipboard)
 

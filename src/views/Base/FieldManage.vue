@@ -30,6 +30,7 @@
           <el-form-item label="所属权限" prop="permissionId">
             <el-select
               v-model="dataForm.permissionId"
+              filterable
             >
               <el-option
                 v-for="item in permissionList"
@@ -140,6 +141,7 @@
           <el-form-item label="选项实体" prop="optionEntityId">
             <el-select
               v-model="dataForm.optionEntityId"
+              filterable
               @change="getEntityFieldList"
             >
               <el-option
@@ -155,6 +157,7 @@
             <el-select
               v-model="dataForm.optionNameFieldCode"
               clearable
+              filterable
             >
               <el-option
                 v-for="item in entityFieldList"
@@ -166,13 +169,18 @@
           </el-form-item>
         </div>
         <div
-          v-if="dataForm.assignmentModeDcode === 'field_assignment_singleselect' || dataForm.assignmentModeDcode ==='field_assignment_multiselect'"
+
           class="flex justify-between"
         >
-          <el-form-item label="选项提交" prop="optionValueFieldCode">
+          <el-form-item
+            v-if="dataForm.assignmentModeDcode === 'field_assignment_singleselect' || dataForm.assignmentModeDcode ==='field_assignment_multiselect'"
+            label="选项提交"
+            prop="optionValueFieldCode"
+          >
             <el-select
               v-model="dataForm.optionValueFieldCode"
               clearable
+              filterable
             >
               <el-option
                 v-for="item in entityFieldList"
@@ -197,6 +205,7 @@
           <el-form-item label="联动父元素" prop="selectParentId">
             <el-select
               v-model="dataForm.selectParentId"
+              filterable
             >
               <el-option
                 v-for="item in entityLinkageFieldList"
@@ -211,6 +220,7 @@
           <el-form-item label="触发隐藏字段" prop="hideFieldId">
             <el-select
               v-model="dataForm.hideFieldId"
+              filterable
             >
               <el-option
                 v-for="item in entityLinkageFieldList"
@@ -305,12 +315,11 @@ import { chDelete, chGet, jsonPost, jsonPut } from '../../api/index'
 import UnaDicSelect from '@/layout/components/UnaDicSelect.vue'
 
 import Tree from './components/Tree.vue'
-import UnaTable from './components/UnaTable.vue'
 
 export default {
   name: 'FieldManage',
   components: {
-    Tree, UnaTable,
+    Tree,
     ClientArea, UnaDicSelect
   },
   data() {

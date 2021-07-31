@@ -1,8 +1,18 @@
 <template>
   <div>
     <el-button type="primary" @click="openEntityDialog">去选择</el-button>
-    <div class="flex">
+    <div v-if="showImg" class="flex">
       {{ selectedName }}
+    </div>
+    <div v-else class="flex">
+      <el-image
+        v-for="(item,index) in selectedDatas"
+        :key="index"
+        style="width: 100px; height: 100px"
+        :src="item.path"
+        fit="fill"
+        :preview-src-list="selectedDatas.map(v=>v.path)"
+      />
     </div>
 
     <div v-if="entity">
@@ -38,14 +48,13 @@
 
 <script>
 import UnaForm from '../../views/Base/components/UnaForm.vue'
-import UnaTable from '../../views/Base/components/UnaTable.vue'
 import { entityList } from '@/api/una/sys_entity'
 import { chPut, chDelete, chGet, chPost } from '../../api/index'
 
 export default {
   name: 'UnaEntitySelect',
   components: {
-    UnaTable, UnaForm
+    UnaForm
   },
   model: {
     prop: 'value',
@@ -63,6 +72,10 @@ export default {
     multiple: {
       type: Boolean,
       default: false
+    },
+    showImg: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -71,7 +84,8 @@ export default {
       defaultFormDialogVisible: false,
       selVal: '',
       entity: '',
-      selectedName: ''
+      selectedName: '',
+      selectedDatas: []
     }
   },
   mounted() {
@@ -85,10 +99,11 @@ export default {
     openEntityDialog() {
       this.entityDialogVisible = true
     },
-    submitSelect(e, en) {
+    submitSelect(e, en, datas) {
       console.log(e)
       this.entityDialogVisible = false
       this.selectedName = en
+      this.selectedDatas = datas
       this.updateVal(e)
     },
     updateVal(e) {

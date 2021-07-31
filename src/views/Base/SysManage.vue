@@ -58,13 +58,12 @@ import { chPut, chDelete, chGet, chPost } from '../../api/index'
 
 // 分解代码
 import Tree from './components/Tree.vue'
-import UnaTable from './components/UnaTable.vue'
 import UnaForm from './components/UnaForm.vue'
 
 export default {
   name: 'SysManage',
   components: {
-    Tree, UnaTable, UnaForm,
+    Tree, UnaForm,
     ClientArea
   },
   data() {
@@ -82,7 +81,7 @@ export default {
   mounted() {
     console.log('检测', this.$route.meta)
     this.entity = getEntity(this.$route.meta.code)
-    this.dataQuery = this.$route.meta.query
+    // this.dataQuery = qs.parse(this.$route.meta.query)
     this.relationList = this.entity.relationList
     console.log(this.entity, '88888')
   },

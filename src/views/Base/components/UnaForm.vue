@@ -103,6 +103,7 @@
               v-else-if="field.assignmentModeDcode === 'field_assignment_entityRecord'"
               v-model="dataForm[field.assignmentCode]"
               :field="field"
+              :show-img="field.displayModeDcode==='field_display_img'"
             />
             <el-switch
               v-else-if="field.assignmentModeDcode === 'field_assignment_switch'"

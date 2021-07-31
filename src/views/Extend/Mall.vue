@@ -52,6 +52,7 @@
 
               <una-entity-select
                 v-model="dataForm.fileId"
+                show-img
                 multiple
                 :field="{optionEntityId: '100020'}"
               />
@@ -287,6 +288,7 @@
                     <td>
                       <una-entity-select
                         v-model="item.fileId"
+                        show-img
                         :field="{optionEntityId: '100020'}"
                       />
                     </td>
@@ -355,8 +357,6 @@
 
 <script>
 import ClientArea from '../../layout/components/ClientArea'
-import UnaTable from '../Base/components/UnaTable.vue'
-import UnaUpload from '@/layout/components/UnaUpload.vue'
 import CkEditor from '@/components/CKEditor/index.vue'
 import UnaDicSelect from '@/layout/components/UnaDicSelect.vue'
 import UnaEntitySelect from '@/layout/components/UnaEntitySelect.vue'
@@ -429,7 +429,7 @@ const defaultForm = {
 export default {
   name: 'Mall',
   components: {
-    ClientArea, CkEditor, UnaTable, UnaDicSelect,
+    ClientArea, CkEditor, UnaDicSelect,
     UnaEntitySelect
   },
   directives: { permission },

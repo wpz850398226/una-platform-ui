@@ -21,7 +21,6 @@
   </div>
 </template>
 <script>
-import { parse } from 'path-to-regexp'
 import { chGet } from '../../api/index'
 export default {
   name: 'UnaSingleSelect',

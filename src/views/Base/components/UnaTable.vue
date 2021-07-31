@@ -190,6 +190,9 @@
             <div v-else-if="field.displayModeDcode === 'field_display_icon'">
               <i v-if="scope.row[field.assignmentCode]" :class="scope.row[field.assignmentCode]" />
             </div>
+            <div v-else-if="field.displayModeDcode === 'field_display_entityRecord'">
+              <una-entity-view :field="field" :row="scope.row" />
+            </div>
             <div v-else-if="field.displayModeDcode === 'field_display_showInTemplate'">
               <una-document
                 :id="scope.row.id"
@@ -342,6 +345,7 @@ import UnaImage from '@/layout/components/UnaImage.vue'
 import UnaForm from './UnaForm.vue'
 
 import UnaMap from '@/layout/components/UnaMap.vue'
+import UnaEntityView from '@/layout/components/UnaEntityView.vue'
 
 import {
   buttonList, flushRedis,
@@ -363,7 +367,7 @@ import checkPermission from '@/utils/permission.js'
 export default {
   name: 'UnaTable',
   components: {
-    UnaForm, UnaMap, UnaDocument, UnaImage
+    UnaForm, UnaMap, UnaDocument, UnaImage, UnaEntityView
   },
   directives: { permission },
   props: {
@@ -373,8 +377,8 @@ export default {
     },
     query: {
       required: false,
-      type: String,
-      default: ''
+      type: Object,
+      default: () => {}
     },
     selectSureBtn: {
       type: Boolean,
@@ -474,6 +478,7 @@ export default {
       // const p = qs.parse(`?${this.query}`)
       this.dataQueryCondition = { entityId: this.entity.id }
     }
+    this.dataQueryCondition = { ...this.dataQueryCondition, ...this.query }
 
     this.getFieldList().then((result) => {
       console.log('字段列表', result)
@@ -560,6 +565,7 @@ export default {
     },
     columnFilter(val) {
       if (!val) {
+        console.log(this.fieldList)
         this.fieldList.forEach(e => {
           this.checkList.push(e.id)
         })
@@ -638,7 +644,7 @@ export default {
       console.log(e)
     },
     submitSelect() {
-      this.$emit('submitSelect', this.selectedData.map(v => v.id).join(','), this.selectedData.map(v => v.name).join(','))
+      this.$emit('submitSelect', this.selectedData.map(v => v.id).join(','), this.selectedData.map(v => v.name).join(','), this.selectedData)
     },
     submitSelectDel() {
       const ids = this.selectedData.map(v => v.id)
@@ -715,19 +721,15 @@ export default {
           })
         },
         'comment': (extra) => {
-          this.$confirm(btn.warning, '提示', {
-            confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
-          }).then(() => {
-            if (Object.prototype.hasOwnProperty.call(btn, 'formEntityId')) {
-              const extMap = {}
+          if (Object.prototype.hasOwnProperty.call(btn, 'formEntityId')) {
+            const extMap = {}
 
-              if (Object.prototype.hasOwnProperty.call(btn, 'formFieldCode')) {
-                extMap[btn.formFieldCode] = extra.id
-              }
-
-              this.convertId2EntityAndOpenForm(btn.formEntityId, extMap)
+            if (Object.prototype.hasOwnProperty.call(btn, 'formFieldCode')) {
+              extMap[btn.formFieldCode] = extra.id
             }
-          })
+
+            this.convertId2EntityAndOpenForm(btn.formEntityId, extMap)
+          }
         }
       }
       if (Object.prototype.hasOwnProperty.call(methodCenter, handler)) {
