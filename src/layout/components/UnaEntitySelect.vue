@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-link type="primary" @click="openEntityDialog">去选择</el-link>
+    <el-link type="primary" @click.native="openEntityDialog">去选择</el-link>
     <div v-if="!showImg" class="flex">
       {{ selectedName }}
     </div>
@@ -48,7 +48,7 @@
 
 <script>
 import UnaForm from '../../views/Base/components/UnaForm.vue'
-import { entityList } from '@/api/una/sys_entity'
+import { entityById } from '@/api/una/sys_entity'
 import { chPut, chDelete, chGet, chPost } from '../../api/index'
 
 export default {
@@ -89,14 +89,18 @@ export default {
     }
   },
   mounted() {
-    entityList(1, 1, { id: this.field.optionEntityId }).then((res) => {
-      this.entity = res.data[0]
+    console.log('sssss,,', this.field.optionEntityId)
+    entityById(this.field.optionEntityId).then((res) => {
+      console.log(res, 'kkkkkkkkkkk')
+      this.entity = res.data
+      console.log(this.entity, '88888888888888888')
     })
 
     this.selVal = this.value
   },
   methods: {
     openEntityDialog() {
+      console.log('去选择')
       this.entityDialogVisible = true
     },
     submitSelect(e, en, datas) {

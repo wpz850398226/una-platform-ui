@@ -5,6 +5,10 @@ export function entityList(pageNum = 1, pageSize = 10, query) {
   })
 }
 
+export function entityById(id) {
+  return chGet(`/sys/entity/${id}`)
+}
+
 export function entityListAll() {
   return chGet('/sys/entity/list')
 }

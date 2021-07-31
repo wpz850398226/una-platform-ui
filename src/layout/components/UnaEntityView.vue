@@ -45,7 +45,7 @@
 
 <script>
 import UnaForm from '../../views/Base/components/UnaForm.vue'
-import { entityList } from '@/api/una/sys_entity'
+import { entityById } from '@/api/una/sys_entity'
 import { chPut, chDelete } from '@/api/index'
 
 export default {
@@ -68,8 +68,8 @@ export default {
 
   mounted() {
     // this.entity = getEntity('CpOrderItem')
-    entityList(1, 1, { id: this.field.optionEntityId }).then((res) => {
-      this.entity = res.data[0]
+    entityById(this.field.optionEntityId).then((res) => {
+      this.entity = res.data
     })
     // this.field.optionEntityId
 

@@ -77,7 +77,7 @@
 <script>
 import ClientArea from '../../layout/components/ClientArea'
 import { workflowList, creatInstance, taskList, finishTask } from '@/api/una/sys_workflow'
-import { entityList } from '@/api/una/sys_entity'
+import { entityById } from '@/api/una/sys_entity'
 import UnaForm from './components/UnaForm.vue'
 import { chGet } from '@/api/index'
 
@@ -136,35 +136,31 @@ export default {
       this.workInfo = e
       this.approvalForm.id = e.id
       if (e.nodeTypeDcode === 'flow_nudeType_submit') {
-        entityList(1, 1, { id: e.nodeEntityId }).then((res) => {
-          if (res.data.length > 0) {
-            this.entity = res.data[0]
-            console.log('反查实体', this.entity)
-            this.defaultFormDialogVisible = true
-          }
+        entityById(e.nodeEntityId).then((res) => {
+          this.entity = res.data
+          console.log('反查实体', this.entity)
+          this.defaultFormDialogVisible = true
         })
       }
       if (e.nodeTypeDcode === 'flow_nudeType_audit') {
         //
         this.approvalDataList = []
         e.submitTaskList.forEach(task => {
-          entityList(1, 1, { id: task.nodeEntityId }).then((res) => {
-            if (res.data.length > 0) {
-              const entity = res.data[0]
-              chGet(`${entity.path}/page`, {
-                id: task.recordId
-              }).then(entityData => {
-                if (entityData.data.length > 0) {
-                  this.approvalDataList.push({
-                    entity: entity,
-                    data: entityData.data[0]
-                  })
-                  this.approvalForm.recordId = task.recordId
-                }
-                console.log(entityData, '反查实体数据')
-              })
-              console.log('反查实体', this.entity)
-            }
+          entityById(task.nodeEntityId).then((res) => {
+            const entity = res.data
+            chGet(`${entity.path}/page`, {
+              id: task.recordId
+            }).then(entityData => {
+              if (entityData.data.length > 0) {
+                this.approvalDataList.push({
+                  entity: entity,
+                  data: entityData.data[0]
+                })
+                this.approvalForm.recordId = task.recordId
+              }
+              console.log(entityData, '反查实体数据')
+            })
+            console.log('反查实体', this.entity)
           })
         })
         this.approvalDialogVisible = true

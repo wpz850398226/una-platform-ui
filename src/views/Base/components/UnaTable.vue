@@ -364,7 +364,7 @@ import {
 
 } from '@/api/una/sys_button'
 import {
-  entityList,
+  entityById,
   rolePermission, grantPermission,
   importTemplateDownload
 } from '@/api/una/sys_entity'
@@ -756,15 +756,13 @@ export default {
       }
     },
     convertId2EntityAndOpenForm(entityId, extData = {}) {
-      entityList(1, 1, { id: entityId }).then((res) => {
-        if (res.data.length > 0) {
-          this.extendEntity = res.data[0]
-          console.log('反查实体', this.extendEntity)
-          this.extendFormDialogVisible = true
-          this.$nextTick(() => {
-            this.$refs.formController.initForm('', { ...extData })
-          })
-        }
+      entityById(entityId).then((res) => {
+        this.extendEntity = res.data
+        console.log('反查实体', this.extendEntity)
+        this.extendFormDialogVisible = true
+        this.$nextTick(() => {
+          this.$refs.formController.initForm('', { ...extData })
+        })
       })
     },
     saveSuccess() {

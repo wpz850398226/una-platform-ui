@@ -477,11 +477,7 @@ export default {
   },
   mounted() {
     this.entity = getEntity(this.$route.meta.code)
-    // entityList(1, 1, { code: 'CpGoods' }).then((res) => {
-    //   if (res.data.length > 0) {
-    //     this.entity = res.data[0]
-    //   }
-    // })
+
     this.industryList = findDictionaryList('industry')
     this.industryList = this.cleanEmptyChildren(this.industryList)
     console.log(this.industryList, ';')
