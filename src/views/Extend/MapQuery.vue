@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="flex padding-xs">
+    <div class="flex justify-between padding-xs">
       <div class="flex align-center">
         <div style="width: 90px;">企业名称</div>
         <!-- <el-input v-model="queryForm.companyName" placeholder="请输入企业名称" /> -->
@@ -16,11 +16,20 @@
         />
 
       </div>
+      <div>
+        <el-cascader
+          v-model="queryForm.industryDcode"
+          class="margin-right-xs"
+          :options="industryList"
+          :props="dicProps"
+        />
+        <el-button type="primary" @click="goSearch">搜索</el-button>
+        <el-button @click="backSearch">重置</el-button>
+      </div>
       <!-- <div class="flex align-center  margin-left margin-right-xs">
         <div style="width: 90px;">企业类型</div>
         <el-input v-model="queryForm.companyName" placeholder="请输入企业类型" />
       </div> -->
-      <el-button type="primary">搜索</el-button>
 
     </div>
     <ClientArea search-bar>
@@ -35,6 +44,7 @@
 
 <script>
 import ClientArea from '../../layout/components/ClientArea'
+import { findDictionaryList } from '@/utils/find-dictionary.js'
 import AMapLoader from '@amap/amap-jsapi-loader'
 
 import { companyList } from '@/api/una/sys_company'
@@ -49,13 +59,22 @@ export default {
       amapObj: '',
       mapObj: '',
       queryForm: {
-        companyName: ''
+        companyName: '',
+        industryDcode: []
       },
-      companyList: []
+      companyList: [],
+      dicProps: {
+        label: 'name',
+        value: 'code',
+        children: 'children'
+      },
+      industryList: []
     }
   },
   mounted() {
     this.initAmap()
+    this.industryList = findDictionaryList('industry')
+    this.industryList = this.cleanEmptyChildren(this.industryList)
   },
   methods: {
     querySearch(queryString, cb) {
@@ -135,7 +154,43 @@ export default {
           }
         })
       })
+    },
+    goSearch() {
+      this.mapObj.clearMap()
+      this.companyList.filter(m => m.industryDcode === this.queryForm.industryDcode[2]).forEach(v => {
+        if (v.coord) {
+          const sp = v.coord.split(',')
+          if (sp.length === 2) {
+            const marker = new this.amapObj.Marker({
+              title: v.name,
+              position: new this.amapObj.LngLat(sp[0], sp[1]) // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+            })
+            const textMarker = new this.amapObj.Text({
+              text: v.name,
+              anchor: 'center', // 设置文本标记锚点
+              position: new this.amapObj.LngLat(sp[0], sp[1]) // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+            })
+            this.mapObj.add(textMarker)
+            this.mapObj.add(marker)
+          }
+        }
+      })
+    },
+    backSearch() {
+      this.mapObj.clearMap()
+      this.getCompanyList()
+    },
+    cleanEmptyChildren(list) {
+      list.forEach(k => {
+        if (k.children && k.children.length > 0) {
+          this.cleanEmptyChildren(k.children)
+        } else {
+          k.children = ''
+        }
+      })
+      return list
     }
+
   }
 
 }
