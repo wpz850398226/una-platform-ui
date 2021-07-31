@@ -25,6 +25,9 @@ Vue.component('v-icon', Icon)
 import UnaTable from './views/Base/components/UnaTable.vue'
 Vue.component('una-table', UnaTable)
 
+import UnaForm from './views/Base/components/UnaForm.vue'
+Vue.component('una-form', UnaForm)
+
 import VueClipboard from 'vue-clipboard2'
 Vue.use(VueClipboard)
 

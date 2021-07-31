@@ -44,14 +44,12 @@
 </template>
 
 <script>
-import UnaForm from '../../views/Base/components/UnaForm.vue'
 import { entityById } from '@/api/una/sys_entity'
 import { chPut, chDelete } from '@/api/index'
 
 export default {
   name: 'UnaEntityView',
   components: {
-    UnaForm
   },
   props: {
     field: { type: Object, required: true },

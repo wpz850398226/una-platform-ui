@@ -31,6 +31,7 @@
             <el-select
               v-model="dataForm.permissionId"
               filterable
+              clearable
             >
               <el-option
                 v-for="item in permissionList"
@@ -142,6 +143,7 @@
             <el-select
               v-model="dataForm.optionEntityId"
               filterable
+              clearable
               @change="getEntityFieldList"
             >
               <el-option
@@ -206,6 +208,7 @@
             <el-select
               v-model="dataForm.selectParentId"
               filterable
+              clearable
             >
               <el-option
                 v-for="item in entityLinkageFieldList"
@@ -221,6 +224,7 @@
             <el-select
               v-model="dataForm.hideFieldId"
               filterable
+              clearable
             >
               <el-option
                 v-for="item in entityLinkageFieldList"

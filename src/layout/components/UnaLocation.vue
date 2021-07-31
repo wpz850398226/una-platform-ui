@@ -6,9 +6,10 @@
     <el-dialog title="地图选点" fullscreen :visible.sync="mapDialogVisible" :append-to-body="true">
 
       <div class="flex justify-between">
-        <div class="flex margin-bottom-sm">
+        <div class="flex align-center margin-bottom-sm">
           <div class="margin-right-sm">经度:{{ lng }}</div>
           <div class="margin-right-sm">纬度:{{ lat }}</div>
+          <el-button type="primary" size="medium" @click="mapDialogVisible = false">确认选择</el-button>
           <!-- <div class="margin-right-sm">地址:{{ busCompanyForm.addr }}</div> -->
         </div>
         <el-autocomplete
@@ -138,7 +139,7 @@ export default {
 
 <style lang="scss" scoped>
   .amap-container {
-    height: 75vh;
+    height: 70vh;
     width: 100%;
   }
 </style>

@@ -104,6 +104,7 @@
               v-else-if="field.assignmentModeDcode === 'field_assignment_multiUpload'"
               v-model="dataForm[field.assignmentCode]"
               :show-file-list="false"
+              @saveSuccess="saveSuccess"
             />
             <una-entity-select
               v-else-if="field.assignmentModeDcode === 'field_assignment_entityRecord'"
@@ -320,6 +321,9 @@ export default {
 
           this.fieldList = result
         })
+    },
+    saveSuccess(e) {
+      this.$emit('saveSuccess', e)
     },
     submitPublic(formName) {
       console.log(this.dataForm)

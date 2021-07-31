@@ -352,7 +352,6 @@ import * as fieldPort from '@/api/una/sys_field'
 // import qs from 'query-string'
 import UnaDocument from '@/layout/components/UnaDocument.vue'
 import UnaImage from '@/layout/components/UnaImage.vue'
-import UnaForm from './UnaForm.vue'
 
 import UnaMap from '@/layout/components/UnaMap.vue'
 import UnaEntityView from '@/layout/components/UnaEntityView.vue'
@@ -378,7 +377,7 @@ import checkPermission from '@/utils/permission.js'
 export default {
   name: 'UnaTable',
   components: {
-    UnaForm, UnaMap, UnaDocument, UnaImage, UnaEntityView,
+    UnaMap, UnaDocument, UnaImage, UnaEntityView,
     MapQuery
   },
   directives: { permission },

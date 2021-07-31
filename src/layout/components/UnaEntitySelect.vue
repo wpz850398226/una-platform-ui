@@ -47,14 +47,13 @@
 </template>
 
 <script>
-import UnaForm from '../../views/Base/components/UnaForm.vue'
 import { entityById } from '@/api/una/sys_entity'
 import { chPut, chDelete, chGet, chPost } from '../../api/index'
 
 export default {
   name: 'UnaEntitySelect',
   components: {
-    UnaForm
+
   },
   model: {
     prop: 'value',

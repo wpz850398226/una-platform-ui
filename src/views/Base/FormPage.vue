@@ -19,7 +19,6 @@
 
 <script>
 import ClientArea from '../../layout/components/ClientArea'
-import UnaForm from './components/UnaForm.vue'
 import { getEntity } from '@/utils/una/entity-util.js'
 import { chGet } from '@/api/index'
 import qs from 'query-string'
@@ -27,7 +26,7 @@ import qs from 'query-string'
 export default {
   name: 'FormPage',
   components: {
-    ClientArea, UnaForm
+    ClientArea
   },
   data() {
     return {

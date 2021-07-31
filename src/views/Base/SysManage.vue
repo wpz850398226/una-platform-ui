@@ -58,12 +58,11 @@ import { chPut, chDelete, chGet, chPost } from '../../api/index'
 
 // 分解代码
 import Tree from './components/Tree.vue'
-import UnaForm from './components/UnaForm.vue'
 
 export default {
   name: 'SysManage',
   components: {
-    Tree, UnaForm,
+    Tree,
     ClientArea
   },
   data() {

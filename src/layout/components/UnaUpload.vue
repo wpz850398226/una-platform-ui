@@ -68,7 +68,7 @@ export default {
       data.append('file', await e.file)
       console.log(data, '文件表单')
       const res = await axios({
-        url: `/api/sys/file`,
+        url: `/api/sys/file/save`,
         method: 'POST',
         // headers: {
         //   'Authorization': getToken(),
@@ -84,6 +84,7 @@ export default {
     },
     uploadSuccess(response, file, fileList) {
       this.processFileList(fileList)
+      this.$emit('saveSuccess', response)
     },
     uploadExceed(files, fileList) {
       this.$message.error('已超过最大上传文件数')

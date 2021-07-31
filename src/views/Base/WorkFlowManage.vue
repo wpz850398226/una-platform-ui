@@ -78,13 +78,12 @@
 import ClientArea from '../../layout/components/ClientArea'
 import { workflowList, creatInstance, taskList, finishTask } from '@/api/una/sys_workflow'
 import { entityById } from '@/api/una/sys_entity'
-import UnaForm from './components/UnaForm.vue'
 import { chGet } from '@/api/index'
 
 export default {
   name: 'WorkFlowManage',
   components: {
-    ClientArea, UnaForm
+    ClientArea
   },
   data() {
     return {

@@ -98,12 +98,11 @@
 <script>
 import { workflowList, creatInstance, taskList, finishTask } from '@/api/una/sys_workflow'
 import { entityById } from '@/api/una/sys_entity'
-import UnaForm from '@/views/Base/components/UnaForm.vue'
 import { chGet } from '@/api/index'
 import Todo from './Todo.vue'
 
 export default {
-  components: { Todo, UnaForm },
+  components: { Todo },
   data() {
     return {
       userInfo: '',
