@@ -289,7 +289,11 @@ export default {
     },
     initForm(oldData, mergeData) {
       if (oldData) {
-        this.dataForm = oldData
+        if (this.entity.isVirtual) { // 如果是虚拟实体，表单加载entity.value
+          this.dataForm = oldData.value
+        } else {
+          this.dataForm = oldData
+        }
         this.isEdit = true
       } else {
         this.isEdit = false

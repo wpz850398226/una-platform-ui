@@ -42,7 +42,7 @@ module.exports = {
     open: true,
     proxy: {
       '/api': { // 这里最好有一个 /
-        target: 'http://192.168.0.10:80', // 服务器端接口地址 http://42.192.150.206:10080/sys/login/toLogin
+        target: 'http://127.0.0.1:80', // 服务器端接口地址 http://42.192.150.206:10080/sys/login/toLogin
         // target: ' http://bgv69g.natappfree.cc/', // 服务器端接口地址
         // target: 'http://42.192.150.206:10080', // 服务器端接口地址
         ws: true, // 如果要代理 websockets，配置这个参数
