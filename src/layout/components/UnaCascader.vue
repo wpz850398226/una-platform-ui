@@ -92,8 +92,7 @@ export default {
       return list
     },
     updateVal(e) {
-      console.log(e)
-      this.$emit('updateVal', e[2])
+      this.$emit('updateVal', e.join(','))
     }
   }
 }

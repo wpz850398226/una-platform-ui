@@ -45,8 +45,7 @@ export default {
   },
   methods: {
     updateVal(e) {
-      console.log(regionData)
-      this.$emit('updateVal', e[2])
+      this.$emit('updateVal', e.join(','))
     }
   }
 }
