@@ -91,6 +91,7 @@ export default {
       obj[code] = id
       this.treeSelected = id
       this.treeQuery = obj
+      this.$refs.tableController.initPage()
       this.updateTableData(obj)
       console.log(this.relationList)
       console.log(node, 'klkl', id)

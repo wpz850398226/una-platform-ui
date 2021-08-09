@@ -2,7 +2,7 @@
   <div>
     <el-link v-if="!showImg" type="primary" @click.native="openEntityDialog">去选择</el-link>
     <div v-else>
-      <div v-if="selectedDatas.length<=0" class="img-upload-btn flex align-center justify-center" @click.native="openEntityDialog">
+      <div v-if="selectedDatas.length<=0" class="img-upload-btn flex align-center justify-center" @click="openEntityDialog">
         <i class="el-icon-plus avatar-uploader-icon" />
       </div>
     </div>

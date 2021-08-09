@@ -589,6 +589,9 @@ export default {
       this.filterQueryCondition = c
       this.getPublicList()
     },
+    initPage() {
+      this.pageNum = 1
+    },
     getPublicList(e, m = {}) {
       if (e) {
         this.otherCondition = e
