@@ -469,7 +469,6 @@ export default {
 
   },
   mounted() {
-    console.log(this.entity, '接收到的')
     // 处理模糊查询条件
     this.entity.queryList.map((v) => {
       if (v.assignmentModeDcode === 'field_query_fuzzyText') {
@@ -493,7 +492,6 @@ export default {
     this.dataQueryCondition = { ...this.dataQueryCondition, ...this.query }
 
     this.getFieldList().then((result) => {
-      console.log('字段列表', result)
       this.fieldList = result
       this.getPublicList()
       this.columnFilter()
@@ -510,16 +508,13 @@ export default {
     initRoleManage(e) {
       this.grantTitle = e.name
       this.grantLevel = [...findDictionaryList('permission_scope')].reverse()
-      console.log(this.grantLevel, '等级')
 
       rolePermission({ 'roleId': e.id }).then(roleData => {
-        console.log('角色', roleData)
         entityListAll().then(res => {
           this.entityList = res.map(entity => {
             entity.permissionList.map(p => {
               const find = roleData.filter(m => m.permissionId === p.id)
               if (find.length > 0) {
-                console.log(find[0], 'sssssskkkk')
                 p['pid'] = find[0].id
                 p['scopeDcode'] = find[0].scopeDcode
                 p['level'] = this.permissionLevel(find[0].scopeDcode)
@@ -528,7 +523,6 @@ export default {
             })
             return entity
           })
-          console.log('全部实体', this.entityList)
         })
       })
     },
@@ -539,7 +533,7 @@ export default {
     },
     savePermission() {
       const submitData = []
-      console.log(this.grantChangedIds)
+
       this.entityList.forEach(e => {
         e.permissionList.forEach(k => {
           if (this.grantChangedIds.includes(k.pid)) {
@@ -547,7 +541,7 @@ export default {
           }
         })
       })
-      console.log('提交数据', submitData)
+
       grantPermission(submitData).then(() => {
         this.grantRoleDialogVisible = false
         this.$message.success('保存成功')
@@ -562,13 +556,12 @@ export default {
     },
     downloadTemplate() {
       importTemplateDownload(this.entity.code).then(res => {
-        console.log(res, '模板')
+
       })
     },
     getButtonList() {
       buttonList({ 'entityId': this.entity.id }).then(res => {
         this.generalButtonList = res.data.filter(v => v.positionDcode === 'entity_buttonPosition_tableheadLeft' || v.positionDcode === 'entity_buttonPosition_inLine')
-        console.log('按钮列表', this.generalButtonList)
       })
     },
 
@@ -577,7 +570,6 @@ export default {
     },
     columnFilter(val) {
       if (!val) {
-        console.log(this.fieldList)
         this.fieldList.forEach(e => {
           this.checkList.push(e.id)
         })
@@ -597,9 +589,8 @@ export default {
         this.otherCondition = e
       } else {
         this.otherCondition = this.dataQueryCondition
-        console.log('s1')
       }
-      console.log(this.otherCondition, 'm')
+
       chGet(this.entity.path + '/page', {
         'pageNum': this.pageCurrent,
         'pageSize': this.pageSize,
@@ -656,7 +647,6 @@ export default {
       } else {
         this.selectedData = [e]
       }
-      console.log(e)
     },
     submitSelect() {
       this.$emit('submitSelect', this.selectedData.map(v => v.id).join(','), this.selectedData.map(v => v.name).join(','), this.selectedData)
@@ -680,7 +670,6 @@ export default {
     },
     // 通用按钮事件处理器
     reflectFun(handler, extra, btn) {
-      console.log(handler, extra, btn)
       const methodCenter = {
         'refreshResource': () => {
           this.$message.success('刷新资源成功')
@@ -760,7 +749,7 @@ export default {
     convertId2EntityAndOpenForm(entityId, extData = {}) {
       entityById(entityId).then((res) => {
         this.extendEntity = res.data
-        console.log('反查实体', this.extendEntity)
+
         this.extendFormDialogVisible = true
         this.$nextTick(() => {
           this.$refs.formController.initForm('', { ...extData })

@@ -4,6 +4,7 @@
       :list-type="showFileList ? 'picture-card' : 'text'"
       action=""
       :limit="limit"
+      multiple
       :http-request="handleUpload"
       :file-list="myFileList"
       :on-success="uploadSuccess"
@@ -39,7 +40,7 @@ export default {
     },
     limit: {
       type: Number,
-      default: 1
+      default: 99
     },
     prefix: {
       type: String,
@@ -58,7 +59,7 @@ export default {
     }
   },
   mounted() {
-    // console.log('ss', this.fileList.split(','))
+    //
     // this.myFileList = this.fileList ? this.fileList.split(',') : []
     // this.hideUpload = this.myFileList.length >= this.limit
   },
@@ -66,7 +67,7 @@ export default {
     async handleUpload(e) {
       const data = new FormData()
       data.append('file', await e.file)
-      console.log(data, '文件表单')
+
       const res = await axios({
         url: `/api/sys/file/save`,
         method: 'POST',
@@ -78,7 +79,7 @@ export default {
         data,
         withCredentials: true // true 为不允许带 token, false 为允许
       })
-      console.log(res)
+
       return res.data
       // return AliyunOSS.getInstance().upload(e.file, 'ylmc/')
     },

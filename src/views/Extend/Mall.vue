@@ -494,7 +494,7 @@ export default {
 
     this.industryList = findDictionaryList('industry')
     this.industryList = this.cleanEmptyChildren(this.industryList)
-    console.log(this.industryList, ';')
+
     // industry
   },
   methods: {
@@ -514,7 +514,7 @@ export default {
       this.dataForm = { ...e }
 
       // 处理参数回显
-      console.log(e, '参数')
+
       this.keyParams = []
       if (e.goodsParam) {
         Object.keys(e.goodsParam).forEach(k => {
@@ -580,7 +580,7 @@ export default {
       this.dataForm.primaryIndustryDcode = e[0] // 所属一级行业编码
       this.dataForm.secondryIndustryDcode = e[1]// 所属二级行业编码
       this.dataForm.thirdryIndustryDcode = e[2]// 所属三级行业编码
-      console.log(e)
+
     },
     cleanEmptyChildren(list) {
       list.forEach(k => {
@@ -636,9 +636,9 @@ export default {
         }
         sarr = tarr
       }
-      console.log(sarr)
+
       this.specificationTableData = sarr.map((v, vi) => {
-        console.log(this.specificationList, 'pppp')
+
         return {
           attrs: v,
           // attributeNames: v.join(','),
@@ -655,7 +655,7 @@ export default {
         }
       })
 
-      console.log(this.specificationTableData)
+
     },
     goFastInput(e) {
       this.specificationTableData.forEach((item, index) => {
@@ -663,7 +663,7 @@ export default {
       })
     },
     saveData() {
-      console.log(this.dataForm)
+
       // 处理参数goodsParam
       const map = {}
       this.keyParams.forEach(k => {

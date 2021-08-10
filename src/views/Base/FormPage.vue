@@ -35,7 +35,7 @@ export default {
   },
   mounted() {
     this.entity = getEntity(this.$route.meta.code)
-    console.log(this.entity)
+
     this.initData()
   },
   methods: {
@@ -52,7 +52,7 @@ export default {
             queryRealId = userInfo[q]
           }
         }
-        console.log(query, '踩踩踩踩踩')
+
 
         chGet(`${this.entity.path}/${queryRealId}`
           // , {
@@ -61,7 +61,7 @@ export default {
           // }
         ).then(res => {
           this.$refs.formController.initForm(res.data)
-          console.log('suhuju', res)
+
         })
       }
     },

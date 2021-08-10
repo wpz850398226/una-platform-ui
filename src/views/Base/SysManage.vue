@@ -78,11 +78,11 @@ export default {
     }
   },
   mounted() {
-    console.log('检测', this.$route.meta)
+
     this.entity = getEntity(this.$route.meta.code)
     // this.dataQuery = qs.parse(this.$route.meta.query)
     this.relationList = this.entity.relationList
-    console.log(this.entity, '88888')
+
   },
   methods: {
     // 新增分散处理
@@ -93,8 +93,8 @@ export default {
       this.treeQuery = obj
       this.$refs.tableController.initPage()
       this.updateTableData(obj)
-      console.log(this.relationList)
-      console.log(node, 'klkl', id)
+
+
       if (this.relationList.length > 0) {
         const map = {}
         const rel = this.relationList[0]
@@ -152,7 +152,7 @@ export default {
       })
     },
     submitSelect(e) {
-      console.log(e)
+
     }
 
   }

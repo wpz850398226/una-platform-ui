@@ -51,11 +51,11 @@ export default {
     }
   },
   mounted() {
-    console.log('地图选点', this.value)
+
     this.selVal = this.value
     if (this.selVal) {
       const sp = this.selVal.split(',')
-      console.log(sp, '0000')
+
       this.lng = sp[0]
       this.lat = sp[1]
     }
@@ -102,7 +102,7 @@ export default {
         })
         this.mapObj = map
       }).catch(e => {
-        console.log(e)
+
       })
     },
     querySearchAsync(keywords, cb) {
@@ -130,7 +130,7 @@ export default {
       this.mapObj.setZoomAndCenter(16, [e.location.lng, e.location.lat])
     },
     updateVal(e) {
-      console.log(e)
+
       this.$emit('updateVal', e)
     }
   }

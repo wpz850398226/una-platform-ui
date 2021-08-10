@@ -81,7 +81,7 @@ export default {
 
         this.mapObj = map
       }).catch(e => {
-        console.log(e)
+
       })
     }
   }

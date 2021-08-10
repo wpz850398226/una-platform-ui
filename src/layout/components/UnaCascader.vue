@@ -63,22 +63,28 @@ export default {
     }
   },
   mounted() {
-    console.log('联动', this.field.optionParamValue)
+
     this.optionList = findDictionaryList(this.field.optionParamValue)
     this.optionList = this.cleanEmptyChildren(this.optionList)
 
+
+    if (this.value) {
+      const sp = this.value.split(',')
+      this.selVal = sp
+    }
+
     // await this.queryOptions(this.field)
 
-    // console.log(this.field, '检查')
-    // console.log(this.value, '传过来的值', parseInt(this.value, 10))
+    //
+    //
     // if (this.value && parseInt(this.value, 10) !== 'NaN') { // 尝试一次转换
     //   this.selVal = parseInt(this.value, 10)
     // } else {
     //   this.selVal = this.value
     // }
 
-    // console.log('已经选中', this.selVal)
-    // console.log('卡看默认', this.unionFieldValue)
+    //
+    //
   },
   methods: {
     cleanEmptyChildren(list) {

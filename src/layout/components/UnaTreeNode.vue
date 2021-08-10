@@ -20,7 +20,7 @@ export default {
   },
   mounted() {
     const userInfo = this.$store.getters.userinfo
-    console.log('用户信息', userInfo)
+
     if (this.defaultValue) {
       if (this.defaultValue.indexOf('$u') !== -1) {
         this.updateVal(userInfo[this.defaultValue.substring(3)])
@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     updateVal(e) {
-      console.log(e)
+
       this.$emit('updateVal', e)
     }
   }

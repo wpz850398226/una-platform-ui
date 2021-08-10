@@ -35,7 +35,7 @@ export default {
     }
   },
   mounted() {
-    console.log(this.value)
+
     if (this.value) {
       const sp = this.value.split(',')
       this.selVal = sp

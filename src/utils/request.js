@@ -69,7 +69,7 @@ service.interceptors.response.use(
       })
     }
     return res
-    // console.log(res, 'kkkk')
+    //
     // //
     // if (!res.status) { return res }
     // // if the custom code is not 20000, it is judged as an error.

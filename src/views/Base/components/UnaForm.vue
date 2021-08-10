@@ -110,6 +110,8 @@
               v-else-if="field.assignmentModeDcode === 'field_assignment_entityRecord'"
               v-model="dataForm[field.assignmentCode]"
               :field="field"
+              :real-val="dataForm"
+              :multiple="field.selectableLimitNum && field.selectableLimitNum>1"
               :show-img="field.displayModeDcode==='field_display_img'"
             />
             <el-switch
@@ -284,7 +286,6 @@ export default {
     getButtonList() {
       buttonList({ 'entityId': this.entity.id }).then(res => {
         this.formButtonList = res.data.filter(v => v.positionDcode === 'entity_buttonPosition_formBottom')
-        console.log('按钮列表', this.formButtonList)
       })
     },
     initForm(oldData, mergeData) {
@@ -298,7 +299,6 @@ export default {
       } else {
         this.isEdit = false
         if (mergeData) { // 合并默认值
-          console.log(mergeData, 'mergeData')
           Object.keys(mergeData).map(v => {
             this.$set(this.defaultForm, v, mergeData[v])
           })
@@ -316,7 +316,6 @@ export default {
     getFieldList() {
       fieldPort.fieldList({ 'entityId': this.entity.id, 'isUpdate': 1 })
         .then((result) => {
-          console.log(result, '字段啊啊啊')
           result.forEach(e => {
             if (e.isRequired) {
               this.defaultFormRules[e.assignmentCode] = [{ required: true, message: `请输入或选择${e.name}`, trigger: 'change' }]
@@ -330,12 +329,10 @@ export default {
       this.$emit('saveSuccess', e)
     },
     submitPublic(formName) {
-      console.log(this.dataForm)
       this.$refs[formName].validate(async(valid) => {
         if (valid) {
           this.loading = true
           const { children, map, ...commitData } = this.dataForm // 删除无用字段
-          console.log('提交检查', commitData)
 
           const submitData = { ...commitData, ...this.treeAddData } // 合并树选择
 
@@ -363,7 +360,6 @@ export default {
     },
     // 通用按钮事件处理器
     reflectFun(handler, extra) {
-      console.log(handler)
       const methodCenter = {
         'checkForm': () => {
           this.$refs.publicForm.validate()

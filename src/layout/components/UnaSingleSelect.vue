@@ -55,7 +55,7 @@ export default {
   },
   watch: {
     unionFieldValue(o, n) {
-      console.log('相连变了', o, n)
+
       this.queryOptions(this.field)
       this.selVal = ''
     }
@@ -63,16 +63,16 @@ export default {
   async mounted() {
     await this.queryOptions(this.field)
 
-    console.log(this.field, '检查')
-    console.log(this.value, '传过来的值', parseInt(this.value, 10))
-    if (this.value && parseInt(this.value, 10) !== 'NaN') { // 尝试一次转换
+
+
+    if (this.value && !isNaN(parseInt(this.value, 10))) { // 尝试一次转换
       this.selVal = parseInt(this.value, 10)
     } else {
       this.selVal = this.value
     }
 
-    console.log('已经选中', this.selVal)
-    console.log('卡看默认', this.unionFieldValue)
+
+
   },
   methods: {
     async queryOptions(field) {
@@ -90,15 +90,15 @@ export default {
         } else {
           obj[optionName] = optionValue
         }
-        console.log(obj, 'obj')
+
       }
       if (field.optionEntityPath) {
         const userInfo = this.$store.getters.userinfo
         const dsdu = {}
-        console.log(optionValue, '检查 ni')
+
         if (typeof optionValue === 'string' && optionValue.indexOf('$s') !== -1) {
           const k = optionValue.substring(3)
-          console.log('$sssssss', this.rowData)
+
           if (Object.prototype.hasOwnProperty.call(this.rowData, k)) {
             dsdu[optionName] = this.rowData[k]
           }
@@ -113,11 +113,11 @@ export default {
 
         const result = await chGet(field.optionEntityPath + '/list', { ...obj, ...dsdu })
         this.optionList = result
-        console.log(this.optionList, 'asp')
+
       }
     },
     updateVal(e) {
-      console.log(e)
+
       this.$emit('updateVal', e)
     }
   }

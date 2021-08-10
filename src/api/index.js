@@ -71,7 +71,7 @@ function chGet(url, data) {
   const g = reqData ? '?' : ''
   const urlStr = `${reqUrl}${url}${g}${reqData}`
 
-  console.log(urlStr)
+
 
   return new Promise((resolve, reject) => {
     axios({
@@ -91,7 +91,7 @@ function chPost(url, data) {
   data = qs.stringify(removePropertyOfNull(data)) // 序列化
   // const reqData = JSON.stringify(data)
 
-  console.log(`${reqUrl}${url}`)
+
 
   return new Promise((resolve, reject) => {
     axios({
@@ -113,7 +113,7 @@ function jsonPost(url, data) {
   // data = qs.stringify(removePropertyOfNull(data)) // 序列化
   const reqData = JSON.stringify(data)
 
-  console.log(`${reqUrl}${url}`)
+
 
   return new Promise((resolve, reject) => {
     axios({

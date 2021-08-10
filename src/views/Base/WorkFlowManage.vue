@@ -105,39 +105,39 @@ export default {
   },
   mounted() {
     this.userInfo = this.$store.getters.userinfo
-    console.log(this.userInfo)
+
     this.getWorkflowList()
     this.getTaskList()
   },
   methods: {
     getWorkflowList() {
       workflowList().then(res => {
-        console.log(res)
+
         this.workflowList = res
       })
     },
     startAct(e) {
       creatInstance(e.id).then(res => {
-        console.log(res)
+
         this.$message.success(`发起工作流 - ${e.name} 成功`)
         this.getTaskList()
       })
     },
     getTaskList() {
       taskList(this.userInfo.id).then(res => {
-        console.log('待办', res)
+
         this.taskList = res.data
-        console.log('ssss', this.taskList)
+
       })
     },
     handleTask(e) {
-      console.log(e)
+
       this.workInfo = e
       this.approvalForm.id = e.id
       if (e.nodeTypeDcode === 'flow_nudeType_submit') {
         entityById(e.nodeEntityId).then((res) => {
           this.entity = res.data
-          console.log('反查实体', this.entity)
+
           this.defaultFormDialogVisible = true
         })
       }
@@ -157,9 +157,9 @@ export default {
                 })
                 this.approvalForm.recordId = task.recordId
               }
-              console.log(entityData, '反查实体数据')
+
             })
-            console.log('反查实体', this.entity)
+
           })
         })
         this.approvalDialogVisible = true
@@ -170,7 +170,7 @@ export default {
         id: this.workInfo.id,
         recordId: e.data
       }).then(res => {
-        console.log(res, '完成任务')
+
         this.$message.success('处理任务完成')
         this.getTaskList()
         this.defaultFormDialogVisible = false

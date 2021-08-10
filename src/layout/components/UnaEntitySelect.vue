@@ -1,11 +1,9 @@
 <template>
   <div>
     <el-link v-if="!showImg" type="primary" @click.native="openEntityDialog">去选择</el-link>
-    <div v-else>
-      <div v-if="selectedDatas.length<=0" class="img-upload-btn flex align-center justify-center" @click="openEntityDialog">
-        <i class="el-icon-plus avatar-uploader-icon" />
-      </div>
-    </div>
+    <!-- <div v-else>
+      11
+    </div> -->
     <div v-if="!showImg" class="flex">
       {{ selectedName }}
     </div>
@@ -18,6 +16,9 @@
         fit="fill"
         :preview-src-list="selectedDatas.map(v=>v.path)"
       />
+      <div class="img-upload-btn flex align-center justify-center" @click="openEntityDialog">
+        <i class="el-icon-plus avatar-uploader-icon" />
+      </div>
     </div>
 
     <div v-if="entity">
@@ -77,10 +78,19 @@ export default {
       type: Boolean,
       default: false
     },
+    limit: {
+      type: Number,
+      default: 1
+    },
     showImg: {
       type: Boolean,
       default: false
+    },
+    realVal: {
+      type: Object,
+      default: () => {}
     }
+
   },
   data() {
     return {
@@ -93,22 +103,35 @@ export default {
     }
   },
   mounted() {
-    console.log('sssss,,', this.field.optionEntityId)
     entityById(this.field.optionEntityId).then((res) => {
-      console.log(res, 'kkkkkkkkkkk')
       this.entity = res.data
-      console.log(this.entity, '88888888888888888')
     })
 
     this.selVal = this.value
+
+    if (this.selVal && this.realVal) {
+      if (this.realVal[this.field.assignmentCode] && this.field.assignmentCode !== this.field.displayCode) {
+        // 如果赋值编码不等于显示编码，则查询显示数据
+        const realField = this.realVal.map[this.field.displayCode]
+
+        this.selectedDatas = realField
+          .split(',')
+          .map(v => { return { path: v } })
+      }
+    }
   },
   methods: {
     openEntityDialog() {
-      console.log('去选择')
       this.entityDialogVisible = true
     },
     submitSelect(e, en, datas) {
-      console.log(e)
+      if (this.multiple) {
+        if (datas.length > this.limit) {
+          this.$message.warning(`选择数量超过上限(${this.limit})`)
+          return
+        }
+      }
+
       this.entityDialogVisible = false
       this.selectedName = en
       this.selectedDatas = datas
@@ -128,7 +151,6 @@ export default {
     showAddDialog() {
       this.defaultFormDialogVisible = true
       this.$nextTick(() => {
-        console.log(this.$refs)
         this.$refs.formController.initForm('')
       })
     },
@@ -136,7 +158,6 @@ export default {
       // chGet(this.entity.path + `/${e.id}`).then((resolve) => {
       this.defaultFormDialogVisible = true
       this.$nextTick(() => {
-        console.log(this.$refs)
         this.$refs.formController.initForm(e)
       })
       // })

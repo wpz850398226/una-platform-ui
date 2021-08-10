@@ -76,7 +76,7 @@ const actions = {
 
         const routes = generator(data)
 
-        console.log('生成结果', routes)
+
 
         routes.push({ path: '*', redirect: '/404', hidden: true })
 
@@ -90,7 +90,7 @@ const actions = {
 
 const getComponent = (code, route, path) => {
   if (path.indexOf('sys/form') !== -1) {
-    console.log('命中form', code, path)
+
     return () => import('@/views/Base/FormPage')
   }
 
@@ -116,7 +116,7 @@ const getQuery = (path) => {
 }
 
 const generator = (routerMap, parent) => {
-  console.log('菜单', routerMap)
+
   return routerMap.map(item => {
     const { name, type, spread, code, href, icon, path } = item || {}
     const currentRouter = {

@@ -376,12 +376,12 @@ export default {
       this.treeQuery = obj
       this.treeNode = node
       this.updateTableData(obj)
-      console.log(node, 'klkkkk')
+
       this.getEntityLinkageFieldList(node.id)
       this.getPermissionList(node.id)
     },
     getEntityFieldList(e) {
-      console.log(e)
+
       fieldPort.fieldList({ 'entityId': e }).then(res => {
         this.entityFieldList = res
       })
@@ -418,7 +418,7 @@ export default {
       }
     },
     handleEdit(e) {
-      console.log(e.id)
+
       this.isEdit = true
       // chGet(this.entity.path + `/${e.id}`).then((resolve) => {
       this.defaultFormDialogVisible = true

@@ -11,7 +11,7 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 const whiteList = ['/login', '/forgetPassword', '/register'] // no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
-  console.log('to', to)
+
 
   // start progress bar
   NProgress.start()
@@ -49,7 +49,7 @@ router.beforeEach(async(to, from, next) => {
               // if (from.query.redirect && from.query.redirect !== '/403') {
               //   next(from.query.redirect)
               // }
-              console.log(to.matched)
+
               if (to.matched.length === 0) {
                 router.push(to.path)
               }

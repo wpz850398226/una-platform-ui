@@ -26,7 +26,7 @@ export default {
         'pageNum': 1,
         'pageSize': 15
       }).then(res => {
-        console.log(res, '订单')
+
       })
     }
     // fetchData() {

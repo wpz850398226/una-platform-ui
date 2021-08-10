@@ -277,7 +277,7 @@ export default {
         if (valid) {
           if (this.pwdForm.password === this.pwdForm.surepwd) {
             changePwd(this.pwdForm).then(res => {
-              console.log('修改结果', res)
+
               this.$message.success('修改成功')
               this.logout()
             })

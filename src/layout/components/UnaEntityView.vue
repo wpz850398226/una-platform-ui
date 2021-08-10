@@ -71,9 +71,9 @@ export default {
     })
     // this.field.optionEntityId
 
-    console.log(this.entity, 'entityview')
-    console.log(this.field, 'field')
-    console.log(this.row, 'row')
+
+
+
     const map = {}
     if (Object.prototype.hasOwnProperty.call(this.field, 'optionParamName')) {
       if (Object.prototype.hasOwnProperty.call(this.field, 'optionParamValue')) {

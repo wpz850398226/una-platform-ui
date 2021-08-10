@@ -141,10 +141,10 @@ const actions = {
           commit('SET_CONFIG', result[1].data)
           commit('SET_ENTITY', result[2])
           commit('SET_DICTIONARY', result[3])
-          console.log('sss', result[3])
+
           resolve()
         }).catch((error) => {
-          console.log(error)
+
           reject(error)
           // this.$message.error('基础信息获取失败')
         })

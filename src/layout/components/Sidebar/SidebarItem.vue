@@ -70,7 +70,7 @@ export default {
 
       // When there is only one child router, the child router is displayed by default
       if (showingChildren.length === 1) {
-        console.log('sssssssssssssssssssss', showingChildren)
+
         if (showingChildren[0].name === 'Dashboard' || showingChildren[0].name === 'MapQuery') {
           return true
         }
