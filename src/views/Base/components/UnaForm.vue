@@ -301,7 +301,6 @@ export default {
       if (oldData) {
         if (this.entity.isVirtual) { // 如果是虚拟实体，表单加载entity.value
           this.dataForm = { ...oldData.value, map: oldData.map, id: oldData.id }
-          // this.dataForm.push('id', oldData.id)
         } else {
           this.dataForm = oldData
         }
