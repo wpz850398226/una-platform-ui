@@ -109,6 +109,7 @@ export default {
     })
 
     this.selVal = this.value
+    // console.log('选择上限为：' + this.field.selectableLimitNum)
 
     if (this.selVal && this.realVal) {
       console.log('rean', this.realVal)
@@ -120,6 +121,7 @@ export default {
         this.selectedDatas = realField
           .split(',')
           .map(v => { return { path: v } })
+        this.selectedName = this.realVal.map[this.field.displayCode]
       }
     }
   },
@@ -129,8 +131,8 @@ export default {
     },
     submitSelect(e, en, datas) {
       if (this.multiple) {
-        if (datas.length > this.limit) {
-          this.$message.warning(`选择数量超过上限(${this.limit})`)
+        if (datas.length > this.field.selectableLimitNum) {
+          this.$message.warning(`选择数量超过上限(${this.field.selectableLimitNum})`)
           return
         }
       }

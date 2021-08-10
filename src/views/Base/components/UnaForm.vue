@@ -345,8 +345,13 @@ export default {
 
           const submitData = { ...commitData, ...this.treeAddData } // 合并树选择
 
+          let entityPath = this.entity.path
+          if (this.entity.isVirtual) {
+            entityPath = '/sys/data/virtual'
+          }
+
           if (!this.isEdit) {
-            jsonPost(this.entity.path, submitData).then((resolve) => {
+            jsonPost(entityPath, submitData).then((resolve) => {
               this.defaultFormDialogVisible = false
               this.$message.success('保存成功')
               this.$emit('saveSuccess', resolve)
@@ -355,7 +360,7 @@ export default {
               this.loading = false
             })
           } else {
-            jsonPut(this.entity.path, commitData).then((resolve) => {
+            jsonPut(entityPath, commitData).then((resolve) => {
               this.defaultFormDialogVisible = false
               this.$message.success('保存成功')
               this.$emit('saveSuccess', resolve)
