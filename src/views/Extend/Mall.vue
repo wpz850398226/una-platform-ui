@@ -36,9 +36,9 @@
 
             <h3>商品信息</h3>
             <el-divider />
-            <el-form-item label="行业" prop="industryDcode">
+            <el-form-item label="行业" prop="industryTypeDcodes">
               <el-cascader
-                v-model="dataForm.industryDcode"
+                v-model="dataForm.industryTypeDcodes"
                 :options="industryList"
                 :props="dicProps"
                 @change="industryChange"
@@ -67,24 +67,24 @@
             <el-form-item label="免运费额" prop="freeFreightPrice">
               <el-input v-model="dataForm.freeFreightPrice" type="number" placeholder="订单总价超过多少可以免运费" />
             </el-form-item>
-            <el-form-item label="平台价" prop="sellingPrice">
-              <el-input v-model="dataForm.sellingPrice" type="number" placeholder="请输入平台价" />
+            <el-form-item label="标价" prop="sellingPrice">
+              <el-input v-model="dataForm.sellingPrice" type="number" placeholder="请输入标价" />
             </el-form-item>
-            <el-form-item label="销售价" prop="sellingPrice">
-              <el-input v-model="dataForm.sellingPrice" type="number" placeholder="请输入销售价" />
-            </el-form-item>
-            <el-form-item label="批发价" prop="wholesalePrice">
-              <el-input v-model="dataForm.wholesalePrice" type="number" placeholder="请输入批发价" />
-            </el-form-item>
-            <el-form-item label="成本价" prop="costPrice">
-              <el-input v-model="dataForm.costPrice" type="number" placeholder="请输入成本价" />
-            </el-form-item>
-            <el-form-item label="最低限价" prop="floorPrice">
-              <el-input v-model="dataForm.floorPrice" type="number" placeholder="请输入最低限价" />
-            </el-form-item>
-            <el-form-item label="最高限价" prop="ceilingPrice">
-              <el-input v-model="dataForm.ceilingPrice" type="number" placeholder="请输入最高限价" />
-            </el-form-item>
+            <!--            <el-form-item label="销售价" prop="sellingPrice">-->
+            <!--              <el-input v-model="dataForm.sellingPrice" type="number" placeholder="请输入销售价" />-->
+            <!--            </el-form-item>-->
+            <!--            <el-form-item label="批发价" prop="wholesalePrice">-->
+            <!--              <el-input v-model="dataForm.wholesalePrice" type="number" placeholder="请输入批发价" />-->
+            <!--            </el-form-item>-->
+            <!--            <el-form-item label="成本价" prop="costPrice">-->
+            <!--              <el-input v-model="dataForm.costPrice" type="number" placeholder="请输入成本价" />-->
+            <!--            </el-form-item>-->
+            <!--            <el-form-item label="最低限价" prop="floorPrice">-->
+            <!--              <el-input v-model="dataForm.floorPrice" type="number" placeholder="请输入最低限价" />-->
+            <!--            </el-form-item>-->
+            <!--            <el-form-item label="最高限价" prop="ceilingPrice">-->
+            <!--              <el-input v-model="dataForm.ceilingPrice" type="number" placeholder="请输入最高限价" />-->
+            <!--            </el-form-item>-->
 
             <h3>商品属性</h3>
             <el-divider />
@@ -95,7 +95,7 @@
               /> -->
 
               <el-cascader
-                v-model="dataForm.areas"
+                v-model="dataForm.regionIds"
                 placeholder="请选择省市区(县)"
                 style="width: 200px;"
                 size="large"
@@ -136,9 +136,9 @@
           <el-form label-width="80px">
             <h3>库存</h3>
             <el-divider />
-            <el-form-item label="已出售数" prop="sales">
+            <!--<el-form-item label="已出售数" prop="sales">
               <el-input v-model="dataForm.sales" placeholder="请输入已出售数" />
-            </el-form-item>
+            </el-form-item>-->
             <el-form-item label="库存" prop="inventory">
               <div class="flex">
                 <el-input v-model="dataForm.inventory" placeholder="请输入库存" />
@@ -387,21 +387,14 @@ const defaultForm = {
   unitDcode: '', // 单位
   sales: '', // 已销售量
   shopId: '', // 所属店铺id
-  industryDecode: [], // 行业数组
-  primaryIndustryDcode: '', // 所属一级行业编码
-  secondryIndustryDcode: '', // 所属二级行业编码
-  thirdryIndustryDcode: '', // 所属三级行业编码
+  industryTypeDcodes: [], // 行业编码
   typeDcode: '', // 类型id
   statusDcode: '', // 产品状态id
   keyword: '', // 关键字
   introduction: '', // 商品简介
   description: '', // 描述
   content: '', // 内容
-  regionId: '', // 所属区域id
-  areas: [],
-  provinceRegionId: '', // 所属省份id
-  cityRegionId: '', // 所属城市id
-  areaRegionId: '', // 所属区域id
+  regionIds: [], // 所属区域id
   isStick: '', // 是否置顶
   isHot: '', // 是否热门
   isAdded: 'true', // 是否上架
@@ -577,10 +570,8 @@ export default {
     handleUp(e) {},
     // 表格业务操作
     industryChange(e) {
-      this.dataForm.primaryIndustryDcode = e[0] // 所属一级行业编码
-      this.dataForm.secondryIndustryDcode = e[1]// 所属二级行业编码
-      this.dataForm.thirdryIndustryDcode = e[2]// 所属三级行业编码
-
+      this.dataForm.industryTypeDcodes = e.join(',') // 所属一级行业编码
+      console.log(e)
     },
     cleanEmptyChildren(list) {
       list.forEach(k => {
@@ -601,8 +592,8 @@ export default {
     },
     addSpecification() {
       this.specificationList.push({
-        key: '治理',
-        attrs: ['轻度', '中毒', '知名']
+        key: '',
+        attrs: ['', '', '']
       })
     },
     delSpecification(e) {
@@ -638,7 +629,6 @@ export default {
       }
 
       this.specificationTableData = sarr.map((v, vi) => {
-
         return {
           attrs: v,
           // attributeNames: v.join(','),
@@ -654,8 +644,6 @@ export default {
           fileId: '' // 规格图片
         }
       })
-
-
     },
     goFastInput(e) {
       this.specificationTableData.forEach((item, index) => {
@@ -663,7 +651,6 @@ export default {
       })
     },
     saveData() {
-
       // 处理参数goodsParam
       const map = {}
       this.keyParams.forEach(k => {
@@ -711,9 +698,9 @@ export default {
       })
     },
     updateAreaData(e) {
-      this.dataForm.provinceRegionId = e[0]
-      this.dataForm.cityRegionId = e[1]
-      this.dataForm.areaRegionId = e[2]
+      this.dataForm.regionIds = e.join(',')
+      // this.dataForm.cityRegionId = e[1]
+      // this.dataForm.areaRegionId = e[2]
     }
   }
 }

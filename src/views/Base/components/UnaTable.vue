@@ -28,7 +28,7 @@
           </div>
 
           <div v-permission="entity.code+':create'" class="margin-right-xs">
-            <el-button size="small" type="primary" @click="showAddDialog">添加{{ entity.name }}</el-button>
+            <el-button size="small" type="primary" @click="showAddDialog">添加</el-button>
           </div>
 
           <div v-if="checkPermission(entity.code +':delete')" :span="3">
