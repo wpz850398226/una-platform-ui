@@ -2,7 +2,7 @@
   <div class="app-container">
     <ClientArea v-if="entity">
       <div slot="content" style="height:100%; overflow-y:scroll;">
-        <una-form ref="formController" :entity="entity" @saveSuccess="saveSuccess" />
+        <una-form ref="formController" validate-data-form :entity="entity" @saveSuccess="saveSuccess" />
       </div>
     </ClientArea>
 
@@ -53,15 +53,13 @@ export default {
           }
         }
 
-
         chGet(`${this.entity.path}/${queryRealId}`
           // , {
           //   ...qs.parse(this.$route.meta.query),
           //   entityId: this.entity.id
           // }
         ).then(res => {
-          this.$refs.formController.initForm(res.data)
-
+          this.$refs.formController.initForm({ ...res.data, id: queryRealId })
         })
       }
     },

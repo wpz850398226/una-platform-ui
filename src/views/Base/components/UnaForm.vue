@@ -2,6 +2,7 @@
   <div class="Form">
     <!-- {{ entity }} -->
     <el-form
+      v-if="validateDataForm && Object.keys(dataForm).length>0"
       ref="publicForm"
       :model="dataForm"
       status-icon
@@ -29,6 +30,7 @@
             <!-- {{ field.assignmentCode }} -->
             <!-- {{ field }} -->
             <!-- defaultValue -->
+            <!-- {{ dataForm }} -->
 
             <UnaTreeNode
               v-if="field.assignmentModeDcode === 'field_assignment_treeNode'"
@@ -106,6 +108,7 @@
               :show-file-list="false"
               @saveSuccess="saveSuccess"
             />
+
             <una-entity-select
               v-else-if="field.assignmentModeDcode === 'field_assignment_entityRecord'"
               v-model="dataForm[field.assignmentCode]"
@@ -218,6 +221,10 @@ export default {
     actionBar: {
       type: Boolean,
       default: true
+    },
+    validateDataForm: {
+      type: Boolean,
+      deafult: false
     }
   },
   data() {
@@ -289,9 +296,11 @@ export default {
       })
     },
     initForm(oldData, mergeData) {
+      console.log('initForm', oldData, mergeData)
+
       if (oldData) {
         if (this.entity.isVirtual) { // 如果是虚拟实体，表单加载entity.value
-          this.dataForm = oldData.value
+          this.dataForm = { ...oldData.value, map: oldData.map, id: oldData.id }
           // this.dataForm.push('id', oldData.id)
         } else {
           this.dataForm = oldData

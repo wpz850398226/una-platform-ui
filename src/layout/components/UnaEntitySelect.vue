@@ -11,6 +11,7 @@
       <el-image
         v-for="(item,index) in selectedDatas"
         :key="index"
+        class="margin-right-xs"
         style="width: 100px; height: 100px"
         :src="item.path"
         fit="fill"
@@ -110,6 +111,8 @@ export default {
     this.selVal = this.value
 
     if (this.selVal && this.realVal) {
+      console.log('rean', this.realVal)
+
       if (this.realVal[this.field.assignmentCode] && this.field.assignmentCode !== this.field.displayCode) {
         // 如果赋值编码不等于显示编码，则查询显示数据
         const realField = this.realVal.map[this.field.displayCode]
