@@ -55,7 +55,6 @@ export default {
   },
   watch: {
     unionFieldValue(o, n) {
-
       this.queryOptions(this.field)
       this.selVal = ''
     }
@@ -63,16 +62,11 @@ export default {
   async mounted() {
     await this.queryOptions(this.field)
 
-
-
     if (this.value && !isNaN(parseInt(this.value, 10))) { // 尝试一次转换
       this.selVal = parseInt(this.value, 10)
     } else {
       this.selVal = this.value
     }
-
-
-
   },
   methods: {
     async queryOptions(field) {
@@ -90,7 +84,6 @@ export default {
         } else {
           obj[optionName] = optionValue
         }
-
       }
       if (field.optionEntityPath) {
         const userInfo = this.$store.getters.userinfo
@@ -113,11 +106,9 @@ export default {
 
         const result = await chGet(field.optionEntityPath + '/list', { ...obj, ...dsdu })
         this.optionList = result
-
       }
     },
     updateVal(e) {
-
       this.$emit('updateVal', e)
     }
   }

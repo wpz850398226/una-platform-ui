@@ -54,7 +54,7 @@
 import ClientArea from '../../layout/components/ClientArea'
 
 import { getEntity } from '@/utils/una/entity-util.js'
-import { chPut, chDelete, chGet, chPost } from '../../api/index'
+import { chPut, chDelete } from '../../api/index'
 
 // 分解代码
 import Tree from './components/Tree.vue'
@@ -78,11 +78,9 @@ export default {
     }
   },
   mounted() {
-
     this.entity = getEntity(this.$route.meta.code)
     // this.dataQuery = qs.parse(this.$route.meta.query)
     this.relationList = this.entity.relationList
-
   },
   methods: {
     // 新增分散处理
@@ -93,7 +91,6 @@ export default {
       this.treeQuery = obj
       this.$refs.tableController.initPage()
       this.updateTableData(obj)
-
 
       if (this.relationList.length > 0) {
         const map = {}

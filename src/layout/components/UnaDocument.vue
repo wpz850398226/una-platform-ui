@@ -53,7 +53,6 @@ export default {
     getDocText() {
       if (this.entityId && this.id) {
         getTemplateData(this.entityId, this.id).then(res => {
-
           this.h5 = res.message
         })
       }

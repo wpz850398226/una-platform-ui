@@ -345,7 +345,7 @@
 
 <script>
 import { CodeToText } from 'element-china-area-data'
-import { chPut, chDelete, chGet, chPost } from '@/api/index'
+import { chDelete, chGet } from '@/api/index'
 import { findDictionaryList } from '@/utils/find-dictionary'
 
 import * as fieldPort from '@/api/una/sys_field'

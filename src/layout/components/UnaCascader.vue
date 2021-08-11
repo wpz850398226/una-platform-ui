@@ -63,10 +63,8 @@ export default {
     }
   },
   mounted() {
-
     this.optionList = findDictionaryList(this.field.optionParamValue)
     this.optionList = this.cleanEmptyChildren(this.optionList)
-
 
     if (this.value) {
       const sp = this.value.split(',')

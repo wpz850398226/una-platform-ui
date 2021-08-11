@@ -71,9 +71,6 @@ export default {
     })
     // this.field.optionEntityId
 
-
-
-
     const map = {}
     if (Object.prototype.hasOwnProperty.call(this.field, 'optionParamName')) {
       if (Object.prototype.hasOwnProperty.call(this.field, 'optionParamValue')) {

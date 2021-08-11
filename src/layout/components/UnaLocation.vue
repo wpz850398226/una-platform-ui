@@ -51,7 +51,6 @@ export default {
     }
   },
   mounted() {
-
     this.selVal = this.value
     if (this.selVal) {
       const sp = this.selVal.split(',')
@@ -130,7 +129,6 @@ export default {
       this.mapObj.setZoomAndCenter(16, [e.location.lng, e.location.lat])
     },
     updateVal(e) {
-
       this.$emit('updateVal', e)
     }
   }

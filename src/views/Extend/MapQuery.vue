@@ -78,11 +78,9 @@ export default {
   },
   methods: {
     querySearch(queryString, cb) {
-
       cb(this.companyList.filter(v => v.name.indexOf(queryString) !== -1))
     },
     handleSelect(e) {
-
       if (e.coord) {
         const sp = e.coord.split(',')
         if (sp.length === 2) {
@@ -133,7 +131,6 @@ export default {
     },
     getCompanyList() {
       companyList().then(res => {
-
         this.companyList = res
         res.forEach(v => {
           if (v.coord) {

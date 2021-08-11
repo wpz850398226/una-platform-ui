@@ -12,6 +12,7 @@ export default {
   },
   props: {
     defaultValue: {
+      required: false
     },
     // eslint-disable-next-line vue/require-prop-types
     value: {
@@ -33,7 +34,6 @@ export default {
   },
   methods: {
     updateVal(e) {
-
       this.$emit('updateVal', e)
     }
   }

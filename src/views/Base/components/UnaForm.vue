@@ -193,7 +193,7 @@ import UnaCascader from '@/layout/components/UnaCascader.vue'
 
 import CkEditor from '@/components/CKEditor/index.vue'
 
-import { jsonPut, chDelete, chGet, jsonPost } from '@/api/index'
+import { jsonPut, jsonPost } from '@/api/index'
 import * as fieldPort from '@/api/una/sys_field'
 
 import { buttonList } from '@/api/una/sys_button'
@@ -343,7 +343,7 @@ export default {
         if (valid) {
           this.loading = true
           const { children, map, ...commitData } = this.dataForm // 删除无用字段
-
+          console.log(children, map)
           const submitData = { ...commitData, ...this.treeAddData } // 合并树选择
 
           let entityPath = this.entity.path

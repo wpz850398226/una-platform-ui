@@ -31,6 +31,7 @@ export default {
   },
   props: {
     // eslint-disable-next-line vue/require-default-prop
+    // eslint-disable-next-line vue/require-prop-types
     fileList: {
       required: true
     },

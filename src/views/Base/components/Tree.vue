@@ -56,7 +56,6 @@ export default {
         const obj = {}
         obj[fieldCode] = dataValue
         chGet(path + '/list', obj).then((result) => {
-
           this.treeData = result
         })
       }

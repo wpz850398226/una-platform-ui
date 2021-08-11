@@ -76,8 +76,6 @@ const actions = {
 
         const routes = generator(data)
 
-
-
         routes.push({ path: '*', redirect: '/404', hidden: true })
 
         commit('SET_ROUTES', routes)
@@ -90,7 +88,6 @@ const actions = {
 
 const getComponent = (code, route, path) => {
   if (path.indexOf('sys/form') !== -1) {
-
     return () => import('@/views/Base/FormPage')
   }
 
@@ -116,7 +113,6 @@ const getQuery = (path) => {
 }
 
 const generator = (routerMap, parent) => {
-
   return routerMap.map(item => {
     const { name, type, spread, code, href, icon, path } = item || {}
     const currentRouter = {

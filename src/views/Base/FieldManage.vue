@@ -315,7 +315,7 @@ import ClientArea from '../../layout/components/ClientArea'
 import { getEntity } from '@/utils/una/entity-util.js'
 import * as fieldPort from '../../api/una/sys_field'
 import * as entityData from '../../api/una/sys_entity'
-import { chDelete, chGet, jsonPost, jsonPut } from '../../api/index'
+import { chDelete, jsonPost, jsonPut } from '../../api/index'
 import UnaDicSelect from '@/layout/components/UnaDicSelect.vue'
 
 import Tree from './components/Tree.vue'
@@ -381,7 +381,6 @@ export default {
       this.getPermissionList(node.id)
     },
     getEntityFieldList(e) {
-
       fieldPort.fieldList({ 'entityId': e }).then(res => {
         this.entityFieldList = res
       })
@@ -418,7 +417,6 @@ export default {
       }
     },
     handleEdit(e) {
-
       this.isEdit = true
       // chGet(this.entity.path + `/${e.id}`).then((resolve) => {
       this.defaultFormDialogVisible = true

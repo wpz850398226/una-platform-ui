@@ -144,7 +144,6 @@ const actions = {
 
           resolve()
         }).catch((error) => {
-
           reject(error)
           // this.$message.error('基础信息获取失败')
         })

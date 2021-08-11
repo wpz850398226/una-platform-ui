@@ -130,26 +130,21 @@ export default {
   methods: {
     getWorkflowList() {
       workflowList().then(res => {
-
         this.workflowList = res
       })
     },
     startAct(e) {
       creatInstance(e.id).then(res => {
-
         this.$message.success(`发起工作流 - ${e.name} 成功`)
         this.getTaskList()
       })
     },
     getTaskList() {
       taskList(this.userInfo.id).then(res => {
-
         this.taskList = res.data
-
       })
     },
     handleTask(e) {
-
       this.workInfo = e
       this.approvalForm.id = e.id
       if (e.nodeTypeDcode === 'flow_nudeType_submit') {
@@ -175,9 +170,7 @@ export default {
                 })
                 this.approvalForm.recordId = task.recordId
               }
-
             })
-
           })
         })
         this.approvalDialogVisible = true
@@ -188,7 +181,6 @@ export default {
         id: this.workInfo.id,
         recordId: e.data
       }).then(res => {
-
         this.$message.success('处理任务完成')
         this.getTaskList()
         this.defaultFormDialogVisible = false
