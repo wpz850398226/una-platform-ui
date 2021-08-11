@@ -1,8 +1,9 @@
 <template>
   <div class="Form">
     <!-- {{ entity }} -->
+    <!-- {{ validateDataForm }} -->
     <el-form
-      v-if="validateDataForm && Object.keys(dataForm).length>0"
+      v-if="!validateDataForm || (validateDataForm&& Object.keys(dataForm).length>0)"
       ref="publicForm"
       :model="dataForm"
       status-icon
