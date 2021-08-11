@@ -34,6 +34,14 @@
               <el-input v-model="dataForm.fullName" placeholder="请输入商品全称" />
             </el-form-item>
 
+            <el-form-item label="关键字" class="basis-lg" prop="keyword">
+              <el-input v-model="dataForm.keyword" placeholder="请输入关键字" />
+            </el-form-item>
+
+            <el-form-item label="商品简介" class="basis-lg" prop="introduction">
+              <el-input v-model="dataForm.introduction" placeholder="请输入商品简介" />
+            </el-form-item>
+
             <h3>商品信息</h3>
             <el-divider />
             <el-form-item label="行业" prop="industryTypeDcodes">
@@ -70,21 +78,21 @@
             <el-form-item label="标价" prop="sellingPrice">
               <el-input v-model="dataForm.sellingPrice" type="number" placeholder="请输入标价" />
             </el-form-item>
-            <!--            <el-form-item label="销售价" prop="sellingPrice">-->
-            <!--              <el-input v-model="dataForm.sellingPrice" type="number" placeholder="请输入销售价" />-->
-            <!--            </el-form-item>-->
-            <!--            <el-form-item label="批发价" prop="wholesalePrice">-->
-            <!--              <el-input v-model="dataForm.wholesalePrice" type="number" placeholder="请输入批发价" />-->
-            <!--            </el-form-item>-->
-            <!--            <el-form-item label="成本价" prop="costPrice">-->
-            <!--              <el-input v-model="dataForm.costPrice" type="number" placeholder="请输入成本价" />-->
-            <!--            </el-form-item>-->
-            <!--            <el-form-item label="最低限价" prop="floorPrice">-->
-            <!--              <el-input v-model="dataForm.floorPrice" type="number" placeholder="请输入最低限价" />-->
-            <!--            </el-form-item>-->
-            <!--            <el-form-item label="最高限价" prop="ceilingPrice">-->
-            <!--              <el-input v-model="dataForm.ceilingPrice" type="number" placeholder="请输入最高限价" />-->
-            <!--            </el-form-item>-->
+            <el-form-item label="销售价" prop="sellingPrice">
+              <el-input v-model="dataForm.sellingPrice" type="number" placeholder="请输入销售价" />
+            </el-form-item>
+            <el-form-item label="批发价" prop="wholesalePrice">
+              <el-input v-model="dataForm.wholesalePrice" type="number" placeholder="请输入批发价" />
+            </el-form-item>
+            <el-form-item label="成本价" prop="costPrice">
+              <el-input v-model="dataForm.costPrice" type="number" placeholder="请输入成本价" />
+            </el-form-item>
+            <el-form-item label="最低限价" prop="floorPrice">
+              <el-input v-model="dataForm.floorPrice" type="number" placeholder="请输入最低限价" />
+            </el-form-item>
+            <el-form-item label="最高限价" prop="ceilingPrice">
+              <el-input v-model="dataForm.ceilingPrice" type="number" placeholder="请输入最高限价" />
+            </el-form-item>
 
             <h3>商品属性</h3>
             <el-divider />
@@ -384,23 +392,21 @@ import permission from '@/directive/permission/index.js' // 权限判断指令
 const defaultForm = {
   code: '', // 编号
   fullName: '', // 全称
+  keyword: '', // 关键字
+  introduction: '', // 简介
   unitDcode: '', // 单位
   sales: '', // 已销售量
   shopId: '', // 所属店铺id
-  industryTypeDcodes: [], // 行业编码
+  industryTypeDcodes: '', // 行业编码
   typeDcode: '', // 类型id
   statusDcode: '', // 产品状态id
-  keyword: '', // 关键字
-  introduction: '', // 商品简介
   description: '', // 描述
   content: '', // 内容
-  regionIds: [], // 所属区域id
+  regionIds: '', // 所属区域id
   isStick: '', // 是否置顶
   isHot: '', // 是否热门
   isAdded: 'true', // 是否上架
   isAudit: '', // 是否已审核
-  viewAmount: '', // 浏览次数
-  collectAmount: '', // 收藏数量
   commentAmount: '', // 评论数量
   averageScore: '', // 平均评分
   adderId: '', // 上架人id
@@ -507,6 +513,15 @@ export default {
       this.dataForm = { ...e }
 
       // 处理参数回显
+      if (e.regionIds) {
+        const regionIdArray = e.regionIds.split(',')
+        this.dataForm.regionIds = regionIdArray
+      }
+
+      if (e.industryTypeDcodes) {
+        const industryTypeDcodeArray = e.industryTypeDcodes.split(',')
+        this.dataForm.industryTypeDcodes = industryTypeDcodeArray
+      }
 
       this.keyParams = []
       if (e.goodsParam) {
@@ -658,6 +673,16 @@ export default {
       })
       this.dataForm.goodsParam = map
       // 处理参数
+      // if (this.dataForm.industryTypeDcodes) {
+      //   console.log('iiiiiiiiiiiiiiiiiiiiii' + this.dataForm.industryTypeDcodes)
+      //   const industry = this.dataForm.industryTypeDcodes.join(',')
+      //   this.dataForm.industryTypeDcodes = industry
+      // }
+      //
+      // if (this.dataForm.regionIds) {
+      //   const regions = this.dataForm.regionIds.join(',')
+      //   this.dataForm.regionIds = regions
+      // }
 
       // 处理规格
       this.dataForm.specificationList = this.specificationList.map(v => {
