@@ -63,7 +63,11 @@
                 show-img
                 multiple
                 :real-val="dataForm"
-                :field="{optionEntityId: '100020'}"
+                :field="{optionEntityId: '100020',
+                         assignmentCode: '',
+                         displayCode: '',
+                         selectableLimitNum: 1
+                }"
               />
 
             </el-form-item>
