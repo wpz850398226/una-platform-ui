@@ -131,7 +131,9 @@
               <h3>审核</h3>
               <el-divider />
               <el-form-item label="审核" prop="isAudit">
-                <el-radio-group v-model="dataForm.isAudit">
+                <el-checkbox v-model="adminApproval" label="管理员审核" class="margin-right-sm" />
+
+                <el-radio-group v-if="adminApproval" v-model="dataForm.isAudit">
                   <el-radio :label="true">通过</el-radio>
                   <el-radio :label="false">不通过</el-radio>
                 </el-radio-group>
@@ -453,6 +455,7 @@ export default {
       dataForm: defaultForm,
       defaultFormDialogVisible: false,
       options: [],
+      adminApproval: false,
       specificationList: [
         // {
         //   key: '颜色',
@@ -694,22 +697,34 @@ export default {
       this.dataForm.modelList = this.specificationTableData
       // 处理规格
 
+      // 处理地区 类型
+      if (typeof this.dataForm.regionIds !== 'string') {
+        this.dataForm.regionIds = this.dataForm.regionIds.join(',')
+      }
+
+      if (typeof this.dataForm.industryTypeDcodes !== 'string') {
+        this.dataForm.industryTypeDcodes = this.dataForm.industryTypeDcodes.join(',')
+      }
+      // 处理审核
+      const submitData = { ...this.dataForm }
+      if (!this.adminApproval) {
+        delete submitData.isAudit
+      }
+
       if (this.isEdit) {
-        jsonPut(this.entity.path, this.dataForm).then((resolve) => {
+        jsonPut(this.entity.path, submitData).then((resolve) => {
           this.defaultFormDialogVisible = false
           this.$message.success('保存成功')
           this.$refs.tableController.getPublicList()
-          // this.updateTableData(this.treeQuery)
           this.loading = false
         }, (e) => {
           this.loading = false
         })
       } else {
-        jsonPost(this.entity.path, this.dataForm).then((resolve) => {
+        jsonPost(this.entity.path, submitData).then((resolve) => {
           this.defaultFormDialogVisible = false
           this.$message.success('保存成功')
           this.$refs.tableController.getPublicList()
-          // this.updateTableData(this.treeQuery)
           this.loading = false
         }, (e) => {
           this.loading = false
