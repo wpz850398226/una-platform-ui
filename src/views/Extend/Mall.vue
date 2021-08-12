@@ -62,6 +62,7 @@
                 v-model="dataForm.fileId"
                 show-img
                 multiple
+                :real-val="dataForm"
                 :field="{optionEntityId: '100020'}"
               />
 
