@@ -25,3 +25,8 @@ export function refreshShop(id) {
   return jsonPut(`/cp/shop/refresh/${id}`)
 }
 
+// 考勤打卡
+export function attendancePunch() {
+  return jsonPut(`/oa/attendance/punch`)
+}
+

@@ -56,17 +56,17 @@
               <UnaDicSelect v-model="dataForm.statusDcode" placeholder="请选择状态" parent-code="dh_goodsStatus" />
             </el-form-item>
 
-            <el-form-item label="商品图片" prop="fileId">
+            <el-form-item label="商品图片" prop="fileIds">
 
               <una-entity-select
-                v-model="dataForm.fileId"
+                v-model="dataForm.fileIds"
                 show-img
                 multiple
                 :real-val="dataForm"
                 :field="{optionEntityId: '100020',
-                         assignmentCode: '',
-                         displayCode: '',
-                         selectableLimitNum: 1
+                         assignmentCode: 'fileIds',
+                         displayCode: 'fileUrls',
+                         selectableLimitNum: 5
                 }"
               />
 
@@ -80,7 +80,7 @@
             <el-form-item label="免运费额" prop="freeFreightPrice">
               <el-input v-model="dataForm.freeFreightPrice" type="number" placeholder="订单总价超过多少可以免运费" />
             </el-form-item>
-            <el-form-item label="标价" prop="sellingPrice">
+<!--            <el-form-item label="标价" prop="sellingPrice">
               <el-input v-model="dataForm.sellingPrice" type="number" placeholder="请输入标价" />
             </el-form-item>
             <el-form-item label="销售价" prop="sellingPrice">
@@ -98,6 +98,14 @@
             <el-form-item label="最高限价" prop="ceilingPrice">
               <el-input v-model="dataForm.ceilingPrice" type="number" placeholder="请输入最高限价" />
             </el-form-item>
+            <el-form-item label="库存" prop="ceilingPrice">
+              <div class="flex">
+                <el-input v-model="dataForm.inventory" placeholder="请输入库存" />
+                <div class="margin-left">
+                  <el-checkbox v-model="dataForm.isShowInventory" :true-label="1" :false-label="0">显示库存</el-checkbox>
+                </div>
+              </div>
+            </el-form-item>-->
 
             <h3>商品属性</h3>
             <el-divider />
@@ -135,10 +143,10 @@
             <div v-permission="'CpGoods:audit'">
               <h3>审核</h3>
               <el-divider />
-              <el-form-item label="审核" prop="isAudit">
-                <el-checkbox v-model="adminApproval" label="管理员审核" class="margin-right-sm" />
+              <el-checkbox v-model="adminApproval" label="管理员审核" class="margin-right-sm" />
 
-                <el-radio-group v-if="adminApproval" v-model="dataForm.isAudit">
+              <el-form-item v-if="adminApproval" label="审核" prop="isAudit">
+                <el-radio-group v-model="dataForm.isAudit">
                   <el-radio :label="true">通过</el-radio>
                   <el-radio :label="false">不通过</el-radio>
                 </el-radio-group>
@@ -149,12 +157,12 @@
         </el-tab-pane>
         <el-tab-pane label="规格" name="specs">
           <el-form label-width="80px">
-            <h3>库存</h3>
-            <el-divider />
+<!--            <h3>库存</h3>
+            <el-divider />-->
             <!--<el-form-item label="已出售数" prop="sales">
               <el-input v-model="dataForm.sales" placeholder="请输入已出售数" />
             </el-form-item>-->
-            <el-form-item label="库存" prop="inventory">
+<!--            <el-form-item label="库存" prop="inventory">
               <div class="flex">
                 <el-input v-model="dataForm.inventory" placeholder="请输入库存" />
                 <div class="margin-left">
@@ -162,16 +170,16 @@
                 </div>
               </div>
               <span style="font-size: 12px;color: #909399;">商品的剩余数量，如启用多规格，则此处设置无效</span>
-            </el-form-item>
+            </el-form-item>-->
 
             <h3>规格</h3>
             <el-divider />
-            <div class="margin-left-lg">
+<!--            <div class="margin-left-lg">
               <el-checkbox v-model="dataForm.isSpecification" :true-label="1" :false-label="0">启用商品规格</el-checkbox>
-            </div>
-            <div class="margin-left-lg padding-left">
-              <span style="font-size: 12px;color: #909399;">启用商品规格后，商品的价格及库存以商品规格为准，库存设置为0则会到“已售罄”中，-1为不限制</span>
-            </div>
+            </div>-->
+<!--            <div class="margin-left-lg padding-left">
+              <span style="font-size: 12px;color: #909399;">商品的价格及库存以商品规格为准，库存设置为0则会到“已售罄”中，-1为不限制</span>
+            </div>-->
             <el-alert
               class="margin-top"
               title="提示!"
@@ -180,11 +188,12 @@
               :closable="false"
             >
               <div>
-                <div>1.点击升序按钮可调整规格显示顺序，更改规格及规格项后请点击下方的【刷新规格项目表】来更新数据。</div>
-                <div>2.每一种规格代表不同型号，例如颜色为一种规格，如果设置多规格，必须每一种规格都选择一个规格项，才能添加购物车购买。</div>
+                <div>1.商品的价格及库存以商品规格为准，库存设置为0则会到“已售罄”中，-1为不限制。</div>
+                <div>2.点击升序按钮可调整规格显示顺序，更改规格及规格项后请点击下方的【刷新规格项目表】来更新数据。</div>
+                <div>3.每一种规格代表不同型号，例如颜色为一种规格，如果设置多规格，必须每一种规格都选择一个规格项，才能添加购物车购买。</div>
               </div>
             </el-alert>
-            <div v-if="dataForm.isSpecification" class="margin-bottom margin-top">
+            <div class="margin-bottom margin-top">
               <div v-for="(item, index) in specificationList" :key="index">
                 <div class="flex">
                   <el-input v-model="item.key" class="margin-right" placeholder="请输入规格类型" />
@@ -316,7 +325,7 @@
                     </td>
                     <td>
                       <una-entity-select
-                        v-model="item.fileId"
+                        v-model="item.fileIds"
                         show-img
                         :field="{optionEntityId: '100020'}"
                       />
@@ -437,7 +446,7 @@ const defaultForm = {
   goodsParam: '',
   // refreshTime: '', // 刷新时间
   // stickDeadline: '', // 置顶截止时间
-  fileId: '', // 商品图片
+  fileIds: '', // 商品图片
   companyId: '', // 所属组织id
   departmentId: '', // 所属部门id
   specificationList: [], // 规格列表
@@ -569,7 +578,7 @@ export default {
             floorPrice: item.floorPrice, // 最低限价
             taxInclusiveMarketPrice: item.taxInclusiveMarketPrice, // 含税市场价
             taxExclusiveMarketPrice: item.taxExclusiveMarketPrice, // 不含税市场价
-            fileId: item.fileId // 规格图片
+            fileIds: item.fileIds // 规格图片
           }
         )
       })
@@ -664,7 +673,7 @@ export default {
           floorPrice: '', // 最低限价
           taxInclusiveMarketPrice: '', // 含税市场价
           taxExclusiveMarketPrice: '', // 不含税市场价
-          fileId: '' // 规格图片
+          fileIds: '' // 规格图片
         }
       })
     },
@@ -703,11 +712,11 @@ export default {
       // 处理规格
 
       // 处理地区 类型
-      if (typeof this.dataForm.regionIds !== 'string') {
+      if (this.dataForm.regionIds && typeof this.dataForm.regionIds !== 'string') {
         this.dataForm.regionIds = this.dataForm.regionIds.join(',')
       }
 
-      if (typeof this.dataForm.industryTypeDcodes !== 'string') {
+      if (this.dataForm.industryTypeDcodes && typeof this.dataForm.industryTypeDcodes !== 'string') {
         this.dataForm.industryTypeDcodes = this.dataForm.industryTypeDcodes.join(',')
       }
       // 处理审核

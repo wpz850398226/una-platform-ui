@@ -359,7 +359,7 @@ import MapQuery from '@/views/Extend/MapQuery.vue'
 
 import {
   buttonList, flushRedis,
-  stickGoods, refreshGoods, stickShop, refreshShop
+  stickGoods, refreshGoods, stickShop, refreshShop, attendancePunch
 
 } from '@/api/una/sys_button'
 import {
@@ -735,8 +735,14 @@ export default {
             this.convertId2EntityAndOpenForm(btn.formEntityId, extMap)
           }
         },
+        'attendancePunch': () => {
+          attendancePunch().then(res => {
+            this.resetQuery()
+            this.$message.success('打卡完成')
+          })
+        },
         'mapView': (extra) => {
-          this.$message.success('看地图了')
+          // this.$message.success('看地图了')
           this.mapViewDialogVisible = true
         }
       }
