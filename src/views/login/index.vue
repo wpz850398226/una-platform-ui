@@ -2,19 +2,28 @@
   <div class="login-container">
     <div class="login-inner">
       <el-card>
-        <div class="flex justify-center margin-bottom-sm">UNA后台交互设计系统</div>
+        <div class="flex justify-center margin-bottom-sm">
+          UNA后台交互设计系统
+        </div>
         <form ref="form" class="login-form" :model="passForm">
           <div class="form-item">
-            <el-input v-model="passForm.username" placeholder="用户名" type="text" />
+            <el-input
+              v-model="passForm.username"
+              placeholder="用户名"
+              type="text"
+            />
           </div>
           <div class="form-item margin-top-xs">
-            <el-input v-model="passForm.password" placeholder="密码" show-password @keyup.enter="passLogin" />
+            <el-input
+              v-model="passForm.password"
+              placeholder="密码"
+              show-password
+              @keyup.enter="passLogin"
+            />
           </div>
 
           <div class="flex justify-between margin-top">
-            <el-button
-              type="success"
-            >微信登录</el-button>
+            <el-button type="success">微信登录</el-button>
 
             <el-button
               :loading="loading"
@@ -24,12 +33,12 @@
           </div>
         </form>
       </el-card>
-
     </div>
   </div>
 </template>
 
 <script>
+import { setToken } from '@/utils/auth'
 export default {
   name: 'Login',
   data() {
@@ -39,6 +48,15 @@ export default {
         password: '123456'
       },
       loading: false
+    }
+  },
+  mounted() {
+    console.log('自动登录开始')
+    const token = this.$route.query.token
+    if (token) {
+      console.log('发现token自动登陆中')
+      setToken(token)
+      this.$router.push({ path: '/' })
     }
   },
   methods: {
@@ -67,13 +85,11 @@ export default {
 .login-container {
   background-size: cover;
   background-repeat: no-repeat;
-  background-image: url('../../assets/login/loginBack.jpg');
+  background-image: url("../../assets/login/loginBack.jpg");
   width: 100%;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
-
 </style>
