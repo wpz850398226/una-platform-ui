@@ -51,13 +51,13 @@ export default {
     }
   },
   mounted() {
-    console.log('自动登录开始')
-    const token = this.$route.query.token
-    if (token) {
-      console.log('发现token自动登陆中')
-      setToken(token)
-      this.$router.push({ path: '/' })
-    }
+    // console.log('自动登录开始')
+    // const token = this.$route.query.token
+    // if (token) {
+    //   console.log('发现token自动登陆中')
+    //   setToken(token)
+    //   this.$router.push({ path: '/' })
+    // }
   },
   methods: {
     passLogin() {

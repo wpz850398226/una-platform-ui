@@ -3,7 +3,7 @@ import store from './store'
 // import Message from '@util/el-message'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
-import { getToken } from '@/utils/auth' // get token from cookie
+import { setToken, getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
@@ -19,6 +19,17 @@ router.beforeEach(async(to, from, next) => {
 
   // determine whether the user has logged in
   const hasToken = getToken()
+  console.log(to)
+  if (to.query.token) {
+    console.log('发现token')
+    setToken(to.query.token)
+    await store.dispatch('user/getInfo')
+
+    store.dispatch('permission/generateRoutes', []).then((res) => {
+      router.addRoutes(res)
+      next('/')
+    })
+  }
 
   if (hasToken) {
     //
@@ -53,9 +64,6 @@ router.beforeEach(async(to, from, next) => {
               }
               next()
             }
-
-            // next({ path: '/404' })
-            // next(to.redirectedFrom)
           })
         } catch (error) {
           await store.dispatch('user/resetToken')
