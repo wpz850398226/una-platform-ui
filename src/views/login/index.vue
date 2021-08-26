@@ -32,6 +32,7 @@
             >登 录</el-button>
           </div>
         </form>
+        <el-link type="primary" href="http://127.0.0.1/api/duohui/login/seekPass1">忘记密码？</el-link>
       </el-card>
     </div>
   </div>
