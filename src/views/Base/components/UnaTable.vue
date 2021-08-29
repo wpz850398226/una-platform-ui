@@ -162,8 +162,8 @@
             </div>
             <div v-else-if="field.displayModeDcode === 'field_display_whether'">
               <div v-if="typeof scope.row[field.assignmentCode] === 'boolean'">
-                <el-tag v-if="scope.row[field.assignmentCode]" type="primary">是</el-tag>
-                <el-tag v-else type="danger">否</el-tag>
+                <el-tag v-if="scope.row[field.assignmentCode]" type="primary">{{ getSwitchValue(scope.row[field.assignmentCode],field.radioOptions) }}</el-tag>
+                <el-tag v-else type="danger">{{ getSwitchValue(scope.row[field.assignmentCode],field.radioOptions) }}</el-tag>
               </div>
             </div>
             <div v-else-if="field.displayModeDcode === 'field_display_map'">
@@ -359,7 +359,7 @@ import MapQuery from '@/views/Extend/MapQuery.vue'
 
 import {
   buttonList, flushRedis,
-  stickGoods, refreshGoods, stickShop, refreshShop, attendancePunch
+  stickGoods, refreshGoods, stickShop, refreshShop, attendancePunch, autoAttendance
 
 } from '@/api/una/sys_button'
 import {
@@ -446,6 +446,22 @@ export default {
           const sp = e.split(',')
           if (sp && Array.isArray(sp) && sp.length === 3) {
             return `${CodeToText[sp[0]]}${CodeToText[sp[1]]}${CodeToText[sp[2]]}`
+          }
+        }
+        return ''
+      }
+    },
+    getSwitchValue() {
+      return (boolean, e) => {
+        if (!e) {
+          e = '否,是'
+        }
+        const sp = e.split(',')
+        if (sp && Array.isArray(sp) && sp.length === 2) {
+          if (boolean) {
+            return sp[1]
+          } else {
+            return sp[0]
           }
         }
         return ''
@@ -736,9 +752,30 @@ export default {
           }
         },
         'attendancePunch': () => {
-          attendancePunch().then(res => {
+          let coord = ''
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+              // locationSuccess 获取成功的话
+              function(position) {
+                coord = position.coords.longitude + ',' + position.coords.latitude
+                console.log(coord)
+                attendancePunch(coord).then(res => {
+                  this.resetQuery()
+                  this.$message.success('打卡完成')
+                })
+              },
+              //  locationError  获取失败的话
+              function(error) {
+                var errorType = ['您拒绝共享位置信息', '获取不到位置信息', '获取位置信息超时']
+                alert(errorType[error.code - 1])
+              }
+            )
+          }
+        },
+        'autoAttendance': () => {
+          autoAttendance().then(res => {
             this.resetQuery()
-            this.$message.success('打卡完成')
+            this.$message.success('生成记录成功')
           })
         },
         'mapView': (extra) => {

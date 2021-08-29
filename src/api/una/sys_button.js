@@ -1,5 +1,5 @@
 
-import { chGet, chDelete, jsonPut } from '../index'
+import { chGet, chDelete, jsonPut, jsonPost } from '../index'
 
 export function buttonList(param) {
   return chGet('/sys/button/page', param)
@@ -26,7 +26,11 @@ export function refreshShop(id) {
 }
 
 // 考勤打卡
-export function attendancePunch() {
-  return jsonPut(`/oa/attendance/punch`)
+export function attendancePunch(coord) {
+  return jsonPut(`/oa/attendance/punch/${coord}`)
+}
+
+export function autoAttendance() {
+  return jsonPost(`/oa/attendance/auto`)
 }
 
