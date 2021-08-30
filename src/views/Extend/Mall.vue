@@ -72,7 +72,7 @@
 
             </el-form-item>
 
-            <h3>价格</h3>
+            <h3>运费</h3>
             <el-divider />
             <el-form-item label="运费" prop="freightPrice">
               <el-input v-model="dataForm.freightPrice" type="number" placeholder="请输入运费" />
@@ -80,7 +80,21 @@
             <el-form-item label="免运费额" prop="freeFreightPrice">
               <el-input v-model="dataForm.freeFreightPrice" type="number" placeholder="订单总价超过多少可以免运费" />
             </el-form-item>
-<!--            <el-form-item label="标价" prop="sellingPrice">
+
+            <h3>价格</h3>
+            <el-divider />
+            <el-alert
+              class="margin-top"
+              title="提示!"
+              type="error"
+              show-icon
+              :closable="false"
+            >
+              <div>
+                <div>如设置规格，此处价格可不填</div>
+              </div>
+            </el-alert>
+            <el-form-item label="标价" prop="sellingPrice">
               <el-input v-model="dataForm.sellingPrice" type="number" placeholder="请输入标价" />
             </el-form-item>
             <el-form-item label="销售价" prop="sellingPrice">
@@ -105,7 +119,7 @@
                   <el-checkbox v-model="dataForm.isShowInventory" :true-label="1" :false-label="0">显示库存</el-checkbox>
                 </div>
               </div>
-            </el-form-item>-->
+            </el-form-item>
 
             <h3>商品属性</h3>
             <el-divider />
