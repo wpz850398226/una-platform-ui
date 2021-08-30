@@ -81,7 +81,7 @@
               <el-input v-model="dataForm.freeFreightPrice" type="number" placeholder="订单总价超过多少可以免运费" />
             </el-form-item>
 
-            <h3>价格</h3>
+            <!--<h3>价格</h3>
             <el-divider />
             <el-alert
               class="margin-top"
@@ -119,7 +119,7 @@
                   <el-checkbox v-model="dataForm.isShowInventory" :true-label="1" :false-label="0">显示库存</el-checkbox>
                 </div>
               </div>
-            </el-form-item>
+            </el-form-item>-->
 
             <h3>商品属性</h3>
             <el-divider />

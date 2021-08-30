@@ -7,8 +7,8 @@
       <pan-thumb :image="avatar" class="panThumb" />
       <mallki class-name="mallki-text" text="请前往认证中心完善个人信息" />
       <div style="padding-top:35px;" class="progress-item">
-        <!--<span>Vue</span>
-        <el-progress :percentage="70" />-->
+        <span>当前账号状态：{{ statusDcode }}</span>
+<!--        <el-progress :percentage="70" />-->
       </div>
       <!--<div class="progress-item">
         <span>JavaScript</span>
@@ -34,15 +34,6 @@ import Mallki from '@/components/TextHoverEffect/Mallki'
 export default {
   components: { PanThumb, Mallki },
 
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        success: 'success',
-        pending: 'danger'
-      }
-      return statusMap[status]
-    }
-  },
   data() {
     return {
       statisticsData: {
@@ -53,9 +44,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'name',
-      'avatar',
-      'roles'
+      'statusDcode'
     ])
   }
 }
