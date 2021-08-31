@@ -22,18 +22,26 @@ export default {
       type: String
     }
   },
+
   data() {
     return {
       images: []
     }
   },
-  mounted() {
-    if (this.imgUrl) {
-      this.images = this.imgUrl.split(',')
+  watch: {
+    imgUrl() {
+      this.initImages()
     }
   },
+  mounted() {
+    this.initImages()
+  },
   methods: {
-
+    initImages() {
+      if (this.imgUrl) {
+        this.images = this.imgUrl.split(',')
+      }
+    }
   }
 }
 </script>

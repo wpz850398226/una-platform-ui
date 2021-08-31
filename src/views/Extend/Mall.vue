@@ -171,12 +171,12 @@
         </el-tab-pane>
         <el-tab-pane label="规格" name="specs">
           <el-form label-width="80px">
-<!--            <h3>库存</h3>
+            <!--            <h3>库存</h3>
             <el-divider />-->
             <!--<el-form-item label="已出售数" prop="sales">
               <el-input v-model="dataForm.sales" placeholder="请输入已出售数" />
             </el-form-item>-->
-<!--            <el-form-item label="库存" prop="inventory">
+            <!--            <el-form-item label="库存" prop="inventory">
               <div class="flex">
                 <el-input v-model="dataForm.inventory" placeholder="请输入库存" />
                 <div class="margin-left">
@@ -188,10 +188,10 @@
 
             <h3>规格</h3>
             <el-divider />
-<!--            <div class="margin-left-lg">
+            <!--            <div class="margin-left-lg">
               <el-checkbox v-model="dataForm.isSpecification" :true-label="1" :false-label="0">启用商品规格</el-checkbox>
             </div>-->
-<!--            <div class="margin-left-lg padding-left">
+            <!--            <div class="margin-left-lg padding-left">
               <span style="font-size: 12px;color: #909399;">商品的价格及库存以商品规格为准，库存设置为0则会到“已售罄”中，-1为不限制</span>
             </div>-->
             <el-alert
@@ -535,7 +535,13 @@ export default {
       this.defaultFormDialogVisible = true
       this.keyParams = []
       this.specificationList = []
+      this.specificationList.push({
+        key: '默认',
+        attrs: ['默认']
+      })
+
       this.specificationTableData = []
+      this.refreshSpecification()
       this.dataForm = { ...this.defaultForm }
       this.dataForm.isAdded = true
     },
@@ -616,6 +622,7 @@ export default {
     handleUp(e) {},
     // 表格业务操作
     industryChange(e) {
+      console.log(e, 'ssssssssss')
       this.dataForm.industryTypeDcodes = e.join(',') // 所属一级行业编码
       console.log(e)
     },

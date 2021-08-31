@@ -23,7 +23,8 @@
           </div>
 
           <div class="flex justify-between margin-top">
-            <el-button type="success">微信登录</el-button>
+            <!-- <el-button type="success">微信登录</el-button> -->
+            <el-button @click="resetPass">忘记密码</el-button>
 
             <el-button
               :loading="loading"
@@ -32,7 +33,7 @@
             >登 录</el-button>
           </div>
         </form>
-        <el-link type="primary" href="http://127.0.0.1/api/duohui/login/seekPass1">忘记密码？</el-link>
+        <!-- <el-link type="primary" href="http://127.0.0.1/api/duohui/login/seekPass1">忘记密码？</el-link> -->
       </el-card>
     </div>
   </div>
@@ -61,6 +62,9 @@ export default {
     // }
   },
   methods: {
+    resetPass() {
+      window.open('http://127.0.0.1/api/duohui/login/seekPass1', '_blank')
+    },
     passLogin() {
       if (!this.passForm.username || !this.passForm.password) {
         this.$message.error('请输入用户名和密码')
