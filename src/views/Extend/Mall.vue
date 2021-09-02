@@ -19,7 +19,7 @@
         @tab-click="handleClick"
       >
         <el-tab-pane label="基本" name="base">
-          <el-form label-width="80px">
+          <el-form :rules="defaultFormRules" label-width="80px" ref="publicForm">
             <h3>基本信息</h3>
             <el-divider />
             <div class="flex">
@@ -420,6 +420,7 @@ import { regionData } from 'element-china-area-data'
 import permission from '@/directive/permission/index.js' // 权限判断指令
 
 const defaultForm = {
+  name: '', // 名称
   code: '', // 编号
   fullName: '', // 全称
   keyword: '', // 关键字
@@ -481,6 +482,7 @@ export default {
       entity: '',
       activeName: 'base',
       dataForm: defaultForm,
+      defaultFormRules: {},
       defaultFormDialogVisible: false,
       options: [],
       adminApproval: false,
@@ -524,6 +526,9 @@ export default {
 
     this.industryList = findDictionaryList('industry')
     this.industryList = this.cleanEmptyChildren(this.industryList)
+    this.defaultFormRules['name'] = [{ required: true, message: `请输入名称`, trigger: 'change' }]
+    this.defaultFormRules['fileIds'] = [{ required: true, message: `请添加图片`, trigger: 'change' }]
+    this.defaultFormRules['name'] = [{ required: true, message: `请输入名称`, trigger: 'change' }]
 
     // industry
   },
@@ -704,67 +709,71 @@ export default {
       })
     },
     saveData() {
-      // 处理参数goodsParam
-      const map = {}
-      this.keyParams.forEach(k => {
-        map[k.key] = k.value
-      })
-      this.dataForm.goodsParam = map
-      // 处理参数
-      // if (this.dataForm.industryTypeDcodes) {
-      //   console.log('iiiiiiiiiiiiiiiiiiiiii' + this.dataForm.industryTypeDcodes)
-      //   const industry = this.dataForm.industryTypeDcodes.join(',')
-      //   this.dataForm.industryTypeDcodes = industry
-      // }
-      //
-      // if (this.dataForm.regionIds) {
-      //   const regions = this.dataForm.regionIds.join(',')
-      //   this.dataForm.regionIds = regions
-      // }
+      this.$refs['publicForm'].validate(async(valid) => {
+        if (valid) {
+          // 处理参数goodsParam
+          const map = {}
+          this.keyParams.forEach(k => {
+            map[k.key] = k.value
+          })
+          this.dataForm.goodsParam = map
+          // 处理参数
+          // if (this.dataForm.industryTypeDcodes) {
+          //   console.log('iiiiiiiiiiiiiiiiiiiiii' + this.dataForm.industryTypeDcodes)
+          //   const industry = this.dataForm.industryTypeDcodes.join(',')
+          //   this.dataForm.industryTypeDcodes = industry
+          // }
+          //
+          // if (this.dataForm.regionIds) {
+          //   const regions = this.dataForm.regionIds.join(',')
+          //   this.dataForm.regionIds = regions
+          // }
 
-      // 处理规格
-      this.dataForm.specificationList = this.specificationList.map(v => {
-        return {
-          name: v.key,
-          attributeNames: v.attrs.join(',')
+          // 处理规格
+          this.dataForm.specificationList = this.specificationList.map(v => {
+            return {
+              name: v.key,
+              attributeNames: v.attrs.join(',')
+            }
+          })
+          this.dataForm.modelList = this.specificationTableData
+          // 处理规格
+
+          // 处理地区 类型
+          if (this.dataForm.regionIds && typeof this.dataForm.regionIds !== 'string') {
+            this.dataForm.regionIds = this.dataForm.regionIds.join(',')
+          }
+
+          if (this.dataForm.industryTypeDcodes && typeof this.dataForm.industryTypeDcodes !== 'string') {
+            this.dataForm.industryTypeDcodes = this.dataForm.industryTypeDcodes.join(',')
+          }
+          // 处理审核
+          const submitData = { ...this.dataForm }
+          if (!this.adminApproval) {
+            delete submitData.isAudit
+          }
+
+          if (this.isEdit) {
+            jsonPut(this.entity.path, submitData).then((resolve) => {
+              this.defaultFormDialogVisible = false
+              this.$message.success('保存成功')
+              this.$refs.tableController.getPublicList()
+              this.loading = false
+            }, (e) => {
+              this.loading = false
+            })
+          } else {
+            jsonPost(this.entity.path, submitData).then((resolve) => {
+              this.defaultFormDialogVisible = false
+              this.$message.success('保存成功')
+              this.$refs.tableController.getPublicList()
+              this.loading = false
+            }, (e) => {
+              this.loading = false
+            })
+          }
         }
       })
-      this.dataForm.modelList = this.specificationTableData
-      // 处理规格
-
-      // 处理地区 类型
-      if (this.dataForm.regionIds && typeof this.dataForm.regionIds !== 'string') {
-        this.dataForm.regionIds = this.dataForm.regionIds.join(',')
-      }
-
-      if (this.dataForm.industryTypeDcodes && typeof this.dataForm.industryTypeDcodes !== 'string') {
-        this.dataForm.industryTypeDcodes = this.dataForm.industryTypeDcodes.join(',')
-      }
-      // 处理审核
-      const submitData = { ...this.dataForm }
-      if (!this.adminApproval) {
-        delete submitData.isAudit
-      }
-
-      if (this.isEdit) {
-        jsonPut(this.entity.path, submitData).then((resolve) => {
-          this.defaultFormDialogVisible = false
-          this.$message.success('保存成功')
-          this.$refs.tableController.getPublicList()
-          this.loading = false
-        }, (e) => {
-          this.loading = false
-        })
-      } else {
-        jsonPost(this.entity.path, submitData).then((resolve) => {
-          this.defaultFormDialogVisible = false
-          this.$message.success('保存成功')
-          this.$refs.tableController.getPublicList()
-          this.loading = false
-        }, (e) => {
-          this.loading = false
-        })
-      }
     },
     addParam() {
       this.keyParams.push({
