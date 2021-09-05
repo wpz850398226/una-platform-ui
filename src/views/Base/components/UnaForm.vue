@@ -46,7 +46,7 @@
               <el-radio v-for="(item, index) in field.radioOptionArray" :key="'radio'+index" :label="item">{{ item }}</el-radio>
             </el-radio-group>
 
-            <CkEditor
+            <Tinymce
               v-else-if="field.assignmentModeDcode === 'field_assignment_editor'"
               v-model="dataForm[field.assignmentCode]"
             />
@@ -191,7 +191,7 @@ import UnaUpload from '@/layout/components/UnaUpload.vue'
 import UnaEntitySelect from '@/layout/components/UnaEntitySelect.vue'
 import UnaCascader from '@/layout/components/UnaCascader.vue'
 
-import CkEditor from '@/components/CKEditor/index.vue'
+import Tinymce from '@/components/Tinymce'
 
 import { jsonPut, jsonPost } from '@/api/index'
 import * as fieldPort from '@/api/una/sys_field'
@@ -203,7 +203,7 @@ export default {
   name: 'UnaForm',
   components: {
     UnaSingleSelect, UnaTreeNode, UnaArea,
-    CkEditor, UnaLocation, UnaUpload, UnaEntitySelect,
+    Tinymce, UnaLocation, UnaUpload, UnaEntitySelect,
     UnaCascader
   },
   props: {

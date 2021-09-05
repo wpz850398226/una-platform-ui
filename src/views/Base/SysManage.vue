@@ -109,7 +109,7 @@ export default {
     },
     saveSuccess() {
       this.defaultFormDialogVisible = false
-      this.updateTableData(this.treeQuery)
+      this.updateTableData(Object.keys(this.treeQuery).length > 0 ? this.treeQuery : '')
     },
     // 新增分散处理
 

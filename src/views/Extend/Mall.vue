@@ -19,7 +19,7 @@
         @tab-click="handleClick"
       >
         <el-tab-pane label="基本" name="base">
-          <el-form :rules="defaultFormRules" label-width="80px" ref="publicForm">
+          <el-form ref="publicForm" :rules="defaultFormRules" label-width="80px">
             <h3>基本信息</h3>
             <el-divider />
             <div class="flex">
@@ -382,7 +382,7 @@
             <h3>商品详情</h3>
             <el-divider />
             <el-form-item label="详情" prop="content">
-              <CkEditor v-model="dataForm.content" />
+              <Tinymce v-model="dataForm.content" />
             </el-form-item>
           </el-form>
         </el-tab-pane>
@@ -409,7 +409,7 @@
 
 <script>
 import ClientArea from '../../layout/components/ClientArea'
-import CkEditor from '@/components/CKEditor/index.vue'
+import Tinymce from '@/components/Tinymce'
 import UnaDicSelect from '@/layout/components/UnaDicSelect.vue'
 import UnaEntitySelect from '@/layout/components/UnaEntitySelect.vue'
 // import { entityList } from '@/api/una/sys_entity'
@@ -473,7 +473,7 @@ const defaultForm = {
 export default {
   name: 'Mall',
   components: {
-    ClientArea, CkEditor, UnaDicSelect,
+    ClientArea, Tinymce, UnaDicSelect,
     UnaEntitySelect
   },
   directives: { permission },

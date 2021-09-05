@@ -406,6 +406,7 @@ export default {
   },
   data() {
     return {
+      vituralTable: false,
       fieldList: [],
       tableData: [],
       checkList: [], // 筛选列选中的数据列表
@@ -504,6 +505,7 @@ export default {
     if (this.entity.id && this.entity.isVirtual) {
       // const p = qs.parse(`?${this.query}`)
       this.dataQueryCondition = { entityId: this.entity.id }
+      this.vituralTable = true
     }
     this.dataQueryCondition = { ...this.dataQueryCondition, ...this.query }
 
@@ -601,8 +603,14 @@ export default {
       this.pageNum = 1
     },
     getPublicList(e, m = {}) {
+      console.log('getPublicList', e)
       if (e) {
-        this.otherCondition = e
+        if (this.vituralTable) {
+          const vituralField = { entityId: this.entity.id }
+          this.otherCondition = { ...e, ...vituralField }
+        } else {
+          this.otherCondition = e
+        }
       } else {
         this.otherCondition = this.dataQueryCondition
       }
