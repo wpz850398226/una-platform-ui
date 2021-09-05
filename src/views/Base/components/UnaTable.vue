@@ -366,6 +366,7 @@ import UnaImage from '@/layout/components/UnaImage.vue'
 import UnaMap from '@/layout/components/UnaMap.vue'
 import UnaEntityView from '@/layout/components/UnaEntityView.vue'
 import MapQuery from '@/views/Extend/MapQuery.vue'
+import creatInstance from '@/api/una/sys_workflow'
 
 import {
   flushRedis,
@@ -793,6 +794,20 @@ export default {
           autoAttendance().then(res => {
             this.resetQuery()
             this.$message.success('生成记录成功')
+          })
+        },
+        'applyTravel': () => { // 提交出差申请
+          creatInstance('100001').then(res => {
+            this.$message.success(`提交成功`)
+          })
+        },
+        'applyExtraWork': (extra) => { // 提交加班申请
+          this.$confirm(btn.warning, '提示', {
+            confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+          }).then(() => {
+            creatInstance(100003).then(res => {
+              this.$message.success(`提交成功`)
+            })
           })
         },
         'articleSee': (extra) => {
