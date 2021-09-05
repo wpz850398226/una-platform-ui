@@ -342,14 +342,17 @@ export default {
       this.$refs[formName].validate(async(valid) => {
         if (valid) {
           this.loading = true
-          const { children, map, ...commitData } = this.dataForm // 删除无用字段
-          console.log(children, map)
-          const submitData = { ...commitData, ...this.treeAddData } // 合并树选择
-
           let entityPath = this.entity.path
           if (this.entity.isVirtual) {
             entityPath = '/sys/data/virtual'
+            // console.log(this.entity.id,'asdfasfasdfasdfasdf')
+            // this.dataForm['entityId'] = this.entity.id
           }
+
+          const { children, map, ...commitData } = this.dataForm // 删除无用字段
+          commitData['entityId'] = this.entity.id
+          console.log(children, map)
+          const submitData = { ...commitData, ...this.treeAddData } // 合并树选择
 
           if (!this.isEdit) {
             jsonPost(entityPath, submitData).then((resolve) => {

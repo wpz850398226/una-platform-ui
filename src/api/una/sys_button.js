@@ -34,3 +34,7 @@ export function autoAttendance() {
   return jsonPost(`/oa/attendance/auto`)
 }
 
+export function articleSee(entityId, id) {
+  return chGet(`/sys/article/showInTemplate/${entityId}/${id}`)
+}
+
