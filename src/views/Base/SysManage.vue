@@ -117,6 +117,7 @@ export default {
       // chGet(this.entity.path + `/${e.id}`).then((resolve) => {
       this.defaultFormDialogVisible = true
       this.$nextTick(() => {
+        this.$refs.formController.initTreeAddData(this.treeAddData)
         this.$refs.formController.initForm(e)
       })
       // })

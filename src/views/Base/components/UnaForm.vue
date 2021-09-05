@@ -294,8 +294,6 @@ export default {
       this.formButtonList = this.entity.buttonList.filter(v => v.positionDcode === 'entity_buttonPosition_formBottom')
     },
     initForm(oldData, mergeData) {
-      console.log('initForm', oldData, mergeData)
-
       if (oldData) {
         if (this.entity.isVirtual) { // 如果是虚拟实体，表单加载entity.value
           this.dataForm = { ...oldData.value, map: oldData.map, id: oldData.id }
@@ -342,13 +340,13 @@ export default {
           let entityPath = this.entity.path
           if (this.entity.isVirtual) {
             entityPath = '/sys/data/virtual'
-            // console.log(this.entity.id,'asdfasfasdfasdfasdf')
+            //
             // this.dataForm['entityId'] = this.entity.id
           }
 
           const { children, map, ...commitData } = this.dataForm // 删除无用字段
           commitData['entityId'] = this.entity.id
-          console.log(children, map)
+
           const submitData = { ...commitData, ...this.treeAddData } // 合并树选择
 
           if (!this.isEdit) {
@@ -361,7 +359,7 @@ export default {
               this.loading = false
             })
           } else {
-            jsonPut(entityPath, commitData).then((resolve) => {
+            jsonPut(entityPath, submitData).then((resolve) => {
               this.defaultFormDialogVisible = false
               this.$message.success('保存成功')
               this.$emit('saveSuccess', resolve)

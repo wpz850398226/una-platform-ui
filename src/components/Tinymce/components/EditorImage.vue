@@ -118,7 +118,7 @@ export default {
         data,
         withCredentials: true // true 为不允许带 token, false 为允许
       })
-      console.log(res.data)
+
       return { url: res.data }
     }
   }

@@ -19,9 +19,9 @@ router.beforeEach(async(to, from, next) => {
 
   // determine whether the user has logged in
   const hasToken = getToken()
-  // console.log(to)
+  //
   // if (to.query.token) {
-  //   console.log('发现token')
+  //
   //   setToken(to.query.token)
   //   await store.dispatch('user/getInfo')
 

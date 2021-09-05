@@ -630,9 +630,7 @@ export default {
     handleUp(e) {},
     // 表格业务操作
     industryChange(e) {
-      console.log(e, 'ssssssssss')
       this.dataForm.industryTypeDcodes = e.join(',') // 所属一级行业编码
-      console.log(e)
     },
     cleanEmptyChildren(list) {
       list.forEach(k => {
@@ -714,7 +712,7 @@ export default {
     saveData() {
       // 规格检查
       const specificationErrors = []
-      console.log(this.specificationTableData)
+
       this.specificationTableData.forEach((item, index) => {
         if (!item.ceilingPrice || !item.costPrice ||
         !item.floorPrice || !item.inventory ||
@@ -738,7 +736,7 @@ export default {
           this.dataForm.goodsParam = map
           // 处理参数
           // if (this.dataForm.industryTypeDcodes) {
-          //   console.log('iiiiiiiiiiiiiiiiiiiiii' + this.dataForm.industryTypeDcodes)
+          //
           //   const industry = this.dataForm.industryTypeDcodes.join(',')
           //   this.dataForm.industryTypeDcodes = industry
           // }

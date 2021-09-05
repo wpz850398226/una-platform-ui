@@ -3,7 +3,6 @@ import store from '@/store'
 export function getEntity(className) {
   if (className) {
     const entitys = store.getters && store.getters.entitys
-    console.log(entitys)
 
     const res = entitys.reduce((t, v) => v.code === className ? [...t, v] : t, [])
 

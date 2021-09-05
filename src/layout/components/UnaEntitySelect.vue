@@ -109,10 +109,10 @@ export default {
     })
 
     this.selVal = this.value
-    // console.log('选择上限为：' + this.field.selectableLimitNum)
+    //
 
     if (this.selVal && this.realVal) {
-      console.log('rean', this.realVal)
+
 
       if (this.realVal[this.field.assignmentCode] && this.field.assignmentCode !== this.field.displayCode) {
         // 如果赋值编码不等于显示编码，则查询显示数据

@@ -612,7 +612,6 @@ export default {
       this.pageNum = 1
     },
     getPublicList(e, m = {}) {
-      console.log('getPublicList', e)
       if (e) {
         if (this.vituralTable) {
           const vituralField = { entityId: this.entity.id }
@@ -776,7 +775,7 @@ export default {
               // locationSuccess 获取成功的话
               function(position) {
                 coord = position.coords.longitude + ',' + position.coords.latitude
-                console.log(coord)
+
                 attendancePunch(coord).then(res => {
                   that.resetQuery()
                   that.$message.success('打卡完成')
@@ -799,7 +798,7 @@ export default {
         'articleSee': (extra) => {
           articleSee(this.entity.id, extra.id).then(res => {
             // 弹窗，展示富文本格式的内容，只展示，不编辑
-            console.log(res, 'aaaaaaaaa')
+
             this.article = res.message
             this.articleViewDialogVisible = true
           })

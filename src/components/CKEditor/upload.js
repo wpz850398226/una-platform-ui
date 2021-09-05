@@ -26,7 +26,7 @@ class MyUploadAdapter {
       withCredentials: true // true 为不允许带 token, false 为允许
     })
 
-    console.log(res, '文件返回')
+
 
     // 方法返回数据格式： {default: "url"}
     return {
