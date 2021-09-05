@@ -40,7 +40,7 @@
             >批量删除</el-button>
           </div>
 
-          <div v-for="btn in tableAboveButton" :key="btn.id" class="margin-left-xs" :span="3">
+          <div v-if="checkPermission(btn.map.permissionCode)" v-for="btn in tableAboveButton" :key="btn.id" class="margin-left-xs" :span="3">
             <el-button size="small" :icon="btn.iconDcode" @click="reflectFun(btn.event)">{{ btn.name }}</el-button>
           </div>
         </div>
@@ -368,7 +368,7 @@ import UnaEntityView from '@/layout/components/UnaEntityView.vue'
 import MapQuery from '@/views/Extend/MapQuery.vue'
 
 import {
-  buttonList, flushRedis,
+  flushRedis,
   stickGoods, refreshGoods, stickShop, refreshShop, attendancePunch, autoAttendance, articleSee
 
 } from '@/api/una/sys_button'
@@ -589,9 +589,7 @@ export default {
       })
     },
     getButtonList() {
-      buttonList({ 'entityId': this.entity.id }).then(res => {
-        this.generalButtonList = res.data.filter(v => v.positionDcode === 'entity_buttonPosition_tableheadLeft' || v.positionDcode === 'entity_buttonPosition_inLine')
-      })
+      this.generalButtonList = this.entity.buttonList.filter(v => v.positionDcode === 'entity_buttonPosition_tableheadLeft' || v.positionDcode === 'entity_buttonPosition_inLine')
     },
 
     getFieldList() {
@@ -779,7 +777,7 @@ export default {
                 coord = position.coords.longitude + ',' + position.coords.latitude
                 console.log(coord)
                 attendancePunch(coord).then(res => {
-                  // this.resetQuery()
+                  this.resetQuery()
                   this.$message.success('打卡完成')
                 })
               },

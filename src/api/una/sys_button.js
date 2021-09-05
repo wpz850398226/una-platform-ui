@@ -1,9 +1,9 @@
 
 import { chGet, chDelete, jsonPut, jsonPost } from '../index'
 
-export function buttonList(param) {
+/* export function buttonList(param) {
   return chGet('/sys/button/page', param)
-}
+}*/
 
 export function flushRedis() {
   return chDelete('/sys/redis/flush')

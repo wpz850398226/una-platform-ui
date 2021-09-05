@@ -196,7 +196,6 @@ import Tinymce from '@/components/Tinymce'
 import { jsonPut, jsonPost } from '@/api/index'
 import * as fieldPort from '@/api/una/sys_field'
 
-import { buttonList } from '@/api/una/sys_button'
 import checkPermission from '@/utils/permission.js'
 
 export default {
@@ -292,9 +291,7 @@ export default {
   methods: {
     checkPermission,
     getButtonList() {
-      buttonList({ 'entityId': this.entity.id }).then(res => {
-        this.formButtonList = res.data.filter(v => v.positionDcode === 'entity_buttonPosition_formBottom')
-      })
+      this.formButtonList = this.entity.buttonList.filter(v => v.positionDcode === 'entity_buttonPosition_formBottom')
     },
     initForm(oldData, mergeData) {
       console.log('initForm', oldData, mergeData)
