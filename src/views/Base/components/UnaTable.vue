@@ -340,6 +340,16 @@
       <map-query />
     </el-dialog>
 
+    <el-dialog
+      title="查看文档"
+      :visible.sync="articleViewDialogVisible"
+      width="1000px"
+      :append-to-body="true"
+      fullscreen
+    >
+      <p v-html="this.article" />
+    </el-dialog>
+
   </div>
 </template>
 
@@ -359,7 +369,7 @@ import MapQuery from '@/views/Extend/MapQuery.vue'
 
 import {
   buttonList, flushRedis,
-  stickGoods, refreshGoods, stickShop, refreshShop, attendancePunch, autoAttendance
+  stickGoods, refreshGoods, stickShop, refreshShop, attendancePunch, autoAttendance, articleSee
 
 } from '@/api/una/sys_button'
 import {
@@ -406,6 +416,7 @@ export default {
   },
   data() {
     return {
+      article: '',
       vituralTable: false,
       fieldList: [],
       tableData: [],
@@ -434,7 +445,8 @@ export default {
       // 角色授权
       extendEntity: '',
       extendFormDialogVisible: false,
-      mapViewDialogVisible: false
+      mapViewDialogVisible: false,
+      articleViewDialogVisible: false
     }
   },
   computed: {
@@ -505,7 +517,6 @@ export default {
     if (this.entity.id && this.entity.isVirtual) {
       // const p = qs.parse(`?${this.query}`)
       this.dataQueryCondition = { entityId: this.entity.id }
-      this.vituralTable = true
     }
     this.dataQueryCondition = { ...this.dataQueryCondition, ...this.query }
 
@@ -768,7 +779,7 @@ export default {
                 coord = position.coords.longitude + ',' + position.coords.latitude
                 console.log(coord)
                 attendancePunch(coord).then(res => {
-                  this.resetQuery()
+                  // this.resetQuery()
                   this.$message.success('打卡完成')
                 })
               },
@@ -784,6 +795,14 @@ export default {
           autoAttendance().then(res => {
             this.resetQuery()
             this.$message.success('生成记录成功')
+          })
+        },
+        'articleSee': (extra) => {
+          articleSee(this.entity.id, extra.id).then(res => {
+            // 弹窗，展示富文本格式的内容，只展示，不编辑
+            console.log(res, 'aaaaaaaaa')
+            this.article = res.message
+            this.articleViewDialogVisible = true
           })
         },
         'mapView': (extra) => {
