@@ -40,7 +40,7 @@
             >批量删除</el-button>
           </div>
 
-          <div v-if="checkPermission(btn.map.permissionCode)" v-for="btn in tableAboveButton" :key="btn.id" class="margin-left-xs" :span="3">
+          <div v-for="btn in tableAboveButton" v-if="checkPermission(btn.map.permissionCode)" :key="btn.id" class="margin-left-xs" :span="3">
             <el-button size="small" :icon="btn.iconDcode" @click="reflectFun(btn.event)">{{ btn.name }}</el-button>
           </div>
         </div>
@@ -703,6 +703,7 @@ export default {
     },
     // 通用按钮事件处理器
     reflectFun(handler, extra, btn) {
+      const that = this
       const methodCenter = {
         'refreshResource': () => {
           this.$message.success('刷新资源成功')
@@ -777,8 +778,8 @@ export default {
                 coord = position.coords.longitude + ',' + position.coords.latitude
                 console.log(coord)
                 attendancePunch(coord).then(res => {
-                  this.resetQuery()
-                  this.$message.success('打卡完成')
+                  that.resetQuery()
+                  that.$message.success('打卡完成')
                 })
               },
               //  locationError  获取失败的话
