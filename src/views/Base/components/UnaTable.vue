@@ -41,7 +41,7 @@
           </div>
 
           <div v-for="btn in tableAboveButton" v-if="checkPermission(btn.map.permissionCode)" :key="btn.id" class="margin-left-xs" :span="3">
-            <el-button size="small" :icon="btn.iconDcode" @click="reflectFun(btn.event)">{{ btn.name }}</el-button>
+            <el-button size="small" :icon="btn.iconDcode" @click="reflectFun(btn.event, '', btn)">{{ btn.name }}</el-button>
           </div>
         </div>
 
