@@ -366,7 +366,7 @@ import UnaImage from '@/layout/components/UnaImage.vue'
 import UnaMap from '@/layout/components/UnaMap.vue'
 import UnaEntityView from '@/layout/components/UnaEntityView.vue'
 import MapQuery from '@/views/Extend/MapQuery.vue'
-import creatInstance from '@/api/una/sys_workflow'
+import { creatInstance } from '@/api/una/sys_workflow'
 
 import {
   flushRedis,
