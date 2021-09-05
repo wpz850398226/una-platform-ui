@@ -19,7 +19,12 @@
         @tab-click="handleClick"
       >
         <el-tab-pane label="基本" name="base">
-          <el-form ref="publicForm" :rules="defaultFormRules" label-width="80px">
+          <el-form
+            ref="publicForm"
+            :model="dataForm"
+            :rules="defaultFormRules"
+            label-width="80px"
+          >
             <h3>基本信息</h3>
             <el-divider />
             <div class="flex">
@@ -482,7 +487,10 @@ export default {
       entity: '',
       activeName: 'base',
       dataForm: defaultForm,
-      defaultFormRules: {},
+      defaultFormRules: {
+        name: [{ required: true, message: `请输入名称`, trigger: 'change' }],
+        fileIds: [{ required: true, message: `请添加图片`, trigger: 'change' }]
+      },
       defaultFormDialogVisible: false,
       options: [],
       adminApproval: false,
@@ -526,11 +534,6 @@ export default {
 
     this.industryList = findDictionaryList('industry')
     this.industryList = this.cleanEmptyChildren(this.industryList)
-    this.defaultFormRules['name'] = [{ required: true, message: `请输入名称`, trigger: 'change' }]
-    this.defaultFormRules['fileIds'] = [{ required: true, message: `请添加图片`, trigger: 'change' }]
-    this.defaultFormRules['name'] = [{ required: true, message: `请输入名称`, trigger: 'change' }]
-
-    // industry
   },
   methods: {
 
@@ -709,7 +712,23 @@ export default {
       })
     },
     saveData() {
-      this.$refs['publicForm'].validate(async(valid) => {
+      // 规格检查
+      const specificationErrors = []
+      console.log(this.specificationTableData)
+      this.specificationTableData.forEach((item, index) => {
+        if (!item.ceilingPrice || !item.costPrice ||
+        !item.floorPrice || !item.inventory ||
+        !item.sellingPrice || !item.taxExclusiveMarketPrice ||
+         !item.taxInclusiveMarketPrice || !item.wholesalePrice) {
+          this.$message.error(`规格错误：第${index + 1}行填写有误!`)
+          specificationErrors.push(index)
+        }
+      })
+      if (specificationErrors.length > 0) {
+        return
+      }
+
+      this.$refs.publicForm.validate(async(valid) => {
         if (valid) {
           // 处理参数goodsParam
           const map = {}
@@ -736,6 +755,7 @@ export default {
               attributeNames: v.attrs.join(',')
             }
           })
+
           this.dataForm.modelList = this.specificationTableData
           // 处理规格
 

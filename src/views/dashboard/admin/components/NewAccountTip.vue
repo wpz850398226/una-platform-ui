@@ -4,11 +4,11 @@
       <img src="https://wpimg.wallstcn.com/e7d23d71-cf19-4b90-a1cc-f56af8c0903d.png">
     </div>
     <div style="position:relative;">
-      <pan-thumb :image="avatar" class="panThumb" />
+      <!-- <pan-thumb :image="avatar" class="panThumb" /> -->
       <mallki class-name="mallki-text" text="请前往认证中心完善个人信息" />
       <div style="padding-top:35px;" class="progress-item">
         <span>当前账号状态：{{ statusDcode }}</span>
-<!--        <el-progress :percentage="70" />-->
+        <!--        <el-progress :percentage="70" />-->
       </div>
       <!--<div class="progress-item">
         <span>JavaScript</span>
