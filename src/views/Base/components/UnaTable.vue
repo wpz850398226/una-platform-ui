@@ -350,6 +350,16 @@
       <p v-html="this.article" />
     </el-dialog>
 
+    <el-dialog
+      v-if="taskFormEntity"
+      :title="taskFormEntity.name"
+      :visible.sync="taskFormDialogVisible"
+      width="550px"
+      :append-to-body="true"
+    >
+      <una-form ref="formController" :entity="taskFormEntity" @saveSuccess="handleSuccess" />
+    </el-dialog>
+
   </div>
 </template>
 
@@ -366,7 +376,7 @@ import UnaImage from '@/layout/components/UnaImage.vue'
 import UnaMap from '@/layout/components/UnaMap.vue'
 import UnaEntityView from '@/layout/components/UnaEntityView.vue'
 import MapQuery from '@/views/Extend/MapQuery.vue'
-import { creatInstance } from '@/api/una/sys_workflow'
+import {creatInstance, finishTask} from '@/api/una/sys_workflow'
 
 import {
   flushRedis,
@@ -447,7 +457,11 @@ export default {
       extendEntity: '',
       extendFormDialogVisible: false,
       mapViewDialogVisible: false,
-      articleViewDialogVisible: false
+      articleViewDialogVisible: false,
+      // 待办表单
+      taskFormEntity: '',
+      taskFormDialogVisible: false,
+      taskInfo: ''
     }
   },
   computed: {
@@ -801,7 +815,11 @@ export default {
             confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
           }).then(() => {
             creatInstance(100001).then(res => {
-              this.$message.success(`提交成功`)
+              this.$message.success(`流程创建成功`)
+              const task = res.data
+              if (task) {
+                this.openTaskDialog(task)
+              }
             })
           })
         },
@@ -810,16 +828,24 @@ export default {
             confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
           }).then(() => {
             creatInstance(100003).then(res => {
-              this.$message.success(`提交成功`)
+              this.$message.success(`流程创建成功`)
+              const task = res.data
+              if (task) {
+                this.openTaskDialog(task)
+              }
             })
           })
         },
-        'applyVacation': () => { // 提交请假申请
+        'applyVacate': () => { // 提交请假申请
           this.$confirm(btn.warning, '提示', {
             confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
           }).then(() => {
             creatInstance(100002).then(res => {
-              this.$message.success(`提交成功`)
+              this.$message.success(`流程创建成功`)
+              const task = res.data
+              if (task) {
+                this.openTaskDialog(task)
+              }
             })
           })
         },
@@ -841,6 +867,29 @@ export default {
       } else {
         this.$message.error('指定事件未绑定')
       }
+    },
+    // 打开办理任务窗口
+    openTaskDialog(e) {
+      this.taskInfo = e
+      // 如果data不为空，则立即办理
+      if (e.nodeTypeDcode === 'flow_nudeType_submit') {
+        entityById(e.map.nodeEntityId).then((res) => {
+          this.taskFormEntity = res.data
+          this.taskFormDialogVisible = true
+        })
+      }
+    },
+    // 待办办理成功
+    handleSuccess(e) {
+      finishTask({
+        id: this.taskInfo.id,
+        recordId: e.data
+      }).then(res => {
+        this.$message.success('提交成功')
+        this.resetQuery()
+        // this.getTaskList()
+        this.taskFormDialogVisible = false
+      })
     },
     convertId2EntityAndOpenForm(entityId, extData = {}) {
       entityById(entityId).then((res) => {

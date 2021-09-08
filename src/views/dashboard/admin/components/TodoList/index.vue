@@ -145,6 +145,7 @@ export default {
       })
     },
     handleTask(e) {
+      // e 流程任务类
       this.workInfo = e
       this.approvalForm.id = e.id
       if (e.nodeTypeDcode === 'flow_nudeType_submit') {
