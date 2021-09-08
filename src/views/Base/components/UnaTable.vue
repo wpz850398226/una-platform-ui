@@ -797,8 +797,12 @@ export default {
           })
         },
         'applyTravel': () => { // 提交出差申请
-          creatInstance('100001').then(res => {
-            this.$message.success(`提交成功`)
+          this.$confirm(btn.warning, '提示', {
+            confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+          }).then(() => {
+            creatInstance(100001).then(res => {
+              this.$message.success(`提交成功`)
+            })
           })
         },
         'applyExtraWork': (extra) => { // 提交加班申请
@@ -806,6 +810,15 @@ export default {
             confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
           }).then(() => {
             creatInstance(100003).then(res => {
+              this.$message.success(`提交成功`)
+            })
+          })
+        },
+        'applyVacation': () => { // 提交请假申请
+          this.$confirm(btn.warning, '提示', {
+            confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+          }).then(() => {
+            creatInstance(100002).then(res => {
               this.$message.success(`提交成功`)
             })
           })

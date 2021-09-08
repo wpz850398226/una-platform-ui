@@ -148,7 +148,7 @@ export default {
       this.workInfo = e
       this.approvalForm.id = e.id
       if (e.nodeTypeDcode === 'flow_nudeType_submit') {
-        entityById(e.nodeEntityId).then((res) => {
+        entityById(e.map.nodeEntityId).then((res) => {
           this.entity = res.data
 
           this.defaultFormDialogVisible = true

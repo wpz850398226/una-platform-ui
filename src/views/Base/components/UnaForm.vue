@@ -345,7 +345,9 @@ export default {
           }
 
           const { children, map, ...commitData } = this.dataForm // 删除无用字段
-          commitData['entityId'] = this.entity.id
+          if (this.entity.isVirtual) { // 如果是虚拟实体，表单加载entity.value
+            commitData['entityId'] = this.entity.id
+          }
 
           const submitData = { ...commitData, ...this.treeAddData } // 合并树选择
 
