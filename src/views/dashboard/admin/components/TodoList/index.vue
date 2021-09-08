@@ -8,7 +8,7 @@
       width="550px"
       :append-to-body="true"
     >
-      <una-form ref="formController" :entity="entity" @saveSuccess="saveSuccess" />
+      <una-form v-if="defaultFormDialogVisible" ref="formController" :entity="entity" @saveSuccess="saveSuccess" />
     </el-dialog>
 
     <el-dialog
