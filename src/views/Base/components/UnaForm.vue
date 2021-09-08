@@ -308,20 +308,24 @@ export default {
             this.$set(this.defaultForm, v, mergeData[v])
           })
         }
+
         this.dataForm = { ...this.defaultForm }
       }
-
       if (this.$refs.publicForm) {
         this.$refs.publicForm.resetFields()
+      } else {
+
       }
     },
     initTreeAddData(e) {
       this.treeAddData = e
     },
     getFieldList() {
+      this.defaultForm = {}
       fieldPort.fieldList({ 'entityId': this.entity.id, 'isUpdate': 1 })
         .then((result) => {
           result.forEach(e => {
+            this.defaultForm[e.assignmentCode] = ''
             if (e.isRequired) {
               this.defaultFormRules[e.assignmentCode] = [{ required: true, message: `请输入或选择${e.name}`, trigger: 'change' }]
             }
