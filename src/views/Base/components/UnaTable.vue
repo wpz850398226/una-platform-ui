@@ -1,6 +1,7 @@
 <template>
   <div class="Table">
     <el-card v-if="tableReady" class="box-content" shadow="never">
+
       <div class="flex justify-between" :gutter="10">
         <div class="flex">
           <div v-if="selectSureBtn" class="margin-right-xs">
@@ -41,11 +42,11 @@
           </div>
 
           <div v-for="btn in tableAboveButton" v-if="checkPermission(btn.map.permissionCode)" :key="btn.id" class="margin-left-xs" :span="3">
-            <el-button size="small" :icon="btn.iconDcode" @click="reflectFun(btn.event, '', btn)">{{ btn.name }}</el-button>
+            <el-button size="small" type="primary" :icon="btn.iconDcode" @click="reflectFun(btn.event, '', btn)">{{ btn.name }}</el-button>
           </div>
         </div>
 
-        <div>
+<!--        <div>
           <div class="flex justify-end clr-btn">
             <el-popover placement="left-start" title="列筛选" trigger="click">
               <el-checkbox-group v-model="checkList" @change="columnFilter">
@@ -71,12 +72,57 @@
             </el-dropdown>
 
           </div>
-        </div>
-
+        </div>-->
       </div>
 
-      <el-row :gutter="10">
+      <div class="flex justify-between" :gutter="10">
+          <el-col v-for="(item,index) in entity.queryList" :key="index" :span="8" class="flex">
+            <div class="flex align-center">
+              <div class="margin-right-xs" style="min-width: 50px;">{{ item.name }}</div>
+              <el-input
+                v-if="item.assignmentModeDcode === 'field_query_exactText' ||
+                item.assignmentModeDcode === 'field_query_fuzzyText'"
+                v-model="queryFields[item.fieldCode]"
+              />
+              <el-switch
+                v-else-if="item.assignmentModeDcode === 'field_query_switch'"
+                v-model="queryFields[item.fieldCode]"
+                active-color="#13ce66"
+                :active-value="1"
+                :inactive-value="0"
+                inactive-color="#ff4949"
+              />
+              <una-single-select
+                v-else-if="item.assignmentModeDcode === 'field_query_singleselect'"
+                v-model="queryFields[item.fieldCode]"
+                :field="item"
+              />
+              <el-date-picker
+                v-else-if="item.assignmentModeDcode === 'field_query_geDate'"
+                v-model="queryFields[item.fieldCode]"
+                type="date"
+                value-format="yyyy-MM-dd 00:00:00"
+                format="yyyy-MM-dd"
+                clearable
+              />
+              <el-date-picker
+                v-else-if="item.assignmentModeDcode === 'field_query_leDate'"
+                v-model="queryFields[item.fieldCode]"
+                type="date"
+                value-format="yyyy-MM-dd 23:59:59"
+                format="yyyy-MM-dd"
+                clearable
+              />
+            </div>
+          </el-col>
 
+        <div v-if="entity.queryList.length>0">
+          <el-button size="small" type="primary" @click="goQuery">搜索</el-button>
+          <el-button size="small" type="primary" @click="resetQuery">重置</el-button>
+        </div>
+      </div>
+
+<!--      <el-row :gutter="10">
         <el-col v-for="(item,index) in entity.queryList" :key="index" :span="8" class="flex">
           <div class="flex align-center">
             <div class="margin-right-xs" style="min-width: 50px;">{{ item.name }}</div>
@@ -115,15 +161,13 @@
               clearable
             />
           </div>
-
         </el-col>
 
         <el-col v-if="entity.queryList.length>0" :span="3">
           <el-button size="small" type="primary" @click="goQuery">搜索</el-button>
           <el-button size="small" type="primary" @click="resetQuery">重置</el-button>
         </el-col>
-
-      </el-row>
+      </el-row>-->
 
       <el-table
         border
