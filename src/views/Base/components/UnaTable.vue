@@ -1,128 +1,139 @@
 <template>
   <div class="Table">
     <el-card v-if="tableReady" class="box-content" shadow="never">
+      <el-row>
+        <el-col :span="16" class="flex">
+          <div class="flex justify-between" :gutter="10">
+            <div class="flex">
+              <div v-if="selectSureBtn" class="margin-right-xs">
+                <el-button
+                  icon="el-icon-finished"
+                  size="small"
+                  type="success"
+                  @click="submitSelect"
+                >确认选中</el-button>
+              </div>
 
-      <div class="flex justify-between" :gutter="10">
-        <div class="flex">
-          <div v-if="selectSureBtn" class="margin-right-xs">
-            <el-button
-              icon="el-icon-finished"
-              size="small"
-              type="success"
-              @click="submitSelect"
-            >确认选中</el-button>
+              <div v-permission="entity.code+':create'" class="margin-right-xs">
+                <el-button size="small" type="primary" @click="showAddDialog">添加</el-button>
+              </div>
+
+              <div v-if="checkPermission(entity.code +':delete')" :span="3">
+                <el-button
+                  icon="el-icon-finished"
+                  size="small"
+                  type="danger"
+                  @click="submitSelectDel"
+                >批量删除</el-button>
+              </div>
+
+              <div v-for="btn in tableAboveButton" v-if="checkPermission(btn.map.permissionCode)" :key="btn.id" class="margin-left-xs" :span="3">
+                <el-button size="small" type="primary" :icon="btn.iconDcode" @click="reflectFun(btn.event, '', btn)">{{ btn.name }}</el-button>
+              </div>
+            </div>
           </div>
+        </el-col>
+        <el-col :span="8" style="text-align: right">
+          <el-popover placement="left-start" title="列筛选" trigger="click">
+            <el-checkbox-group v-model="checkList" @change="columnFilter">
+              <el-checkbox v-for="(item, index) in fieldList" :key="index" :label="item.id">{{ item.name }}</el-checkbox>
+            </el-checkbox-group>
+            <el-button slot="reference" title="列筛选" size="mini"><i class="el-icon-menu" /></el-button>
+          </el-popover>
 
+          <el-button
+            title="数据导入"
+            size="mini"
+            @click="dataImportDialogVisible = true"
+          >
+            <i class="el-icon-upload2" />
+          </el-button>
+
+          <el-dropdown>
+            <el-button title="数据导出" size="mini"><i class="el-icon-download" /></el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item>导出到CSV文件</el-dropdown-item>
+              <el-dropdown-item>导出到Excel文件</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </el-col>
+      </el-row>
+
+      <el-row>
+        <el-col :span="8" class="flex">
           <div v-if="entity.filterList && entity.filterList.length>0" class="flex margin-right-xs">
-            <div
-              v-for="filter in entity.filterList"
-              :key="filter.id"
-            >
+            <div v-for="filter in entity.filterList" :key="filter.id">
               <el-link
                 type="primary"
                 @click="setFilterCond(filter.fieldCode, filter.value)"
               >{{ filter.name }}</el-link>
               <el-divider direction="vertical" />
-
             </div>
-
           </div>
+        </el-col>
+        <el-col :span="6" :offset="10" class="flex">
+          <el-input
+            v-model="fuzzyName"
+            size="small"
+            placeholder="请输入内容"
+          >
+            <el-button slot="append" size="small" icon="el-icon-search" />
+          </el-input>
+          <el-button :if="entity.queryList !==undefined && entity.queryList.length > 0" size="small" type="primary" @click="switchSearchRow">高级查询</el-button>
+        </el-col>
+      </el-row>
 
-          <div v-permission="entity.code+':create'" class="margin-right-xs">
-            <el-button size="small" type="primary" @click="showAddDialog">添加</el-button>
-          </div>
-
-          <div v-if="checkPermission(entity.code +':delete')" :span="3">
-            <el-button
-              icon="el-icon-finished"
-              size="small"
-              type="danger"
-              @click="submitSelectDel"
-            >批量删除</el-button>
-          </div>
-
-          <div v-for="btn in tableAboveButton" v-if="checkPermission(btn.map.permissionCode)" :key="btn.id" class="margin-left-xs" :span="3">
-            <el-button size="small" type="primary" :icon="btn.iconDcode" @click="reflectFun(btn.event, '', btn)">{{ btn.name }}</el-button>
-          </div>
-        </div>
-
-<!--        <div>
-          <div class="flex justify-end clr-btn">
-            <el-popover placement="left-start" title="列筛选" trigger="click">
-              <el-checkbox-group v-model="checkList" @change="columnFilter">
-                <el-checkbox v-for="(item, index) in fieldList" :key="index" :label="item.id">{{ item.name }}</el-checkbox>
-              </el-checkbox-group>
-              <el-button slot="reference" title="列筛选" size="mini"><i class="el-icon-menu" /></el-button>
-            </el-popover>
-
-            <el-button
-              title="数据导入"
-              size="mini"
-              @click="dataImportDialogVisible = true"
-            >
-              <i class="el-icon-upload2" />
-            </el-button>
-
-            <el-dropdown>
-              <el-button title="数据导出" size="mini"><i class="el-icon-download" /></el-button>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>导出到CSV文件</el-dropdown-item>
-                <el-dropdown-item>导出到Excel文件</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-
-          </div>
-        </div>-->
-      </div>
-
-      <div class="flex justify-between" :gutter="10">
-          <el-col v-for="(item,index) in entity.queryList" :key="index" :span="8" class="flex">
-            <div class="flex align-center">
-              <div class="margin-right-xs" style="min-width: 50px;">{{ item.name }}</div>
-              <el-input
-                v-if="item.assignmentModeDcode === 'field_query_exactText' ||
+      <el-row v-show="searchRowVisible">
+        <el-col v-for="(item,index) in entity.queryList" :key="index" :span="6" class="flex">
+          <div class="flex align-center">
+            <div class="margin-right-xs" style="min-width: 50px;">{{ item.name }}</div>
+            <el-input
+              v-if="item.assignmentModeDcode === 'field_query_exactText' ||
                 item.assignmentModeDcode === 'field_query_fuzzyText'"
-                v-model="queryFields[item.fieldCode]"
-              />
-              <el-switch
-                v-else-if="item.assignmentModeDcode === 'field_query_switch'"
-                v-model="queryFields[item.fieldCode]"
-                active-color="#13ce66"
-                :active-value="1"
-                :inactive-value="0"
-                inactive-color="#ff4949"
-              />
-              <una-single-select
-                v-else-if="item.assignmentModeDcode === 'field_query_singleselect'"
-                v-model="queryFields[item.fieldCode]"
-                :field="item"
-              />
-              <el-date-picker
-                v-else-if="item.assignmentModeDcode === 'field_query_geDate'"
-                v-model="queryFields[item.fieldCode]"
-                type="date"
-                value-format="yyyy-MM-dd 00:00:00"
-                format="yyyy-MM-dd"
-                clearable
-              />
-              <el-date-picker
-                v-else-if="item.assignmentModeDcode === 'field_query_leDate'"
-                v-model="queryFields[item.fieldCode]"
-                type="date"
-                value-format="yyyy-MM-dd 23:59:59"
-                format="yyyy-MM-dd"
-                clearable
-              />
-            </div>
-          </el-col>
-
-        <div v-if="entity.queryList.length>0">
-          <el-button size="small" type="primary" @click="goQuery">搜索</el-button>
-          <el-button size="small" type="primary" @click="resetQuery">重置</el-button>
+              v-model="queryFields[item.fieldCode]"
+            />
+            <el-switch
+              v-else-if="item.assignmentModeDcode === 'field_query_switch'"
+              v-model="queryFields[item.fieldCode]"
+              active-color="#13ce66"
+              :active-value="1"
+              :inactive-value="0"
+              inactive-color="#ff4949"
+            />
+            <una-single-select
+              v-else-if="item.assignmentModeDcode === 'field_query_singleselect'"
+              v-model="queryFields[item.fieldCode]"
+              :field="item"
+            />
+            <el-date-picker
+              v-else-if="item.assignmentModeDcode === 'field_query_geDate'"
+              v-model="queryFields[item.fieldCode]"
+              type="date"
+              value-format="yyyy-MM-dd 00:00:00"
+              format="yyyy-MM-dd"
+              clearable
+            />
+            <el-date-picker
+              v-else-if="item.assignmentModeDcode === 'field_query_leDate'"
+              v-model="queryFields[item.fieldCode]"
+              type="date"
+              value-format="yyyy-MM-dd 23:59:59"
+              format="yyyy-MM-dd"
+              clearable
+            />
+          </div>
+        </el-col>
+        <div class="flex justify-between" :gutter="10">
+          <div v-if="entity.queryList.length>0">
+            <el-button size="small" type="primary" @click="goQuery">搜索</el-button>
+            <!--          <el-button size="small" type="primary" @click="resetQuery">重置</el-button>-->
+          </div>
         </div>
-      </div>
+      </el-row>
 
-<!--      <el-row :gutter="10">
+
+
+      <!--      <el-row :gutter="10">
         <el-col v-for="(item,index) in entity.queryList" :key="index" :span="8" class="flex">
           <div class="flex align-center">
             <div class="margin-right-xs" style="min-width: 50px;">{{ item.name }}</div>
@@ -420,7 +431,7 @@ import UnaImage from '@/layout/components/UnaImage.vue'
 import UnaMap from '@/layout/components/UnaMap.vue'
 import UnaEntityView from '@/layout/components/UnaEntityView.vue'
 import MapQuery from '@/views/Extend/MapQuery.vue'
-import {creatInstance, finishTask} from '@/api/una/sys_workflow'
+import { creatInstance, finishTask } from '@/api/una/sys_workflow'
 
 import {
   flushRedis,
@@ -471,6 +482,7 @@ export default {
   },
   data() {
     return {
+      fuzzyName: '', // 模糊搜索名称
       article: '',
       vituralTable: false,
       fieldList: [],
@@ -488,6 +500,7 @@ export default {
       filterQueryCondition: {},
       // 数据导入
       dataImportDialogVisible: false,
+      searchRowVisible: false,
       uploadFileList: [],
       // 通用按钮
       generalButtonList: [],
@@ -731,6 +744,14 @@ export default {
     },
     showAddDialog() {
       this.$emit('showAddDialog')
+    },
+    switchSearchRow() {
+      console.log(this.entity)
+      if (this.searchRowVisible) {
+        this.searchRowVisible = false
+      } else {
+        this.searchRowVisible = true
+      }
     },
     selectionChange(e) {
       if (Array.isArray(e)) {
