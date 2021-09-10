@@ -31,7 +31,7 @@ export default {
   },
   render(h, context) {
     return (
-      <el-card class='box-card' shadow='never' style={this.customStyle} v-show={this.show}>
+      <el-card id="manageCard" class='box-card' shadow='never' style={this.customStyle} v-show={this.show}>
         {h('div', this.$slots.content)}
       </el-card>
     )

@@ -1,77 +1,70 @@
 <template>
   <div class="Table">
     <el-card v-if="tableReady" class="box-content" shadow="never">
-      <el-row>
-        <el-col :span="16" class="flex">
-          <div class="flex justify-between" :gutter="10">
+      <el-row style="margin-bottom: 5px">
+        <el-col :span="18" class="flex">
+          <div class="flex justify-between">
             <div class="flex">
               <div v-if="selectSureBtn" class="margin-right-xs">
                 <el-button
-                  icon="el-icon-finished"
+                  icon="el-icon-check"
                   size="small"
                   type="success"
                   @click="submitSelect"
                 >确认选中</el-button>
               </div>
 
-              <div v-permission="entity.code+':create'" class="margin-right-xs">
-                <el-button size="small" type="primary" @click="showAddDialog">添加</el-button>
+              <div v-permission="entity.code+':create'">
+                <el-button size="small"
+                           icon="el-icon-plus"
+                           type="primary"
+                           @click="showAddDialog"
+                           class="margin-right-xs">添加</el-button>
               </div>
 
               <div v-if="checkPermission(entity.code +':delete')" :span="3">
                 <el-button
-                  icon="el-icon-finished"
+                  class="margin-right-xs"
+                  icon="el-icon-delete-solid"
                   size="small"
                   type="danger"
                   @click="submitSelectDel"
                 >批量删除</el-button>
               </div>
+              <div v-if="checkPermission(entity.code +':import')" :span="3">
+                <el-button
+                  class="margin-right-xs"
+                  icon="el-icon-upload2"
+                  size="small"
+                  type="primary"
+                  @click="submitSelectDel"
+                >导入</el-button>
+              </div>
+              <el-dropdown v-if="checkPermission(entity.code +':export')">
+                <el-button title="数据导出" type="primary" class="margin-right-xs" size="small"><i class="el-icon-download" />导出</el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item>导出到CSV文件</el-dropdown-item>
+                  <el-dropdown-item>导出到Excel文件</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
 
               <div v-for="btn in tableAboveButton" v-if="checkPermission(btn.map.permissionCode)" :key="btn.id" class="margin-left-xs" :span="3">
                 <el-button size="small" type="primary" :icon="btn.iconDcode" @click="reflectFun(btn.event, '', btn)">{{ btn.name }}</el-button>
               </div>
             </div>
-          </div>
-        </el-col>
-        <el-col :span="8" style="text-align: right">
-          <el-popover placement="left-start" title="列筛选" trigger="click">
-            <el-checkbox-group v-model="checkList" @change="columnFilter">
-              <el-checkbox v-for="(item, index) in fieldList" :key="index" :label="item.id">{{ item.name }}</el-checkbox>
-            </el-checkbox-group>
-            <el-button slot="reference" title="列筛选" size="mini"><i class="el-icon-menu" /></el-button>
-          </el-popover>
-
-          <el-button
-            title="数据导入"
-            size="mini"
-            @click="dataImportDialogVisible = true"
-          >
-            <i class="el-icon-upload2" />
-          </el-button>
-
-          <el-dropdown>
-            <el-button title="数据导出" size="mini"><i class="el-icon-download" /></el-button>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>导出到CSV文件</el-dropdown-item>
-              <el-dropdown-item>导出到Excel文件</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </el-col>
-      </el-row>
-
-      <el-row>
-        <el-col :span="8" class="flex">
-          <div v-if="entity.filterList && entity.filterList.length>0" class="flex margin-right-xs">
-            <div v-for="filter in entity.filterList" :key="filter.id">
-              <el-link
-                type="primary"
-                @click="setFilterCond(filter.fieldCode, filter.value)"
-              >{{ filter.name }}</el-link>
-              <el-divider direction="vertical" />
+            <div v-if="entity.filterList && entity.filterList.length>0" class="flex">
+              <div v-for="filter in entity.filterList" :key="filter.id">
+                <el-link
+                  :underline="false"
+                  type="primary"
+                  @click="setFilterCond(filter.fieldCode, filter.value)"
+                >{{ filter.name }}</el-link>
+                <el-divider direction="vertical" />
+              </div>
             </div>
           </div>
         </el-col>
-        <el-col :span="6" :offset="10" class="flex">
+        <el-col :span="6" style="text-align: right" class="flex">
           <el-input
             v-model="fuzzyName"
             size="small"
@@ -79,15 +72,41 @@
           >
             <el-button slot="append" size="small" icon="el-icon-search" />
           </el-input>
-          <el-button :if="entity.queryList !==undefined && entity.queryList.length > 0" size="small" type="primary" @click="switchSearchRow">高级查询</el-button>
+          <el-popover placement="left-start" title="列筛选" trigger="click">
+            <el-checkbox-group v-model="checkList" @change="columnFilter">
+              <el-checkbox v-for="(item, index) in fieldList" :key="index" :label="item.id">{{ item.name }}</el-checkbox>
+            </el-checkbox-group>
+            <el-button slot="reference" title="列筛选" size="small"><i class="el-icon-menu" /></el-button>
+          </el-popover>
+          <el-button v-if="entity.queryList && entity.queryList.length>0"
+                     size="small"
+                     icon="el-icon-arrow-down"
+                     type="text"
+                     @click="switchSearchRow">高级查询</el-button>
+<!--          <el-button
+            title="数据导入"
+            size="small"
+            @click="dataImportDialogVisible = true"
+          >
+            <i class="el-icon-upload2" />
+          </el-button>
+
+          <el-dropdown>
+            <el-button title="数据导出" size="small"><i class="el-icon-download" /></el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item>导出到CSV文件</el-dropdown-item>
+              <el-dropdown-item>导出到Excel文件</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>-->
         </el-col>
       </el-row>
 
-      <el-row v-show="searchRowVisible">
-        <el-col v-for="(item,index) in entity.queryList" :key="index" :span="6" class="flex">
+      <el-row v-show="searchRowVisible" style="background-color: #f8f9fb">
+        <el-col v-for="(item,index) in entity.queryList" :key="index" :span="6" class="flex" style="margin-bottom: 5px">
           <div class="flex align-center">
             <div class="margin-right-xs" style="min-width: 50px;">{{ item.name }}</div>
             <el-input
+              size="small"
               v-if="item.assignmentModeDcode === 'field_query_exactText' ||
                 item.assignmentModeDcode === 'field_query_fuzzyText'"
               v-model="queryFields[item.fieldCode]"
@@ -101,11 +120,13 @@
               inactive-color="#ff4949"
             />
             <una-single-select
+              size="small"
               v-else-if="item.assignmentModeDcode === 'field_query_singleselect'"
               v-model="queryFields[item.fieldCode]"
               :field="item"
             />
             <el-date-picker
+              size="small"
               v-else-if="item.assignmentModeDcode === 'field_query_geDate'"
               v-model="queryFields[item.fieldCode]"
               type="date"
@@ -114,6 +135,7 @@
               clearable
             />
             <el-date-picker
+              size="small"
               v-else-if="item.assignmentModeDcode === 'field_query_leDate'"
               v-model="queryFields[item.fieldCode]"
               type="date"
@@ -123,12 +145,10 @@
             />
           </div>
         </el-col>
-        <div class="flex justify-between" :gutter="10">
-          <div v-if="entity.queryList.length>0">
-            <el-button size="small" type="primary" @click="goQuery">搜索</el-button>
-            <!--          <el-button size="small" type="primary" @click="resetQuery">重置</el-button>-->
-          </div>
-        </div>
+        <el-col :span="6" offset="18" style="text-align: right">
+          <el-button size="small" type="primary" @click="goQuery">搜索</el-button>
+          <el-button size="small" @click="resetQuery">重置</el-button>
+        </el-col>
       </el-row>
 
 
@@ -263,17 +283,17 @@
 
         <el-table-column label="操作" fixed="right" width="150">
           <template slot-scope="scope">
-            <el-button v-if="checkPermission(entity.code +':update')" type="text" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button v-if="checkPermission(entity.code +':delete')" type="text" @click="handleDelete(scope.row)">删除</el-button>
-            <el-button v-if="checkPermission(entity.code +':update')" type="text" @click="handleUp(scope.row)">升序</el-button>
-
+            <el-button v-if="checkPermission(entity.code +':update')" plain title="修改" type="text" @click="handleEdit(scope.row)">修改</el-button>
+            <el-button v-if="checkPermission(entity.code +':update')" plain title="升序" type="text" @click="handleUp(scope.row)">升序</el-button>
             <el-button
               v-for="btn in tableInlineButton"
+              plain
               :key="btn.id"
               type="text"
               :icon="btn.iconDcode"
               @click="reflectFun(btn.event, scope.row, btn)"
             >{{ btn.name }}</el-button>
+            <el-button v-if="checkPermission(entity.code +':delete')" plain title="删除" type="text" style="color: red" @click="handleDelete(scope.row)">删除</el-button>
 
           </template>
         </el-table-column>
@@ -973,49 +993,10 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-  .Table {
-    width: 100%;
-    height: 100%;
-    .box-content {
-      width: 100%;
-      height: 100%;
-    }
-  }
-
-  .el-popover .el-checkbox {
-    display: block;
-    margin-bottom: 5px;
-  }
-
-  .clr-btn {
-    .el-button+.el-button {
-      margin-left: 0;
-    }
-  }
-
-  .square {
-    height: 15px;
-    width: 15px;
-    border-radius: 4px;
-
-      margin-right: 5px;
-    &.black {
-      background-color: black;
-    }
-    &.green {
-      background-color: green;
-    }
-    &.blue {
-      background-color: blue;
-    }
-    &.purple {
-      background-color: purple;
-    }
-    &.orange {
-      background-color: orange;
-    }
-  }
-
+<style>
+#manageCard>.el-card__body {
+  height: 100%;
+  padding: 0px !important;
+}
 </style>
+
