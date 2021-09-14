@@ -134,7 +134,7 @@
               value-format="yyyy-MM-dd"
             />
             <el-date-picker
-              v-else-if="field.assignmentModeDcode === 'field_assignment_datetime'"
+              v-else-if="field.assignmentModeDcode === 'field_assignment_dateTime'"
               v-model="dataForm[field.assignmentCode]"
               type="datetime"
               :placeholder="field.annotation"
