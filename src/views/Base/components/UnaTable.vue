@@ -993,6 +993,7 @@ export default {
   }
 }
 </script>
+
 <style>
 #manageCard>.el-card__body {
   height: 100%;
@@ -1000,3 +1001,48 @@ export default {
 }
 </style>
 
+<style lang="scss" scoped>
+  .Table {
+    width: 100%;
+    height: 120%;
+    .box-content {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .el-popover .el-checkbox {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .clr-btn {
+    .el-button+.el-button {
+      margin-left: 0;
+    }
+  }
+
+  .square {
+    height: 15px;
+    width: 15px;
+    border-radius: 4px;
+
+      margin-right: 5px;
+    &.black {
+      background-color: black;
+    }
+    &.green {
+      background-color: green;
+    }
+    &.blue {
+      background-color: blue;
+    }
+    &.purple {
+      background-color: purple;
+    }
+    &.orange {
+      background-color: orange;
+    }
+  }
+
+</style>

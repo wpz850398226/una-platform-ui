@@ -19,7 +19,8 @@
       fullscreen
     >
 
-      <div style="pointer-events: none;">
+      <div style="pointer-events: none;background-color: 	#AFEEEE;padding: 5px">
+        <h3>提交信息</h3>
         <una-form
           v-for="(item,index) in approvalDataList"
           :key="index"
@@ -159,7 +160,7 @@ export default {
         //
         this.approvalDataList = []
         e.submitTaskList.forEach(task => {
-          entityById(task.nodeEntityId).then((res) => {
+          entityById(task.map.nodeEntityId).then((res) => {
             const entity = res.data
             chGet(`${entity.path}/page`, {
               id: task.recordId
