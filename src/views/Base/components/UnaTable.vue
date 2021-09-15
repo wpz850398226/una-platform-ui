@@ -713,16 +713,41 @@ export default {
     initPage() {
       this.pageNum = 1
     },
-    getPublicList(e, m = {}) {
+    getPublicList: function (e, m = {}) {
+      const menuPath = this.$route.name
+      console.log(menuPath, 'mmmmmmmmmmmmmm')
+
       if (e) {
         if (this.vituralTable) {
-          const vituralField = { entityId: this.entity.id }
-          this.otherCondition = { ...e, ...vituralField }
+          const vituralField = {entityId: this.entity.id}
+          this.otherCondition = {...e, ...vituralField}
         } else {
           this.otherCondition = e
         }
       } else {
         this.otherCondition = this.dataQueryCondition
+      }
+
+      console.log(this.otherCondition)
+
+      if (menuPath.indexOf("?") !== -1) {
+        const userInfo = this.$store.getters.userinfo
+        const condition = menuPath.substr(menuPath.indexOf("?") + 1)
+        console.log(condition)
+        for (const conditionUnit of condition.split("&")) {
+          const key = conditionUnit.substr(0,conditionUnit.indexOf("="))
+          const value = conditionUnit.substr(conditionUnit.indexOf("=")+1)
+
+          if (typeof value === 'string' && value.indexOf('$u') !== -1) {
+            const k = value.substring(3)
+            if (Object.prototype.hasOwnProperty.call(userInfo, k)) {
+              this.otherCondition[key] = userInfo[k]
+            }
+          }else{
+            this.otherCondition[key] = value
+          }
+
+        }
       }
 
       chGet(this.entity.path + '/page', {
@@ -741,7 +766,7 @@ export default {
               record[field.assignmentCode] = record['map'][field.displayCode]
             }
           })
-          record = { ...record, ...record.value }
+          record = {...record, ...record.value}
 
           return record
         })
