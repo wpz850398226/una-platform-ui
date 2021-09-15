@@ -111,7 +111,7 @@
           />
         </el-select>
         <el-button v-if="!searchMode" icon="el-icon-search" plain type="primary" @click="goSearch">搜索</el-button>
-        <el-button v-else plain type="primary" @click="backSearch">返回全部</el-button>
+        <el-button v-else type="primary" plain @click="backSearch">返回全部</el-button>
       </div>
 
       <el-button size="medium" type="primary" @click="showAddDialog">添加条件</el-button>

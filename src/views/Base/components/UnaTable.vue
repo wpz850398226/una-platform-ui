@@ -76,7 +76,7 @@
             <el-checkbox-group v-model="checkList" @change="columnFilter">
               <el-checkbox v-for="(item, index) in fieldList" :key="index" :label="item.id">{{ item.name }}</el-checkbox>
             </el-checkbox-group>
-            <el-button slot="reference" title="列筛选" size="small"><i class="el-icon-menu" /></el-button>
+            <el-button slot="reference" title="列筛选" size="small"><i class="el-icon-s-grid" /></el-button>
           </el-popover>
           <el-button v-if="entity.queryList && entity.queryList.length>0"
                      size="small"
@@ -287,9 +287,9 @@
             <el-button v-if="checkPermission(entity.code +':update')" plain title="升序" type="text" @click="handleUp(scope.row)">升序</el-button>
             <el-button
               v-for="btn in tableInlineButton"
-              plain
               :key="btn.id"
               type="text"
+              plain
               :icon="btn.iconDcode"
               @click="reflectFun(btn.event, scope.row, btn)"
             >{{ btn.name }}</el-button>
@@ -695,8 +695,18 @@ export default {
       }
     },
     setFilterCond(key, value) {
+      const userInfo = this.$store.getters.userinfo
       const c = {}
-      c[key] = value
+
+      if (typeof value === 'string' && value.indexOf('$u') !== -1) {
+        const k = value.substring(3)
+        if (Object.prototype.hasOwnProperty.call(userInfo, k)) {
+          c[key] = userInfo[k]
+        }
+      }else{
+        c[key] = value
+      }
+
       this.filterQueryCondition = c
       this.getPublicList()
     },
