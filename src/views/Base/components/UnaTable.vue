@@ -66,11 +66,12 @@
         </el-col>
         <el-col :span="6" style="text-align: right" class="flex">
           <el-input
-            v-model="fuzzyName"
+            v-model="queryFields[':name']"
+            :disabled="searchRowVisible"
             size="small"
             placeholder="请输入内容"
           >
-            <el-button slot="append" size="small" icon="el-icon-search" />
+            <el-button slot="append" size="small" icon="el-icon-search" :disabled="searchRowVisible" @click="goQuery"/>
           </el-input>
           <el-popover placement="left-start" title="列筛选" trigger="click">
             <el-checkbox-group v-model="checkList" @change="columnFilter">
@@ -80,9 +81,11 @@
           </el-popover>
           <el-button v-if="entity.queryList && entity.queryList.length>0"
                      size="small"
-                     icon="el-icon-arrow-down"
                      type="text"
-                     @click="switchSearchRow">高级查询</el-button>
+                     @click="switchSearchRow">高级查询
+            <i v-show="!searchRowVisible" class="el-icon-arrow-down el-icon--right"></i>
+            <i v-show="searchRowVisible" class="el-icon-arrow-up el-icon--right"></i>
+          </el-button>
 <!--          <el-button
             title="数据导入"
             size="small"
@@ -145,60 +148,11 @@
             />
           </div>
         </el-col>
-        <el-col :span="6" offset="18" style="text-align: right">
+        <el-col :span="6">
           <el-button size="small" type="primary" @click="goQuery">搜索</el-button>
           <el-button size="small" @click="resetQuery">重置</el-button>
         </el-col>
       </el-row>
-
-
-
-      <!--      <el-row :gutter="10">
-        <el-col v-for="(item,index) in entity.queryList" :key="index" :span="8" class="flex">
-          <div class="flex align-center">
-            <div class="margin-right-xs" style="min-width: 50px;">{{ item.name }}</div>
-            <el-input
-              v-if="item.assignmentModeDcode === 'field_query_exactText' ||
-                item.assignmentModeDcode === 'field_query_fuzzyText'"
-              v-model="queryFields[item.fieldCode]"
-            />
-            <el-switch
-              v-else-if="item.assignmentModeDcode === 'field_query_switch'"
-              v-model="queryFields[item.fieldCode]"
-              active-color="#13ce66"
-              :active-value="1"
-              :inactive-value="0"
-              inactive-color="#ff4949"
-            />
-            <una-single-select
-              v-else-if="item.assignmentModeDcode === 'field_query_singleselect'"
-              v-model="queryFields[item.fieldCode]"
-              :field="item"
-            />
-            <el-date-picker
-              v-else-if="item.assignmentModeDcode === 'field_query_geDate'"
-              v-model="queryFields[item.fieldCode]"
-              type="date"
-              value-format="yyyy-MM-dd 00:00:00"
-              format="yyyy-MM-dd"
-              clearable
-            />
-            <el-date-picker
-              v-else-if="item.assignmentModeDcode === 'field_query_leDate'"
-              v-model="queryFields[item.fieldCode]"
-              type="date"
-              value-format="yyyy-MM-dd 23:59:59"
-              format="yyyy-MM-dd"
-              clearable
-            />
-          </div>
-        </el-col>
-
-        <el-col v-if="entity.queryList.length>0" :span="3">
-          <el-button size="small" type="primary" @click="goQuery">搜索</el-button>
-          <el-button size="small" type="primary" @click="resetQuery">重置</el-button>
-        </el-col>
-      </el-row>-->
 
       <el-table
         border
@@ -502,7 +456,6 @@ export default {
   },
   data() {
     return {
-      fuzzyName: '', // 模糊搜索名称
       article: '',
       vituralTable: false,
       fieldList: [],
@@ -715,7 +668,8 @@ export default {
     },
     getPublicList: function (e, m = {}) {
       const menuPath = this.$route.name
-      console.log(menuPath, 'mmmmmmmmmmmmmm')
+      // console.log(menuPath, 'mmmmmmmmmmmmmm')
+      console.log(m, 'mmmmmmmmmmmmmm')
 
       if (e) {
         if (this.vituralTable) {
@@ -750,6 +704,8 @@ export default {
         }
       }
 
+      console.log(m, 'mmmmmmmmmmmmmm')
+
       chGet(this.entity.path + '/page', {
         'pageNum': this.pageCurrent,
         'pageSize': this.pageSize,
@@ -781,6 +737,7 @@ export default {
       this.getPublicList(this.otherCondition)
     },
     goQuery() {
+      console.log(this.queryFields,'qqqqqqqqqqqqqq')
       this.getPublicList('', this.queryFields)
     },
     resetQuery() {
@@ -801,10 +758,11 @@ export default {
       this.$emit('showAddDialog')
     },
     switchSearchRow() {
-      console.log(this.entity)
       if (this.searchRowVisible) {
+        this.queryFields = {}
         this.searchRowVisible = false
       } else {
+        delete this.queryFields[':name']
         this.searchRowVisible = true
       }
     },
@@ -1033,6 +991,10 @@ export default {
 #manageCard>.el-card__body {
   height: 100%;
   padding: 0px !important;
+}
+
+#manageCard form {
+  margin-top: 20px;
 }
 </style>
 
