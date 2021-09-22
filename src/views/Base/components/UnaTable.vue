@@ -682,9 +682,9 @@ export default {
         this.otherCondition = this.dataQueryCondition
       }
 
-      console.log(this.otherCondition)
+      console.log(this.otherCondition,'oooooooocccccccccc')
 
-      if (menuPath.indexOf("?") !== -1) {
+      if (menuPath.indexOf("/sys/manage") !== -1 && menuPath.indexOf("?") !== -1) {
         const userInfo = this.$store.getters.userinfo
         const condition = menuPath.substr(menuPath.indexOf("?") + 1)
         console.log(condition)
@@ -703,8 +703,6 @@ export default {
 
         }
       }
-
-      console.log(m, 'mmmmmmmmmmmmmm')
 
       chGet(this.entity.path + '/page', {
         'pageNum': this.pageCurrent,
