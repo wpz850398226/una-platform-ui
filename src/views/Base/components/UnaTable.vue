@@ -15,11 +15,13 @@
               </div>
 
               <div v-permission="entity.code+':create'">
-                <el-button size="small"
-                           icon="el-icon-plus"
-                           type="primary"
-                           @click="showAddDialog"
-                           class="margin-right-xs">添加</el-button>
+                <el-button
+                  size="small"
+                  icon="el-icon-plus"
+                  type="primary"
+                  class="margin-right-xs"
+                  @click="showAddDialog"
+                >添加</el-button>
               </div>
 
               <div v-if="checkPermission(entity.code +':delete')" :span="3">
@@ -71,7 +73,7 @@
             size="small"
             placeholder="请输入内容"
           >
-            <el-button slot="append" size="small" icon="el-icon-search" :disabled="searchRowVisible" @click="goQuery"/>
+            <el-button slot="append" size="small" icon="el-icon-search" :disabled="searchRowVisible" @click="goQuery" />
           </el-input>
           <el-popover placement="left-start" title="列筛选" trigger="click">
             <el-checkbox-group v-model="checkList" @change="columnFilter">
@@ -79,14 +81,16 @@
             </el-checkbox-group>
             <el-button slot="reference" title="列筛选" size="small"><i class="el-icon-s-grid" /></el-button>
           </el-popover>
-          <el-button v-if="entity.queryList && entity.queryList.length>0"
-                     size="small"
-                     type="text"
-                     @click="switchSearchRow">高级查询
-            <i v-show="!searchRowVisible" class="el-icon-arrow-down el-icon--right"></i>
-            <i v-show="searchRowVisible" class="el-icon-arrow-up el-icon--right"></i>
+          <el-button
+            v-if="entity.queryList && entity.queryList.length>0"
+            size="small"
+            type="text"
+            @click="switchSearchRow"
+          >高级查询
+            <i v-show="!searchRowVisible" class="el-icon-arrow-down el-icon--right" />
+            <i v-show="searchRowVisible" class="el-icon-arrow-up el-icon--right" />
           </el-button>
-<!--          <el-button
+          <!--          <el-button
             title="数据导入"
             size="small"
             @click="dataImportDialogVisible = true"
@@ -109,10 +113,10 @@
           <div class="flex align-center">
             <div class="margin-right-xs" style="min-width: 50px;">{{ item.name }}</div>
             <el-input
-              size="small"
               v-if="item.assignmentModeDcode === 'field_query_exactText' ||
                 item.assignmentModeDcode === 'field_query_fuzzyText'"
               v-model="queryFields[item.fieldCode]"
+              size="small"
             />
             <el-switch
               v-else-if="item.assignmentModeDcode === 'field_query_switch'"
@@ -123,24 +127,24 @@
               inactive-color="#ff4949"
             />
             <una-single-select
-              size="small"
               v-else-if="item.assignmentModeDcode === 'field_query_singleselect'"
               v-model="queryFields[item.fieldCode]"
+              size="small"
               :field="item"
             />
             <el-date-picker
-              size="small"
               v-else-if="item.assignmentModeDcode === 'field_query_geDate'"
               v-model="queryFields[item.fieldCode]"
+              size="small"
               type="date"
               value-format="yyyy-MM-dd 00:00:00"
               format="yyyy-MM-dd"
               clearable
             />
             <el-date-picker
-              size="small"
               v-else-if="item.assignmentModeDcode === 'field_query_leDate'"
               v-model="queryFields[item.fieldCode]"
+              size="small"
               type="date"
               value-format="yyyy-MM-dd 23:59:59"
               format="yyyy-MM-dd"
@@ -545,15 +549,18 @@ export default {
   mounted() {
     // 处理模糊查询条件
     this.entity.queryList.map((v) => {
-      if (v.assignmentModeDcode === 'field_query_fuzzyText') {
-        v.fieldCode = `:${v.fieldCode}`
+      if (v.fieldCode.indexOf(':') === -1) {
+        if (v.assignmentModeDcode === 'field_query_fuzzyText') {
+          v.fieldCode = `:${v.fieldCode}`
+        }
+        if (v.assignmentModeDcode === 'field_query_geDate') {
+          v.fieldCode = `ge:${v.fieldCode}`
+        }
+        if (v.assignmentModeDcode === 'field_query_leDate') {
+          v.fieldCode = `le:${v.fieldCode}`
+        }
       }
-      if (v.assignmentModeDcode === 'field_query_geDate') {
-        v.fieldCode = `ge:${v.fieldCode}`
-      }
-      if (v.assignmentModeDcode === 'field_query_leDate') {
-        v.fieldCode = `le:${v.fieldCode}`
-      }
+
       return v
     })
 
@@ -656,7 +663,7 @@ export default {
         if (Object.prototype.hasOwnProperty.call(userInfo, k)) {
           c[key] = userInfo[k]
         }
-      }else{
+      } else {
         c[key] = value
       }
 
@@ -666,15 +673,15 @@ export default {
     initPage() {
       this.pageNum = 1
     },
-    getPublicList: function (e, m = {}) {
+    getPublicList: function(e, m = {}) {
       const menuPath = this.$route.name
       // console.log(menuPath, 'mmmmmmmmmmmmmm')
       console.log(m, 'mmmmmmmmmmmmmm')
 
       if (e) {
         if (this.vituralTable) {
-          const vituralField = {entityId: this.entity.id}
-          this.otherCondition = {...e, ...vituralField}
+          const vituralField = { entityId: this.entity.id }
+          this.otherCondition = { ...e, ...vituralField }
         } else {
           this.otherCondition = e
         }
@@ -682,25 +689,24 @@ export default {
         this.otherCondition = this.dataQueryCondition
       }
 
-      console.log(this.otherCondition,'oooooooocccccccccc')
+      console.log(this.otherCondition, 'oooooooocccccccccc')
 
-      if (menuPath.indexOf("/sys/manage") !== -1 && menuPath.indexOf("?") !== -1) {
+      if (menuPath.indexOf('/sys/manage') !== -1 && menuPath.indexOf('?') !== -1) {
         const userInfo = this.$store.getters.userinfo
-        const condition = menuPath.substr(menuPath.indexOf("?") + 1)
+        const condition = menuPath.substr(menuPath.indexOf('?') + 1)
         console.log(condition)
-        for (const conditionUnit of condition.split("&")) {
-          const key = conditionUnit.substr(0,conditionUnit.indexOf("="))
-          const value = conditionUnit.substr(conditionUnit.indexOf("=")+1)
+        for (const conditionUnit of condition.split('&')) {
+          const key = conditionUnit.substr(0, conditionUnit.indexOf('='))
+          const value = conditionUnit.substr(conditionUnit.indexOf('=') + 1)
 
           if (typeof value === 'string' && value.indexOf('$u') !== -1) {
             const k = value.substring(3)
             if (Object.prototype.hasOwnProperty.call(userInfo, k)) {
               this.otherCondition[key] = userInfo[k]
             }
-          }else{
+          } else {
             this.otherCondition[key] = value
           }
-
         }
       }
 
@@ -720,7 +726,7 @@ export default {
               record[field.assignmentCode] = record['map'][field.displayCode]
             }
           })
-          record = {...record, ...record.value}
+          record = { ...record, ...record.value }
 
           return record
         })
@@ -735,7 +741,7 @@ export default {
       this.getPublicList(this.otherCondition)
     },
     goQuery() {
-      console.log(this.queryFields,'qqqqqqqqqqqqqq')
+      console.log(this.queryFields, 'qqqqqqqqqqqqqq')
       this.getPublicList('', this.queryFields)
     },
     resetQuery() {
