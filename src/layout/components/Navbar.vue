@@ -5,6 +5,7 @@
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
+      <messageOpen id="MessageOpen" class="right-menu-item hover-effect" />
       <screenfull id="screenfull" class="right-menu-item hover-effect" />
       <div class="right-menu-item hover-effect"> {{ name }} ({{ username }})</div>
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
@@ -125,9 +126,11 @@ import Screenfull from '@/components/Screenfull'
 import * as netData from '@/api/user'
 import avatarBox from 'vue-image-crop-upload'
 import { changePwd } from '@/api/user'
+import MessageOpen from "@/components/Message";
 
 export default {
   components: {
+    MessageOpen,
     Breadcrumb,
     Hamburger,
     Screenfull,

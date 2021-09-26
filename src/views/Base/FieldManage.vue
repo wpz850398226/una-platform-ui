@@ -121,9 +121,15 @@
             <UnaDicSelect v-model="dataForm.assignmentModeDcode" parent-code="field_assignment" auto-pick-first />
           </el-form-item>
           <el-form-item label="可选上限" prop="selectableLimitNum">
-            <el-input
+<!--            <el-input
               v-model="dataForm.selectableLimitNum"
               type="number"
+            />-->
+            <el-input-number
+              v-model="dataForm.selectableLimitNum"
+              controls-position="right"
+              :min="1"
+              :max="10"
             />
           </el-form-item>
         </div>

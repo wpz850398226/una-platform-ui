@@ -676,7 +676,7 @@ export default {
     getPublicList: function(e, m = {}) {
       const menuPath = this.$route.name
       // console.log(menuPath, 'mmmmmmmmmmmmmm')
-      console.log(m, 'mmmmmmmmmmmmmm')
+      // console.log(m, 'mmmmmmmmmmmmmm')
 
       if (e) {
         if (this.vituralTable) {
@@ -689,12 +689,10 @@ export default {
         this.otherCondition = this.dataQueryCondition
       }
 
-      console.log(this.otherCondition, 'oooooooocccccccccc')
-
       if (menuPath.indexOf('/sys/manage') !== -1 && menuPath.indexOf('?') !== -1) {
         const userInfo = this.$store.getters.userinfo
         const condition = menuPath.substr(menuPath.indexOf('?') + 1)
-        console.log(condition)
+        // console.log(condition)
         for (const conditionUnit of condition.split('&')) {
           const key = conditionUnit.substr(0, conditionUnit.indexOf('='))
           const value = conditionUnit.substr(conditionUnit.indexOf('=') + 1)
@@ -741,7 +739,6 @@ export default {
       this.getPublicList(this.otherCondition)
     },
     goQuery() {
-      console.log(this.queryFields, 'qqqqqqqqqqqqqq')
       this.getPublicList('', this.queryFields)
     },
     resetQuery() {
