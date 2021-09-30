@@ -5,6 +5,7 @@
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
+      <messageOpen id="QuestionOpen" class="right-menu-item hover-effect" />
       <messageOpen id="MessageOpen" class="right-menu-item hover-effect" />
       <screenfull id="screenfull" class="right-menu-item hover-effect" />
       <div class="right-menu-item hover-effect"> {{ name }} ({{ username }})</div>
@@ -126,11 +127,13 @@ import Screenfull from '@/components/Screenfull'
 import * as netData from '@/api/user'
 import avatarBox from 'vue-image-crop-upload'
 import { changePwd } from '@/api/user'
-import MessageOpen from "@/components/Message";
+import MessageOpen from "@/components/Message"
+import QuestionOpen from "@/components/Question"
 
 export default {
   components: {
     MessageOpen,
+    QuestionOpen,
     Breadcrumb,
     Hamburger,
     Screenfull,
