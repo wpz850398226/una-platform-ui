@@ -240,8 +240,8 @@ export default {
     }
   },
   computed: {
-    formItemVisible() {
-      return (e) => {
+    formItemVisible() {// 判断字段是否展示
+      return (field) => {
         let isShow = true
         const exclude = [
           'field_assignment_treeNode',
@@ -249,17 +249,23 @@ export default {
           'field_assignment_hidden'
         ]
 
-        if (exclude.includes(e.assignmentModeDcode)) {
+        if (exclude.includes(field.assignmentModeDcode)) {
+          // 如果是树节点获取，则赋值树结构选中项
+          if (field.assignmentModeDcode === 'field_assignment_treeNode') {
+
+          }
+
           isShow = false
           return isShow // 快速判断
         }
 
-        if (e.hideFieldId && e.hideFieldValue) { // 隐藏条件
-          const find = this.fieldList.filter(v => v.id === e.hideFieldId)
+        // 触发字段组件隐藏 功能实现
+        if (field.hideFieldId && field.hideFieldValue) { // 隐藏条件
+          const hideFields = this.fieldList.filter(v => v.id === field.hideFieldId)
 
-          if (find.length > 0) {
-            const pVal = this.dataForm[find[0].assignmentCode] + '' // 父元素值
-            const sp = e.hideFieldValue.split(',')
+          if (hideFields.length > 0) {
+            const pVal = this.dataForm[hideFields[0].assignmentCode] + '' // 触发隐藏父字段值
+            const sp = field.hideFieldValue.split(',')
             if (sp.includes(pVal)) {
               isShow = false
             }
@@ -267,9 +273,10 @@ export default {
         }
 
         return isShow
-        // return !exclude.includes(e.assignmentModeDcode)
       }
     },
+
+    // 下拉联动功能实现
     pid2pVal() { // 将子控件绑定的父id转换成表单父id对应得值
       return (field) => {
         if (field.selectParentId) {
@@ -352,6 +359,9 @@ export default {
           if (this.entity.isVirtual) { // 如果是虚拟实体，表单加载entity.value
             commitData['entityId'] = this.entity.id
           }
+
+          console.log(commitData,'ccccccccccccccccc')
+          console.log(this.treeAddData,'tttttttttttt')
 
           const submitData = { ...commitData, ...this.treeAddData } // 合并树选择
 
