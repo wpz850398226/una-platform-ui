@@ -23,6 +23,7 @@
 import CardArea from '@/layout/components/CardArea'
 import { chGet } from '@/api/index'
 
+
 export default {
   name: 'Tree',
   components: {
@@ -61,6 +62,7 @@ export default {
       }
     },
     handleNodeClick(e) {
+
       this.treeSelected = e.id
 
       const relationList = this.entity.relationList

@@ -263,6 +263,7 @@
           :total="pageTotal"
           :pager-count="5"
           :page-size.sync="pageSize"
+          :current-page="pageCurrent"
           @current-change="switchPage"
           @size-change="handleSizeChange"
         />
@@ -671,7 +672,7 @@ export default {
       this.getPublicList()
     },
     initPage() {
-      this.pageNum = 1
+      this.pageCurrent = 1
     },
     getPublicList: function(e, m = {}) {
       const menuPath = this.$route.name
@@ -739,6 +740,7 @@ export default {
       this.getPublicList(this.otherCondition)
     },
     goQuery() {
+      this.initPage()
       this.getPublicList('', this.queryFields)
     },
     resetQuery() {

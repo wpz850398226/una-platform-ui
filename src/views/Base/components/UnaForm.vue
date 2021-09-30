@@ -33,14 +33,14 @@
             <!-- defaultValue -->
             <!-- {{ dataForm }} -->
 
-            <UnaTreeNode
+<!--            <UnaTreeNode
               v-if="field.assignmentModeDcode === 'field_assignment_treeNode'"
               v-model="dataForm[field.assignmentCode]"
               :dafault-value="field.defaultValue"
-            />
+            />-->
 
             <el-radio-group
-              v-else-if="field.assignmentModeDcode === 'field_assignment_radio'"
+              v-if="field.assignmentModeDcode === 'field_assignment_radio'"
               v-model="dataForm[field.assignmentCode]"
             >
               <el-radio v-for="(item, index) in field.radioOptionArray" :key="'radio'+index" :label="item">{{ item }}</el-radio>
@@ -71,10 +71,10 @@
               v-model="dataForm[field.assignmentCode]"
               show-password
             />
-            <el-input
+<!--            <el-input
               v-else-if="field.assignmentModeDcode === 'field_assignment_hidden'"
               v-model="dataForm[field.assignmentCode]"
-            />
+            />-->
             <una-single-select
               v-else-if="field.assignmentModeDcode === 'field_assignment_singleselect'"
               v-model="dataForm[field.assignmentCode]"
@@ -250,11 +250,6 @@ export default {
         ]
 
         if (exclude.includes(field.assignmentModeDcode)) {
-          // 如果是树节点获取，则赋值树结构选中项
-          if (field.assignmentModeDcode === 'field_assignment_treeNode') {
-
-          }
-
           isShow = false
           return isShow // 快速判断
         }
@@ -331,10 +326,21 @@ export default {
       this.defaultForm = {}
       fieldPort.fieldList({ 'entityId': this.entity.id, 'isUpdate': 1 })
         .then((result) => {
-          result.forEach(e => {
-            this.defaultForm[e.assignmentCode] = ''
-            if (e.isRequired) {
-              this.defaultFormRules[e.assignmentCode] = [{ required: true, message: `请输入或选择${e.name}`, trigger: 'change' }]
+          result.forEach(field => {
+            // 如果是隐藏类型，则赋值默认值
+            if(field.assignmentModeDcode === 'field_assignment_hidden') {
+              this.defaultForm[field.assignmentCode] = field.defaultValue
+            }else {
+              this.defaultForm[field.assignmentCode] = ''
+            }
+
+            // 如果有选中树结构，则给默认数据中添加parentId = 选中树结构的parentId
+            if (this.treeAddData) {
+              this.defaultForm['parentId'] = this.treeAddData.parentId
+            }
+
+            if (field.isRequired) {
+              this.defaultFormRules[field.assignmentCode] = [{ required: true, message: `请输入或选择${field.name}`, trigger: 'change' }]
             }
           })
 
@@ -360,13 +366,10 @@ export default {
             commitData['entityId'] = this.entity.id
           }
 
-          console.log(commitData,'ccccccccccccccccc')
-          console.log(this.treeAddData,'tttttttttttt')
-
-          const submitData = { ...commitData, ...this.treeAddData } // 合并树选择
+          // const submitData = { ...commitData, ...this.treeAddData } // 合并树选择
 
           if (!this.isEdit) {
-            jsonPost(entityPath, submitData).then((resolve) => {
+            jsonPost(entityPath, commitData).then((resolve) => {
               this.defaultFormDialogVisible = false
               this.$message.success('保存成功')
               this.$emit('saveSuccess', resolve)
@@ -375,7 +378,7 @@ export default {
               this.loading = false
             })
           } else {
-            jsonPut(entityPath, submitData).then((resolve) => {
+            jsonPut(entityPath, commitData).then((resolve) => {
               this.defaultFormDialogVisible = false
               this.$message.success('保存成功')
               this.$emit('saveSuccess', resolve)
