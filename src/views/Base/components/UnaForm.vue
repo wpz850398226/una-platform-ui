@@ -302,7 +302,12 @@ export default {
         } else {
           this.dataForm = oldData
         }
-        this.isEdit = true
+
+        if(oldData.id){
+          console.log(oldData,'oooooooooooooooo')
+          this.isEdit = true
+        }
+
       } else {
         this.isEdit = false
         if (mergeData) { // 合并默认值

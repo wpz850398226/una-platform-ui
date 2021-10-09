@@ -337,7 +337,8 @@ export default {
       entity: '',
       relationList: [],
       defaultForm: {
-        isEffect: 1
+        isEffect: true,
+        isUpdate: true
       }, // 默认表单
       defaultFormRules: {
         name: [{ required: true, message: '请输入名称', trigger: 'change' }],
@@ -407,14 +408,10 @@ export default {
         return false
       }
 
-      this.isEdit = false
-
       this.dataForm = { ...this.defaultForm }
       this.dataForm.entityId = this.treeSelected
       this.dataForm.entityIdName = this.treeNode.title
       this.dataForm.selectableLimitNum = 1
-      this.dataForm.isEffect = 1
-
       this.defaultFormDialogVisible = true
 
       if (this.$refs.fieldForm) {

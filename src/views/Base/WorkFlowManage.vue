@@ -7,7 +7,7 @@
       width="550px"
       :append-to-body="true"
     >
-      <una-form ref="formController" :entity="entity" @saveSuccess="saveSuccess" />
+      <una-form ref="formController" :defaultData="defaultData" :entity="entity" @saveSuccess="saveSuccess" />
     </el-dialog>
 
     <el-dialog
@@ -89,6 +89,7 @@ export default {
     return {
       userInfo: '',
       entity: '',
+      defaultData: {},
       workInfo: '',
       workflowList: [],
       taskList: [],
@@ -127,11 +128,14 @@ export default {
       })
     },
     handleTask(e) {
+      console.log(this.defaultData,'ttttttddddddddddddddd')
       this.workInfo = e
       this.approvalForm.id = e.id
       if (e.nodeTypeDcode === 'flow_nudeType_submit') {
         entityById(e.nodeEntityId).then((res) => {
           this.entity = res.data
+          this.defaultData['instanceId'] = e.instanceId
+          console.log(this.defaultData,'ttttttddddddddddddddd')
 
           this.defaultFormDialogVisible = true
         })
