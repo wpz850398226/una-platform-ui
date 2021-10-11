@@ -49,6 +49,11 @@ export const constantRoutes = [
     hidden: true
   },
   {
+    path: '/autologin',
+    component: () => import('@/views/login/AutoLogin'),
+    hidden: true
+  },
+  {
     path: '/forgetPassword',
     component: () => import('@/views/login/ForgetPassword'),
     hidden: true
@@ -151,12 +156,13 @@ export const asyncRoutes = [
   // 404 page must be placed at the end !!!
 ]
 
-const createRouter = () => new Router({
-  mode: 'history', // require service support
-  base: '/una/',
-  scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
-})
+const createRouter = () =>
+  new Router({
+    mode: 'history', // require service support
+    base: '/una/',
+    scrollBehavior: () => ({ y: 0 }),
+    routes: constantRoutes
+  })
 
 const router = createRouter()
 
