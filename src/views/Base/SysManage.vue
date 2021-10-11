@@ -103,6 +103,8 @@ export default {
           this.treeMergeData = mergeMap
         }
       }
+
+
     },
     updateTableData(query) {
       this.$refs.tableController.getPublicList(query)

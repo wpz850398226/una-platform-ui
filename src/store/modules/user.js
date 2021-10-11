@@ -94,6 +94,14 @@ const actions = {
     })
   },
 
+  autoLogin({ commit }, token) {
+    return new Promise((resolve, reject) => {
+      commit('SET_TOKEN', token)
+      setToken(token)
+      resolve()
+    })
+  },
+
   // phonelogin
   phoneLogin({ commit }, userInfo) {
     const { telPhone, code } = userInfo

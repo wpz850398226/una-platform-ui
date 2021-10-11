@@ -8,7 +8,7 @@
       width="550px"
       :append-to-body="true"
     >
-      <una-form v-if="defaultFormDialogVisible" ref="formController" :entity="entity" @saveSuccess="saveSuccess" />
+      <una-form v-if="defaultFormDialogVisible" ref="formController" :defaultData="defaultData" :entity="entity" @saveSuccess="saveSuccess" />
     </el-dialog>
 
     <el-dialog
@@ -108,6 +108,7 @@ export default {
     return {
       userInfo: '',
       entity: '',
+      defaultData: {},
       workInfo: '',
       workflowList: [],
       taskList: [],
@@ -152,7 +153,7 @@ export default {
       if (e.nodeTypeDcode === 'flow_nudeType_submit') {
         entityById(e.map.nodeEntityId).then((res) => {
           this.entity = res.data
-
+          this.defaultData['instanceId'] = e.instanceId
           this.defaultFormDialogVisible = true
         })
       }
