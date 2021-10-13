@@ -113,6 +113,7 @@
             <una-entity-select
               v-else-if="field.assignmentModeDcode === 'field_assignment_entityRecord'"
               v-model="dataForm[field.assignmentCode]"
+              :removeEntityRecord = "removeEntityRecord"
               :field="field"
               :real-val="dataForm"
               :multiple="field.selectableLimitNum && field.selectableLimitNum>1"
@@ -411,6 +412,11 @@ export default {
       } else {
         this.$message.error('指定事件未绑定')
       }
+    },
+    removeEntityRecord(fieldAssignmentCode,index) {
+      let fileIdArray = this.dataForm[fieldAssignmentCode].split(',')
+      fileIdArray.splice(index,1)
+      this.dataForm[fieldAssignmentCode] = fileIdArray.join(',')
     }
   }
 }

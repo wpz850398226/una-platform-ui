@@ -16,7 +16,8 @@
           fit="fill"
           :preview-src-list="selectedDatas.map(v=>v.path)"
         />
-        <div class="del-img"><i class="el-icon-delete"></i></div>
+        <div class="del-img"><el-button type="info" icon="el-icon-close" size="mini" circle @click="delImg(index)"/></div>
+<!--        <div class="del-img"><i class="el-icon-circle-close" @click="delImg(index)"></i></div>-->
         <!-- <el-button type="text" size="mini" @click="delImg(index)">删除</el-button> -->
       </div>
 
@@ -93,6 +94,10 @@ export default {
     realVal: {
       type: Object,
       default: () => {}
+    },
+    removeEntityRecord: {
+      type: Function,
+      default: null
     }
 
   },
@@ -103,7 +108,8 @@ export default {
       selVal: '',
       entity: '',
       selectedName: '',
-      selectedDatas: []
+      selectedDatas: [],
+      selectedIds: []
     }
   },
   mounted() {
@@ -118,7 +124,12 @@ export default {
       if (this.realVal[this.field.assignmentCode] && this.field.assignmentCode !== this.field.displayCode) {
         // 如果赋值编码不等于显示编码，则查询显示数据
         const realField = this.realVal.map[this.field.displayCode]
+        /*const displayValueArray = this.realVal.map[this.field.displayCode].split(',')
+        const savedIdArray = this.realVal[this.field.assignmentCode].split(',')
 
+        for (let i in displayValueArray) {
+          this.selectedDatas.push({id:savedIdArray[i],path:displayValueArray[i]})
+        }*/
         this.selectedDatas = realField
           .split(',')
           .map(v => { return { path: v } })
@@ -131,8 +142,12 @@ export default {
       this.entityDialogVisible = true
     },
     delImg(i) {
-      this.selectedDatas.splice(i, 1)
-      this.updateTableData()
+      //调用父方法，修改保存值
+      if (this.removeEntityRecord) {
+        this.removeEntityRecord(this.field.assignmentCode,i);
+      }
+      //移除图片展示
+      this.selectedDatas.splice(i,1)
     },
     submitSelect(e, en, datas) {
       if (this.multiple) {
@@ -148,7 +163,6 @@ export default {
       for (let data of datas) {
         this.selectedDatas.push(data)
       }
-      console.log(this.selectedDatas)
       this.updateVal(e)
     },
     updateVal(e) {
@@ -209,7 +223,7 @@ export default {
 
   .del-img {
     position: relative;
-    right: -85px;
+    right: -70px;
     top: -105px;
     height: 15px;
     width: 15px;
