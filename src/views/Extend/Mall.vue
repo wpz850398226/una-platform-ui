@@ -489,6 +489,8 @@ export default {
       dataForm: defaultForm,
       defaultFormRules: {
         name: [{ required: true, message: `请输入名称`, trigger: 'change' }],
+        industryTypeDcodes: [{ required: true, message: `请选择行业`, trigger: 'change' }],
+        statusDcode: [{ required: true, message: `请选择状态`, trigger: 'change' }],
         fileIds: [{ required: true, message: `请添加图片`, trigger: 'change' }]
       },
       defaultFormDialogVisible: false,

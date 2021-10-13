@@ -139,7 +139,11 @@ export default {
 
       this.entityDialogVisible = false
       this.selectedName = en
-      this.selectedDatas = datas
+      // 追加选中项
+      for (let data of datas) {
+        this.selectedDatas.push(data)
+      }
+      console.log(this.selectedDatas)
       this.updateVal(e)
     },
     updateVal(e) {
