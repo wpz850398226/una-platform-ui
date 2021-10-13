@@ -10,13 +10,14 @@
     <div v-else class="flex">
       <div v-for="(item,index) in selectedDatas" :key="index" class="flex flex-direction">
         <el-image
-          class="margin-right-xs"
+          class="margin-right-xs "
           style="width: 100px; height: 100px"
           :src="item.path"
           fit="fill"
           :preview-src-list="selectedDatas.map(v=>v.path)"
         />
-        <el-button type="text" size="mini" @click="delImg(index)">删除</el-button>
+        <div class="del-img"><i class="el-icon-delete"></i></div>
+        <!-- <el-button type="text" size="mini" @click="delImg(index)">删除</el-button> -->
       </div>
 
       <div class="img-upload-btn flex align-center justify-center" @click="openEntityDialog">
@@ -204,5 +205,15 @@ export default {
     border-radius: 6px;
     cursor: pointer;
     overflow: hidden;
+  }
+
+  .del-img {
+    position: relative;
+    right: -85px;
+    top: -105px;
+    height: 15px;
+    width: 15px;
+    cursor: pointer;
+
   }
 </style>
