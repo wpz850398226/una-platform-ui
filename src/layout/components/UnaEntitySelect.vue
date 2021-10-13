@@ -8,15 +8,17 @@
       {{ selectedName }}
     </div>
     <div v-else class="flex">
-      <el-image
-        v-for="(item,index) in selectedDatas"
-        :key="index"
-        class="margin-right-xs"
-        style="width: 100px; height: 100px"
-        :src="item.path"
-        fit="fill"
-        :preview-src-list="selectedDatas.map(v=>v.path)"
-      />
+      <div v-for="(item,index) in selectedDatas" :key="index" class="flex flex-direction">
+        <el-image
+          class="margin-right-xs"
+          style="width: 100px; height: 100px"
+          :src="item.path"
+          fit="fill"
+          :preview-src-list="selectedDatas.map(v=>v.path)"
+        />
+        <el-button type="text" size="mini" @click="delImg(index)">删除</el-button>
+      </div>
+
       <div class="img-upload-btn flex align-center justify-center" @click="openEntityDialog">
         <i class="el-icon-plus avatar-uploader-icon" />
       </div>
@@ -112,8 +114,6 @@ export default {
     //
 
     if (this.selVal && this.realVal) {
-
-
       if (this.realVal[this.field.assignmentCode] && this.field.assignmentCode !== this.field.displayCode) {
         // 如果赋值编码不等于显示编码，则查询显示数据
         const realField = this.realVal.map[this.field.displayCode]
@@ -128,6 +128,10 @@ export default {
   methods: {
     openEntityDialog() {
       this.entityDialogVisible = true
+    },
+    delImg(i) {
+      this.selectedDatas.splice(i, 1)
+      this.updateTableData()
     },
     submitSelect(e, en, datas) {
       if (this.multiple) {
