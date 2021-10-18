@@ -122,8 +122,8 @@
               v-else-if="item.assignmentModeDcode === 'field_query_switch'"
               v-model="queryFields[item.fieldCode]"
               active-color="#13ce66"
-              :active-value="1"
-              :inactive-value="0"
+              :active-value="true"
+              :inactive-value="false"
               inactive-color="#ff4949"
             />
             <una-single-select

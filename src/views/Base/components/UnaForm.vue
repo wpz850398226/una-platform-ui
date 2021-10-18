@@ -123,8 +123,8 @@
               v-else-if="field.assignmentModeDcode === 'field_assignment_switch'"
               v-model="dataForm[field.assignmentCode]"
               active-color="#13ce66"
-              :active-value="1"
-              :inactive-value="0"
+              :active-value="true"
+              :inactive-value="false"
               inactive-color="#ff4949"
             />
             <el-date-picker
