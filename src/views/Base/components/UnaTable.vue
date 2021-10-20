@@ -24,7 +24,7 @@
                 >添加</el-button>
               </div>
 
-              <div v-if="checkPermission(entity.code +':delete')" :span="3">
+              <div v-if="isPermitDelete" :span="3">
                 <el-button
                   class="margin-right-xs"
                   icon="el-icon-delete-solid"
@@ -241,8 +241,8 @@
 
         <el-table-column label="操作" fixed="right" width="150">
           <template slot-scope="scope">
-            <el-button v-if="checkPermission(entity.code +':update')" plain title="修改" type="text" @click="handleEdit(scope.row)">修改</el-button>
-            <el-button v-if="checkPermission(entity.code +':update')" plain title="升序" type="text" @click="handleUp(scope.row)">升序</el-button>
+            <el-button v-if="isPermitUpdate" plain title="修改" type="text" @click="handleEdit(scope.row)">修改</el-button>
+            <el-button v-if="isPermitUpdate && isSortField" plain title="升序" type="text" @click="handleUp(scope.row)">升序</el-button>
             <el-button
               v-for="btn in tableInlineButton"
               :key="btn.id"
@@ -251,7 +251,7 @@
               :icon="btn.iconDcode"
               @click="reflectFun(btn.event, scope.row, btn)"
             >{{ btn.name }}</el-button>
-            <el-button v-if="checkPermission(entity.code +':delete')" plain title="删除" type="text" style="color: red" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button v-if="isPermitDelete" plain title="删除" type="text" style="color: red" @click="handleDelete(scope.row)">删除</el-button>
 
           </template>
         </el-table-column>
@@ -496,7 +496,11 @@ export default {
       // 待办表单
       taskFormEntity: '',
       taskFormDialogVisible: false,
-      taskInfo: ''
+      taskInfo: '',
+      //判断结果
+      isPermitUpdate: false, // 有权修改
+      isPermitDelete: false, // 有权删除
+      isSortField: false // 是否以排序字段排序
     }
   },
   computed: {
@@ -566,7 +570,6 @@ export default {
     })
 
     // 处理模糊查询条件
-
     if (this.entity.id && this.entity.isVirtual) {
       // const p = qs.parse(`?${this.query}`)
       this.dataQueryCondition = { entityId: this.entity.id }
@@ -580,10 +583,11 @@ export default {
     })
 
     this.getButtonList()
+    // 表格级的属性判断
+    this.isPermitUpdate = this.checkPermission(this.entity.code +':update')
+    this.isPermitDelete = this.checkPermission(this.entity.code +':delete')
+    this.isSortField = this.checkSortField();
 
-    // 角色授权
-
-    // 角色授权
   },
   methods: {
     checkPermission,
@@ -778,6 +782,14 @@ export default {
     },
     submitSelect() {
       this.$emit('submitSelect', this.selectedData.map(v => v.id).join(','), this.selectedData.map(v => v.name).join(','), this.selectedData)
+    },
+    checkSortField() { // 判断是否是默认排序或以顺序字段排序
+      const sortList = this.entity.sortList
+      // console.log(sortList,'sssssssllllllllll')
+      if (sortList.length ===0 || (sortList.length === 1 && sortList[0].isSortField)) {
+        return true
+      }
+      return false
     },
     submitSelectDel() {
       const ids = this.selectedData.map(v => v.id)
