@@ -307,6 +307,8 @@ export default {
         if(oldData.id){
           console.log(oldData,'oooooooooooooooo')
           this.isEdit = true
+        }else {
+          this.isEdit = false
         }
 
       } else {
@@ -357,6 +359,7 @@ export default {
       this.$emit('saveSuccess', e)
     },
     submitPublic(formName) {
+      console.log(this.isEdit,'eeeeeeeeeeeeeeeee')
       this.$refs[formName].validate(async(valid) => {
         if (valid) {
           this.loading = true

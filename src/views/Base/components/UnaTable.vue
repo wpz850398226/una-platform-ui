@@ -245,6 +245,7 @@
             <el-button v-if="isPermitUpdate && isSortField" plain title="升序" type="text" @click="handleUp(scope.row)">升序</el-button>
             <el-button
               v-for="btn in tableInlineButton"
+              v-if="checkCondition(btn,scope.row)"
               :key="btn.id"
               type="text"
               plain
@@ -414,7 +415,7 @@ import { creatInstance, finishTask } from '@/api/una/sys_workflow'
 
 import {
   flushRedis,
-  stickGoods, refreshGoods, stickShop, refreshShop, attendancePunch, autoAttendance, articleSee
+  stickGoods, refreshGoods, stickShop, refreshShop, attendancePunch, autoAttendance, articleSee, settleOrder
 
 } from '@/api/una/sys_button'
 import {
@@ -535,7 +536,7 @@ export default {
       }
     },
     tableInlineButton() {
-      return this.generalButtonList.filter(v => v.positionDcode === 'entity_buttonPosition_inLine')
+      return this.generalButtonList.filter(v => v.positionDcode === 'entity_buttonPosition_inLine' && checkPermission(v.map.permissionCode))
     },
     tableAboveButton() {
       return this.generalButtonList.filter(v => v.positionDcode === 'entity_buttonPosition_tableheadLeft')
@@ -587,10 +588,25 @@ export default {
     this.isPermitUpdate = this.checkPermission(this.entity.code +':update')
     this.isPermitDelete = this.checkPermission(this.entity.code +':delete')
     this.isSortField = this.checkSortField();
-
   },
   methods: {
     checkPermission,
+    checkCondition: function (btn, record) {  //判断按钮显示条件，仅支持判断一个条件
+      if (btn.conditionFieldId && btn.conditionValue) {
+        const conditionfieldArray = this.fieldList.filter(f => f.id === btn.conditionFieldId)
+        if(conditionfieldArray.length > 0) {
+          const conditionfieldCode = conditionfieldArray[0].assignmentCode
+          const conditionValue = record[conditionfieldCode]
+          if(conditionValue){
+            if(conditionValue === btn.conditionValue){
+              return true
+            }
+          }
+        }
+        return false
+      }
+      return true
+    },
     initRoleManage(e) {
       this.grantTitle = e.name
       this.grantLevel = [...findDictionaryList('permission_scope')].reverse()
@@ -863,6 +879,31 @@ export default {
               this.resetQuery()
               this.$message.success('刷新完成')
             })
+          })
+        },
+        'settleOrder': (extra) => { // 结算订单
+            settleOrder(extra.id).then(res => {
+              // this.resetQuery()
+              // this.$message.success('刷新完成')
+
+              const result = res.isSuccess
+              if (result) {
+                this.$message.success(`即将跳转支付页面`)
+                const htmlForm = res.data
+                if (htmlForm) {
+                  let dw;
+                  dw=window.open();
+                  dw.document.open();
+                  dw.document.write("<html><head><title>支付页面</title>");
+                  dw.document.write("<body>");
+                  dw.document.write(htmlForm);
+                  dw.document.write("</body></html>");
+                  dw.document.close();
+                }
+              } else {
+                this.$message.success(`跳转支付页面失败`)
+              }
+
           })
         },
         'comment': (extra) => {
