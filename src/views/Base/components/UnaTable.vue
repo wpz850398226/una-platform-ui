@@ -239,7 +239,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" fixed="right" width="150">
+        <el-table-column v-if="isPermitUpdate || isPermitDelete" label="操作" fixed="right" width="150">
           <template slot-scope="scope">
             <el-button v-if="isPermitUpdate" plain title="修改" type="text" @click="handleEdit(scope.row)">修改</el-button>
             <el-button v-if="isPermitUpdate && isSortField" plain title="升序" type="text" @click="handleUp(scope.row)">升序</el-button>
@@ -253,7 +253,6 @@
               @click="reflectFun(btn.event, scope.row, btn)"
             >{{ btn.name }}</el-button>
             <el-button v-if="isPermitDelete" plain title="删除" type="text" style="color: red" @click="handleDelete(scope.row)">删除</el-button>
-
           </template>
         </el-table-column>
       </el-table>
