@@ -24,7 +24,7 @@
                 >添加</el-button>
               </div>
 
-              <div v-if="checkPermission(entity.code +':delete')" :span="3">
+              <div v-if="isPermitDelete" :span="3">
                 <el-button
                   class="margin-right-xs"
                   icon="el-icon-delete-solid"
@@ -122,8 +122,8 @@
               v-else-if="item.assignmentModeDcode === 'field_query_switch'"
               v-model="queryFields[item.fieldCode]"
               active-color="#13ce66"
-              :active-value="1"
-              :inactive-value="0"
+              :active-value="true"
+              :inactive-value="false"
               inactive-color="#ff4949"
             />
             <una-single-select
@@ -239,20 +239,20 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" fixed="right" width="150">
+        <el-table-column v-if="isPermitUpdate || isPermitDelete" label="操作" fixed="right" width="150">
           <template slot-scope="scope">
-            <el-button v-if="checkPermission(entity.code +':update')" plain title="修改" type="text" @click="handleEdit(scope.row)">修改</el-button>
-            <el-button v-if="checkPermission(entity.code +':update')" plain title="升序" type="text" @click="handleUp(scope.row)">升序</el-button>
+            <el-button v-if="isPermitUpdate" plain title="修改" type="text" @click="handleEdit(scope.row)">修改</el-button>
+            <el-button v-if="isPermitUpdate && isSortField" plain title="升序" type="text" @click="handleUp(scope.row)">升序</el-button>
             <el-button
               v-for="btn in tableInlineButton"
+              v-if="checkCondition(btn,scope.row)"
               :key="btn.id"
               type="text"
               plain
               :icon="btn.iconDcode"
               @click="reflectFun(btn.event, scope.row, btn)"
             >{{ btn.name }}</el-button>
-            <el-button v-if="checkPermission(entity.code +':delete')" plain title="删除" type="text" style="color: red" @click="handleDelete(scope.row)">删除</el-button>
-
+            <el-button v-if="isPermitDelete" plain title="删除" type="text" style="color: red" @click="handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -414,7 +414,7 @@ import { creatInstance, finishTask } from '@/api/una/sys_workflow'
 
 import {
   flushRedis,
-  stickGoods, refreshGoods, stickShop, refreshShop, attendancePunch, autoAttendance, articleSee
+  stickGoods, refreshGoods, stickShop, refreshShop, attendancePunch, autoAttendance, articleSee, settleOrder
 
 } from '@/api/una/sys_button'
 import {
@@ -496,7 +496,11 @@ export default {
       // 待办表单
       taskFormEntity: '',
       taskFormDialogVisible: false,
-      taskInfo: ''
+      taskInfo: '',
+      //判断结果
+      isPermitUpdate: false, // 有权修改
+      isPermitDelete: false, // 有权删除
+      isSortField: false // 是否以排序字段排序
     }
   },
   computed: {
@@ -531,7 +535,7 @@ export default {
       }
     },
     tableInlineButton() {
-      return this.generalButtonList.filter(v => v.positionDcode === 'entity_buttonPosition_inLine')
+      return this.generalButtonList.filter(v => v.positionDcode === 'entity_buttonPosition_inLine' && checkPermission(v.map.permissionCode))
     },
     tableAboveButton() {
       return this.generalButtonList.filter(v => v.positionDcode === 'entity_buttonPosition_tableheadLeft')
@@ -566,7 +570,6 @@ export default {
     })
 
     // 处理模糊查询条件
-
     if (this.entity.id && this.entity.isVirtual) {
       // const p = qs.parse(`?${this.query}`)
       this.dataQueryCondition = { entityId: this.entity.id }
@@ -580,13 +583,29 @@ export default {
     })
 
     this.getButtonList()
-
-    // 角色授权
-
-    // 角色授权
+    // 表格级的属性判断
+    this.isPermitUpdate = this.checkPermission(this.entity.code +':update')
+    this.isPermitDelete = this.checkPermission(this.entity.code +':delete')
+    this.isSortField = this.checkSortField();
   },
   methods: {
     checkPermission,
+    checkCondition: function (btn, record) {  //判断按钮显示条件，仅支持判断一个条件
+      if (btn.conditionFieldId && btn.conditionValue) {
+        const conditionfieldArray = this.fieldList.filter(f => f.id === btn.conditionFieldId)
+        if(conditionfieldArray.length > 0) {
+          const conditionfieldCode = conditionfieldArray[0].assignmentCode
+          const conditionValue = record[conditionfieldCode]
+          if(conditionValue){
+            if(conditionValue === btn.conditionValue){
+              return true
+            }
+          }
+        }
+        return false
+      }
+      return true
+    },
     initRoleManage(e) {
       this.grantTitle = e.name
       this.grantLevel = [...findDictionaryList('permission_scope')].reverse()
@@ -779,6 +798,14 @@ export default {
     submitSelect() {
       this.$emit('submitSelect', this.selectedData.map(v => v.id).join(','), this.selectedData.map(v => v.name).join(','), this.selectedData)
     },
+    checkSortField() { // 判断是否是默认排序或以顺序字段排序
+      const sortList = this.entity.sortList
+      // console.log(sortList,'sssssssllllllllll')
+      if (sortList.length ===0 || (sortList.length === 1 && sortList[0].isSortField)) {
+        return true
+      }
+      return false
+    },
     submitSelectDel() {
       const ids = this.selectedData.map(v => v.id)
       if (ids.length > 0) {
@@ -851,6 +878,31 @@ export default {
               this.resetQuery()
               this.$message.success('刷新完成')
             })
+          })
+        },
+        'settleOrder': (extra) => { // 结算订单
+            settleOrder(extra.id).then(res => {
+              // this.resetQuery()
+              // this.$message.success('刷新完成')
+
+              const result = res.isSuccess
+              if (result) {
+                this.$message.success(`即将跳转支付页面`)
+                const htmlForm = res.data
+                if (htmlForm) {
+                  let dw;
+                  dw=window.open();
+                  dw.document.open();
+                  dw.document.write("<html><head><title>支付页面</title>");
+                  dw.document.write("<body>");
+                  dw.document.write(htmlForm);
+                  dw.document.write("</body></html>");
+                  dw.document.close();
+                }
+              } else {
+                this.$message.success(`跳转支付页面失败`)
+              }
+
           })
         },
         'comment': (extra) => {

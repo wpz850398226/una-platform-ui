@@ -113,6 +113,7 @@
             <una-entity-select
               v-else-if="field.assignmentModeDcode === 'field_assignment_entityRecord'"
               v-model="dataForm[field.assignmentCode]"
+              :removeEntityRecord = "removeEntityRecord"
               :field="field"
               :real-val="dataForm"
               :multiple="field.selectableLimitNum && field.selectableLimitNum>1"
@@ -122,8 +123,8 @@
               v-else-if="field.assignmentModeDcode === 'field_assignment_switch'"
               v-model="dataForm[field.assignmentCode]"
               active-color="#13ce66"
-              :active-value="1"
-              :inactive-value="0"
+              :active-value="true"
+              :inactive-value="false"
               inactive-color="#ff4949"
             />
             <el-date-picker
@@ -306,6 +307,8 @@ export default {
         if(oldData.id){
           console.log(oldData,'oooooooooooooooo')
           this.isEdit = true
+        }else {
+          this.isEdit = false
         }
 
       } else {
@@ -356,6 +359,7 @@ export default {
       this.$emit('saveSuccess', e)
     },
     submitPublic(formName) {
+      console.log(this.isEdit,'eeeeeeeeeeeeeeeee')
       this.$refs[formName].validate(async(valid) => {
         if (valid) {
           this.loading = true
@@ -411,6 +415,11 @@ export default {
       } else {
         this.$message.error('指定事件未绑定')
       }
+    },
+    removeEntityRecord(fieldAssignmentCode,index) {
+      let fileIdArray = this.dataForm[fieldAssignmentCode].split(',')
+      fileIdArray.splice(index,1)
+      this.dataForm[fieldAssignmentCode] = fileIdArray.join(',')
     }
   }
 }

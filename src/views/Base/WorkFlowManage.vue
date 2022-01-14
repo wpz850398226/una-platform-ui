@@ -128,14 +128,12 @@ export default {
       })
     },
     handleTask(e) {
-      console.log(this.defaultData,'ttttttddddddddddddddd')
       this.workInfo = e
       this.approvalForm.id = e.id
       if (e.nodeTypeDcode === 'flow_nudeType_submit') {
         entityById(e.nodeEntityId).then((res) => {
           this.entity = res.data
           this.defaultData['instanceId'] = e.instanceId
-          console.log(this.defaultData,'ttttttddddddddddddddd')
 
           this.defaultFormDialogVisible = true
         })

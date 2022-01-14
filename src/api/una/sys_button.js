@@ -38,3 +38,7 @@ export function articleSee(entityId, id) {
   return chGet(`/sys/article/showInTemplate/${entityId}/${id}`)
 }
 
+export function settleOrder(id) {
+  return chGet(`/cp/order/settle/${id}`)
+}
+

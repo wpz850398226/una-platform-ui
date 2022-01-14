@@ -3,7 +3,7 @@
     <el-dialog
       :title="entity.name"
       :visible.sync="defaultFormDialogVisible"
-      width="800px"
+      width="1200px"
       :append-to-body="true"
     >
       <el-form
@@ -22,8 +22,8 @@
           <el-form-item label="名称" prop="name">
             <el-input v-model="dataForm.name" />
           </el-form-item>
-        </div>
-        <div class="flex justify-between">
+<!--        </div>-->
+<!--        <div class="flex justify-between">-->
           <el-form-item label="所属组名" prop="groupName">
             <el-input v-model="dataForm.groupName" />
           </el-form-item>
@@ -51,8 +51,8 @@
             <el-input v-model="dataForm.displayCode" />
           </el-form-item>
 
-        </div>
-        <div class="flex justify-between">
+<!--        </div>-->
+<!--        <div class="flex justify-between">-->
           <el-form-item label="转换值编码" prop="transformDisplayCode">
             <el-input v-model="dataForm.transformDisplayCode" />
           </el-form-item>
@@ -80,8 +80,8 @@
               inactive-color="#ff4949"
             />
           </el-form-item>
-        </div>
-        <div class="flex justify-between">
+<!--        </div>-->
+<!--        <div class="flex justify-between">-->
           <el-form-item label="展示方式" prop="displayModeDcode">
             <UnaDicSelect v-model="dataForm.displayModeDcode" parent-code="field_display" auto-pick-first />
           </el-form-item>
@@ -132,8 +132,8 @@
               :max="10"
             />
           </el-form-item>
-        </div>
-        <div class="flex justify-between">
+<!--        </div>-->
+<!--        <div class="flex justify-between">-->
           <el-form-item label="格式校验" prop="formatCheckTypeDcode">
             <UnaDicSelect v-model="dataForm.formatCheckTypeDcode" parent-code="field_formatDetection" />
           </el-form-item>
@@ -175,11 +175,8 @@
               />
             </el-select>
           </el-form-item>
-        </div>
-        <div
-
-          class="flex justify-between"
-        >
+<!--        </div>-->
+<!--        <div class="flex justify-between">-->
           <el-form-item
             v-if="dataForm.assignmentModeDcode === 'field_assignment_singleselect' || dataForm.assignmentModeDcode ==='field_assignment_multiselect'"
             label="选项提交"
@@ -203,13 +200,13 @@
               v-model="dataForm.optionParamName"
             />
           </el-form-item>
-        </div>
-        <div class="flex justify-between">
           <el-form-item label="选项参数值" prop="optionParamValue">
             <el-input
               v-model="dataForm.optionParamValue"
             />
           </el-form-item>
+        </div>
+        <div class="flex justify-between">
           <el-form-item label="联动父元素" prop="selectParentId">
             <el-select
               v-model="dataForm.selectParentId"
@@ -224,8 +221,8 @@
               />
             </el-select>
           </el-form-item>
-        </div>
-        <div class="flex justify-between">
+<!--        </div>-->
+<!--        <div class="flex justify-between">-->
           <el-form-item label="触隐父字段" prop="hideFieldId">
             <el-select
               v-model="dataForm.hideFieldId"
@@ -257,19 +254,19 @@
               v-model="dataForm.annotation"
             />
           </el-form-item>
+          <el-form-item label="单选备选值" prop="radioOptions">
+            <el-input
+              v-model="dataForm.radioOptions"
+            />
+          </el-form-item>
         </div>
-        <el-form-item label="单选备选值" prop="radioOptions">
-          <el-input
-            v-model="dataForm.radioOptions"
-          />
-        </el-form-item>
-        <el-form-item label="选项查询语句" prop="optionSql">
-          <el-input
-            v-model="dataForm.optionSql"
-            type="textarea"
-            row="3"
-          />
-        </el-form-item>
+<!--        <el-form-item label="选项查询语句" prop="optionSql">-->
+<!--          <el-input-->
+<!--            v-model="dataForm.optionSql"-->
+<!--            type="textarea"-->
+<!--            row="3"-->
+<!--          />-->
+<!--        </el-form-item>-->
         <el-form-item label="备注" prop="optionSql">
           <el-input
             v-model="dataForm.remark"
