@@ -405,6 +405,7 @@ export default {
         return false
       }
 
+      this.isEdit = false
       this.dataForm = { ...this.defaultForm }
       this.dataForm.entityId = this.treeSelected
       this.dataForm.entityIdName = this.treeNode.title
