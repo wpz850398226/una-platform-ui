@@ -56,6 +56,10 @@
           <el-form-item label="转换值编码" prop="transformDisplayCode">
             <el-input v-model="dataForm.transformDisplayCode" />
           </el-form-item>
+
+          <el-form-item label="存储类型" prop="columnTypeDcode">
+            <UnaDicSelect v-model="dataForm.columnTypeDcode" parent-code="field_storage" auto-pick-first />
+          </el-form-item>
         </div>
         <h3>表格相关</h3>
         <div class="flex justify-between">
@@ -341,7 +345,8 @@ export default {
         name: [{ required: true, message: '请输入名称', trigger: 'change' }],
         assignmentCode: [{ required: true, message: '请输入赋值编码', trigger: 'change' }],
         displayModeDcode: [{ required: true, message: '请选择展示方式', trigger: 'change' }],
-        assignmentModeDcode: [{ required: true, message: '请选择赋值方式', trigger: 'change' }]
+        assignmentModeDcode: [{ required: true, message: '请选择赋值方式', trigger: 'change' }],
+        columnTypeDcode: [{ required: true, message: '请选择存储方式', trigger: 'change' }]
       },
       dataForm: {}, // 数据表单，绑定数据的
       defaultFormDialogVisible: false,

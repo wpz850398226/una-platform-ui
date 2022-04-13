@@ -38,15 +38,14 @@ module.exports = {
   //   },
   //   before: require('./mock/mock-server.js')
   // },
+
   devServer: {
     open: true,
     proxy: {
       '/api': { // 这里最好有一个 /
-        // target: 'http://192.168.0.10:80', // 服务器端接口地址 http://42.192.150.206:10080/sys/login/toLogin
-        // target: ' http://bgv69g.natappfree.cc/', // 服务器端接口地址
-        // target: 'http://42.192.150.206:10080', // 服务器端接口地址
+        target: 'http://127.0.0.1:80', // 服务器端接口地址 http://42.192.150.206:10080/sys/login/toLogin
         // target: 'http://10.10.10.200:8090', // 服务器端接口地址
-        target: 'http://123.56.79.121:9600', // 服务器端接口地址
+        // target: 'http://123.56.79.121:9600', // 服务器端接口地址
         ws: true, // 如果要代理 websockets，配置这个参数
         // 如果是https接口，需要配置这个参数
         changeOrigin: true // 是否跨域
