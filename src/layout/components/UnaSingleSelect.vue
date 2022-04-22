@@ -15,7 +15,7 @@
         v-for="item in optionList"
         :key="item.id"
         :label="field.optionNameFieldCode?item[field.optionNameFieldCode]: item['name']"
-        :value="field.optionValueFieldCode?item[field.optionValueFieldCode]: item['id']"
+        :value="field.optionValueFieldCode ? item[field.optionValueFieldCode] : item['id']"
       />
     </el-select>
   </div>
@@ -61,12 +61,17 @@ export default {
   },
   async mounted() {
     await this.queryOptions(this.field)
+    if (this.multiple){
+      this.selVal = this.value.split(',')
+    }else{
+      if (this.value && !isNaN(parseInt(this.value, 10))) { // 尝试一次转换
 
-    if (this.value && !isNaN(parseInt(this.value, 10))) { // 尝试一次转换
-      this.selVal = parseInt(this.value, 10)
-    } else {
-      this.selVal = this.value
+        this.selVal = parseInt(this.value, 10)
+      } else {
+        this.selVal = this.value
+      }
     }
+
   },
   methods: {
     async queryOptions(field) {
@@ -109,7 +114,11 @@ export default {
       }
     },
     updateVal(e) {
-      this.$emit('updateVal', e)
+      if(this.multiple){
+        this.$emit('updateVal', e.join())
+      }else{
+        this.$emit('updateVal', e)
+      }
     }
   }
 }

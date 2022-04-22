@@ -68,7 +68,7 @@
         </el-col>
         <el-col :span="6" style="text-align: right" class="flex">
           <el-input
-            v-model="queryFields[':name']"
+            v-model="queryFields[keywordColumn]"
             :disabled="searchRowVisible"
             size="small"
             placeholder="请输入内容"
@@ -225,6 +225,10 @@
             </div>
             <div v-else-if="field.displayModeDcode === 'field_display_entityRecord'">
               <una-entity-view :field="field" :row="scope.row" />
+            </div>
+            <div v-else-if="field.displayModeDcode === 'field_display_omit'">
+              {{scope.row[field.assignmentCode]}}
+              <el-link v-if="scope.row[field.assignmentCode]" type="primary" :href="scope.row[field.assignmentCode]">[查看详情]</el-link>
             </div>
             <div v-else-if="field.displayModeDcode === 'field_display_showInTemplate'">
               <una-document
@@ -425,7 +429,7 @@ import {
 } from '@/api/una/sys_entity'
 
 // 角色授权
-import { entityListAll } from '@/api/una/sys_entity'
+import { entityListAll, tableGenerate, codeGenerate } from '@/api/una/sys_entity'
 // 角色授权
 import permission from '@/directive/permission/index.js' // 权限判断指令
 import checkPermission from '@/utils/permission.js'
@@ -463,6 +467,7 @@ export default {
   data() {
     return {
       article: '',
+      keywordColumn: ':name',
       vituralTable: false,
       fieldList: [],
       tableData: [],
@@ -569,6 +574,10 @@ export default {
 
       return v
     })
+
+    if (this.entity.map.keywordColumn) {
+      this.keywordColumn = ':' + this.entity.map.keywordColumn
+    }
 
     // 处理模糊查询条件
     if (this.entity.id && this.entity.isVirtual) {
@@ -744,6 +753,10 @@ export default {
               // 如果赋值编码不等于显示编码，则查询显示数据
               record[field.assignmentCode] = record['map'][field.displayCode]
             }
+
+            if (field.displayLength && record[field.assignmentCode].length > field.displayLength) {
+              record[field.assignmentCode] = record[field.assignmentCode].substr(0,field.displayLength) + '…'
+            }
           })
           record = { ...record, ...record.value }
 
@@ -841,7 +854,27 @@ export default {
           this.initRoleManage(extra)
           // this.$message.success(`给${extra.name}发放金卡成功`)
         },
-        'stickGoods': (extra) => {
+        'tableGenerate': (extra) => { // 建表
+          this.$confirm(btn.warning, '提示', {
+            confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+          }).then(() => {
+            tableGenerate(extra.id).then(res => {
+              this.resetQuery()
+              this.$message.success('建表完成')
+            })
+          })
+        },
+        'codeGenerate': (extra) => { // 生成代码
+          this.$confirm(btn.warning, '提示', {
+            confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+          }).then(() => {
+            codeGenerate(extra.id).then(res => {
+              this.resetQuery()
+              this.$message.success('编码完成')
+            })
+          })
+        },
+        /*'stickGoods': (extra) => {
           this.$confirm(btn.warning, '提示', {
             confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
           }).then(() => {
@@ -982,7 +1015,7 @@ export default {
               }
             })
           })
-        },
+        },*/
         'articleSee': (extra) => {
           articleSee(this.entity.id, extra.id).then(res => {
             // 弹窗，展示富文本格式的内容，只展示，不编辑

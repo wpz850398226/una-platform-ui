@@ -17,6 +17,14 @@ export function addEntity(form) {
   return chPost('/sys/entity/save', form)
 }
 
+export function tableGenerate(id) {
+  return chPost(`/sys/entity/tableGenerate/${id}`)
+}
+
+export function codeGenerate(id) {
+  return chPost(`/sys/entity/codeGenerate/${id}`)
+}
+
 export function editEntity(form) {
   return chPut('/sys/entity', form)
 }

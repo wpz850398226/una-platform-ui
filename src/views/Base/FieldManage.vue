@@ -11,6 +11,7 @@
         :model="dataForm"
         status-icon
         :rules="defaultFormRules"
+        label-position="right"
         label-width="100px"
       >
         <h3>基本信息</h3>
@@ -57,9 +58,6 @@
             <el-input v-model="dataForm.transformDisplayCode" />
           </el-form-item>
 
-          <el-form-item label="存储类型" prop="columnTypeDcode">
-            <UnaDicSelect v-model="dataForm.columnTypeDcode" parent-code="field_storage" auto-pick-first />
-          </el-form-item>
         </div>
         <h3>表格相关</h3>
         <div class="flex justify-between">
@@ -89,12 +87,12 @@
           <el-form-item label="展示方式" prop="displayModeDcode">
             <UnaDicSelect v-model="dataForm.displayModeDcode" parent-code="field_display" auto-pick-first />
           </el-form-item>
-          <!-- <el-form-item label="展示长度" prop="displayLength">
+          <el-form-item v-if="dataForm.displayModeDcode === 'field_display_omit'" label="展示长度" prop="displayLength">
             <el-input
               v-model="dataForm.displayLength"
               type="number"
             />
-          </el-form-item> -->
+          </el-form-item>
         </div>
         <h3>表单相关</h3>
         <div class="flex justify-between">
@@ -124,16 +122,12 @@
           <el-form-item label="赋值方式" prop="assignmentModeDcode">
             <UnaDicSelect v-model="dataForm.assignmentModeDcode" parent-code="field_assignment" auto-pick-first />
           </el-form-item>
-          <el-form-item label="可选上限" prop="selectableLimitNum">
-<!--            <el-input
-              v-model="dataForm.selectableLimitNum"
-              type="number"
-            />-->
+          <el-form-item v-if="dataForm.assignmentModeDcode === 'field_assignment_multiselect' || dataForm.assignmentModeDcode === 'field_assignment_entityRecord' || dataForm.assignmentModeDcode === 'field_assignment_fileRepository'" label="可选上限" prop="selectableLimitNum">
             <el-input-number
               v-model="dataForm.selectableLimitNum"
               controls-position="right"
-              :min="1"
-              :max="10"
+              :min="0"
+              :max="100"
             />
           </el-form-item>
 <!--        </div>-->
@@ -179,8 +173,8 @@
               />
             </el-select>
           </el-form-item>
-<!--        </div>-->
-<!--        <div class="flex justify-between">-->
+          <!--        </div>-->
+          <!--        <div class="flex justify-between">-->
           <el-form-item
             v-if="dataForm.assignmentModeDcode === 'field_assignment_singleselect' || dataForm.assignmentModeDcode ==='field_assignment_multiselect'"
             label="选项提交"
@@ -199,6 +193,11 @@
               />
             </el-select>
           </el-form-item>
+        </div>
+        <div
+          v-if="dataForm.assignmentModeDcode === 'field_assignment_singleselect' || dataForm.assignmentModeDcode ==='field_assignment_multiselect' || dataForm.assignmentModeDcode ==='field_assignment_entityRecord'"
+          class="flex justify-between"
+        >
           <el-form-item label="选项参数键" prop="optionParamName">
             <el-input
               v-model="dataForm.optionParamName"
@@ -209,8 +208,6 @@
               v-model="dataForm.optionParamValue"
             />
           </el-form-item>
-        </div>
-        <div class="flex justify-between">
           <el-form-item label="联动父元素" prop="selectParentId">
             <el-select
               v-model="dataForm.selectParentId"
@@ -225,6 +222,8 @@
               />
             </el-select>
           </el-form-item>
+        </div>
+        <div class="flex justify-between">
 <!--        </div>-->
 <!--        <div class="flex justify-between">-->
           <el-form-item label="触隐父字段" prop="hideFieldId">
@@ -248,6 +247,11 @@
           </el-form-item>
         </div>
         <div class="flex justify-between">
+          <el-form-item label="备选值" prop="radioOptions">
+            <el-input
+              v-model="dataForm.radioOptions"
+            />
+          </el-form-item>
           <el-form-item label="默认值" prop="defaultValue">
             <el-input
               v-model="dataForm.defaultValue"
@@ -256,11 +260,6 @@
           <el-form-item label="注释" prop="annotation">
             <el-input
               v-model="dataForm.annotation"
-            />
-          </el-form-item>
-          <el-form-item label="单选备选值" prop="radioOptions">
-            <el-input
-              v-model="dataForm.radioOptions"
             />
           </el-form-item>
         </div>
@@ -276,6 +275,17 @@
             v-model="dataForm.remark"
           />
         </el-form-item>
+        <h3>数据相关</h3>
+        <div class="flex justify-between">
+          <el-form-item label="存储类型" prop="columnTypeDcode">
+            <UnaDicSelect v-model="dataForm.columnTypeDcode" parent-code="field_storage" auto-pick-first />
+          </el-form-item>
+          <el-form-item label="存储长度" prop="storageLength">
+            <el-input
+              v-model="dataForm.storageLength"
+            />
+          </el-form-item>
+        </div>
 
       </el-form>
       <span slot="footer" class="dialog-footer">
