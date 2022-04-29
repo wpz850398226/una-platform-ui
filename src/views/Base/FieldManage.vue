@@ -143,22 +143,24 @@
           v-if="dataForm.assignmentModeDcode === 'field_assignment_singleselect' || dataForm.assignmentModeDcode ==='field_assignment_multiselect' || dataForm.assignmentModeDcode ==='field_assignment_entityRecord'"
           class="flex justify-between"
         >
-          <el-form-item label="选项实体" prop="optionEntityId">
-            <el-select
-              v-model="dataForm.optionEntityId"
-              filterable
-              clearable
-              @change="getEntityFieldList"
-            >
-              <el-option
-                v-for="item in entityList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              />
+          <el-tooltip class="item" effect="dark" content="选项来源实体类" placement="right">
+            <el-form-item label="选项实体" prop="optionEntityId">
+              <el-select
+                v-model="dataForm.optionEntityId"
+                filterable
+                clearable
+                @change="getEntityFieldList"
+              >
+                <el-option
+                  v-for="item in entityList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
 
-            </el-select>
-          </el-form-item>
+              </el-select>
+            </el-form-item>
+          </el-tooltip>
           <el-form-item label="选项展示" prop="optionNameFieldCode">
             <el-select
               v-model="dataForm.optionNameFieldCode"
@@ -261,6 +263,9 @@
             <el-input
               v-model="dataForm.annotation"
             />
+          </el-form-item>
+          <el-form-item label="提示" prop="tip">
+            <el-input v-model="dataForm.tip"/>
           </el-form-item>
         </div>
 <!--        <el-form-item label="选项查询语句" prop="optionSql">-->

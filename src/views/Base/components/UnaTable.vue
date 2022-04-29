@@ -39,7 +39,7 @@
                   icon="el-icon-upload2"
                   size="small"
                   type="primary"
-                  @click="submitSelectDel"
+                  @click="dataImportDialogVisible = true"
                 >导入</el-button>
               </div>
               <el-dropdown v-if="checkPermission(entity.code +':export')">
@@ -72,6 +72,7 @@
             :disabled="searchRowVisible"
             size="small"
             placeholder="请输入内容"
+            @keyup.enter.native="goQuery"
           >
             <el-button slot="append" size="small" icon="el-icon-search" :disabled="searchRowVisible" @click="goQuery" />
           </el-input>
@@ -227,8 +228,8 @@
               <una-entity-view :field="field" :row="scope.row" />
             </div>
             <div v-else-if="field.displayModeDcode === 'field_display_omit'">
-              {{scope.row[field.assignmentCode]}}
-              <el-link v-if="scope.row[field.assignmentCode]" type="primary" :href="scope.row[field.assignmentCode]">[查看详情]</el-link>
+              {{scope.row[field.assignmentCode].length>30 ? scope.row[field.assignmentCode].substr(0,30).concat('…') : scope.row[field.assignmentCode]}}
+              <el-link v-if="scope.row[field.assignmentCode]" type="primary" @click="showOmitContentDialog(scope.row[field.assignmentCode])">[查看详情]</el-link>
             </div>
             <div v-else-if="field.displayModeDcode === 'field_display_showInTemplate'">
               <una-document
@@ -390,6 +391,18 @@
     </el-dialog>
 
     <el-dialog
+      title="查看详情"
+      :visible.sync="omitDialogVisible"
+      width="1000px"
+      :append-to-body="true"
+    >
+      <span>{{this.omitContent}}</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="omitDialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog
       v-if="taskFormEntity"
       :title="taskFormEntity.name"
       :visible.sync="taskFormDialogVisible"
@@ -467,6 +480,7 @@ export default {
   data() {
     return {
       article: '',
+      omitContent: '',
       keywordColumn: ':name',
       vituralTable: false,
       fieldList: [],
@@ -499,6 +513,7 @@ export default {
       extendFormDialogVisible: false,
       mapViewDialogVisible: false,
       articleViewDialogVisible: false,
+      omitDialogVisible: false,
       // 待办表单
       taskFormEntity: '',
       taskFormDialogVisible: false,
@@ -642,6 +657,10 @@ export default {
         this.grantChangedIds.push(pid)
       }
     },
+    showOmitContentDialog(val) {
+      this.omitDialogVisible = true
+      this.omitContent = val
+    },
     savePermission() {
       const submitData = []
 
@@ -754,9 +773,9 @@ export default {
               record[field.assignmentCode] = record['map'][field.displayCode]
             }
 
-            if (field.displayLength && record[field.assignmentCode].length > field.displayLength) {
-              record[field.assignmentCode] = record[field.assignmentCode].substr(0,field.displayLength) + '…'
-            }
+            // if (field.displayLength && record[field.assignmentCode].length > field.displayLength) {
+            //   record[field.assignmentCode] = record[field.assignmentCode].substr(0,field.displayLength) + '…'
+            // }
           })
           record = { ...record, ...record.value }
 
@@ -1095,6 +1114,9 @@ export default {
       width: 100%;
       height: 100%;
     }
+    .td { white-space: nowrap;  //禁止换行
+      overflow: hidden;    //隐藏超出单元格的部分
+      text-overflow: ellipsis;}   //将被隐藏的那部分用省略号代替
   }
 
   .el-popover .el-checkbox {
