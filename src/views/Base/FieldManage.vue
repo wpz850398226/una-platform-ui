@@ -110,6 +110,13 @@
               inactive-color="#ff4949"
             />
           </el-form-item>
+          <el-form-item label="是否初始隐藏" prop="isHidden">
+            <el-switch
+              v-model="dataForm.isHidden"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+            />
+          </el-form-item>
           <el-form-item label="批量修改" prop="isBatchUpdate">
             <el-switch
               v-model="dataForm.isBatchUpdate"
@@ -228,9 +235,9 @@
         <div class="flex justify-between">
 <!--        </div>-->
 <!--        <div class="flex justify-between">-->
-          <el-form-item label="触隐父字段" prop="hideFieldId">
+          <el-form-item label="隐藏切换字段" prop="hideSwitchFieldId">
             <el-select
-              v-model="dataForm.hideFieldId"
+              v-model="dataForm.hideSwitchFieldId"
               filterable
               clearable
             >
@@ -242,9 +249,9 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="触隐值" prop="hideFieldValue">
+          <el-form-item label="隐藏切换值" prop="hideSwitchFieldValue">
             <el-input
-              v-model="dataForm.hideFieldValue"
+              v-model="dataForm.hideSwitchFieldValue"
             />
           </el-form-item>
         </div>
@@ -354,7 +361,8 @@ export default {
       relationList: [],
       defaultForm: {
         isEffect: true,
-        isUpdate: true
+        isUpdate: true,
+        isHidden: false
       }, // 默认表单
       defaultFormRules: {
         name: [{ required: true, message: '请输入名称', trigger: 'change' }],

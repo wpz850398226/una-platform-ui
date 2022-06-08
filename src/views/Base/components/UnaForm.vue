@@ -258,15 +258,19 @@ export default {
         }
 
         // 触发字段组件隐藏 功能实现
-        if (field.hideFieldId && field.hideFieldValue) { // 隐藏条件
-          const hideFields = this.fieldList.filter(v => v.id === field.hideFieldId)
+        if (field.hideSwitchFieldId && field.hideSwitchFieldValue) { // 隐藏条件
+          const hideFields = this.fieldList.filter(v => v.id === field.hideSwitchFieldId)
 
           if (hideFields.length > 0) {
             const pVal = this.dataForm[hideFields[0].assignmentCode] + '' // 触发隐藏父字段值
-            const sp = field.hideFieldValue.split(',')
-            if (sp.includes(pVal)) {
-              isShow = false
-            }
+            const sp = field.hideSwitchFieldValue.split(',')
+            isShow = sp.includes(pVal) && field.isHidden
+            // console.log('====', pVal, sp)
+            // if (sp.includes(pVal)) {
+            //   isShow = field.isHidden
+            // } else {
+            //   isShow = !field.isHidden
+            // }
           }
         }
 
