@@ -424,7 +424,7 @@ import * as fieldPort from '@/api/una/sys_field'
 // import qs from 'query-string'
 import UnaDocument from '@/layout/components/UnaDocument.vue'
 import UnaImage from '@/layout/components/UnaImage.vue'
-
+import UnaSingleSelect from '@/layout/components/UnaSingleSelect.vue'
 import UnaMap from '@/layout/components/UnaMap.vue'
 import UnaEntityView from '@/layout/components/UnaEntityView.vue'
 import MapQuery from '@/views/Extend/MapQuery.vue'
@@ -446,11 +446,12 @@ import { entityListAll, tableGenerate, codeGenerate } from '@/api/una/sys_entity
 // 角色授权
 import permission from '@/directive/permission/index.js' // 权限判断指令
 import checkPermission from '@/utils/permission.js'
+import UnaTreeNode from "@/layout/components/UnaTreeNode";
 
 export default {
   name: 'UnaTable',
   components: {
-    UnaMap, UnaDocument, UnaImage, UnaEntityView,
+    UnaSingleSelect, UnaMap, UnaDocument, UnaImage, UnaEntityView,
     MapQuery
   },
   directives: { permission },
