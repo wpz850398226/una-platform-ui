@@ -437,15 +437,18 @@ import {
 } from '@/api/una/sys_button'
 import {
   entityById,
-  rolePermission, grantPermission,
-  importTemplateDownload
+  rolePermission,
+  grantPermission,
+  importTemplateDownload,
+  entityListAll,
+  tableGenerate,
+  codeGenerate
 } from '@/api/una/sys_entity'
 
 // 角色授权
-import { entityListAll, tableGenerate, codeGenerate } from '@/api/una/sys_entity'
-// 角色授权
 import permission from '@/directive/permission/index.js' // 权限判断指令
 import checkPermission from '@/utils/permission.js'
+import { hideField } from '@/api/user'
 import UnaTreeNode from "@/layout/components/UnaTreeNode";
 
 export default {
@@ -519,6 +522,7 @@ export default {
       taskFormEntity: '',
       taskFormDialogVisible: false,
       taskInfo: '',
+      userInfo: this.$store.getters.userinfo,
       //判断结果
       isPermitUpdate: false, // 有权修改
       isPermitDelete: false, // 有权删除
@@ -595,6 +599,10 @@ export default {
       this.keywordColumn = ':' + this.entity.map.keywordColumn
     }
 
+    if (this.entity.pageSize){
+      this.pageSize = this.entity.pageSize
+    }
+
     // 处理模糊查询条件
     if (this.entity.id && this.entity.isVirtual) {
       // const p = qs.parse(`?${this.query}`)
@@ -606,6 +614,7 @@ export default {
       this.fieldList = result
       this.getPublicList()
       this.columnFilter()
+      this.defaultColumnFilter()
     })
 
     this.getButtonList()
@@ -698,14 +707,43 @@ export default {
       return fieldPort.fieldList({ 'entityId': this.entity.id, 'isEffect': 1 })
     },
     columnFilter(val) {
+      // console.log('cccccccccccc',this.checkList.join(','))
       if (!val) {
         this.fieldList.forEach(e => {
           this.checkList.push(e.id)
         })
+      }else{
+        let param = {}
+        let hideFieldIdArray = []
+        this.fieldList.forEach(f => {
+          if(!val.includes(f.id)){
+            hideFieldIdArray.push(f.id)
+          }
+        })
+
+        param["id"] = this.entity.id
+        param["hideFieldIds"] = hideFieldIdArray.join(',')
+        // console.log('参数为：',param)
+        hideField(param).then(res => {
+          this.$message.success('设置成功，重新登录后保存')
+        })
+      }
+    },
+    defaultColumnFilter() {
+      const entityId = this.entity.id
+      const hideFieldIdJsonString = this.userInfo.hideFieldIds
+      const fieldIdJson = JSON.parse(hideFieldIdJsonString)
+      // console.log('默认修改列筛选了',fieldIdJson)
+      if (fieldIdJson.hasOwnProperty(entityId)){
+        const hideFieldIdArray = fieldIdJson[entityId].split(',')
+        hideFieldIdArray.forEach(e => {
+          const i = this.checkList.indexOf(Number(e))
+          if (i > -1)this.checkList.splice(i,1)
+        })
       }
     },
     setFilterCond(key, value) {
-      const userInfo = this.$store.getters.userinfo
+      const userInfo = this.userInfo
       const c = {}
 
       if (typeof value === 'string' && value.indexOf('$u') !== -1) {
@@ -740,7 +778,7 @@ export default {
       }
 
       if (menuPath.indexOf('/sys/manage') !== -1 && menuPath.indexOf('?') !== -1) {
-        const userInfo = this.$store.getters.userinfo
+        const userInfo = this.userInfo
         const condition = menuPath.substr(menuPath.indexOf('?') + 1)
         // console.log(condition)
         for (const conditionUnit of condition.split('&')) {

@@ -235,7 +235,7 @@
         <div class="flex justify-between">
 <!--        </div>-->
 <!--        <div class="flex justify-between">-->
-          <el-form-item label="隐藏切换字段" prop="hideSwitchFieldId">
+          <el-form-item label="切隐字段" prop="hideSwitchFieldId">
             <el-select
               v-model="dataForm.hideSwitchFieldId"
               filterable
@@ -249,7 +249,7 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="隐藏切换值" prop="hideSwitchFieldValue">
+          <el-form-item label="切隐值" prop="hideSwitchFieldValue">
             <el-input
               v-model="dataForm.hideSwitchFieldValue"
             />

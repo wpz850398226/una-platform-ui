@@ -54,6 +54,7 @@
 
               <el-input
                 v-else-if="field.assignmentModeDcode === 'field_assignment_text'"
+                :placeholder="field.annotation"
                 v-model="dataForm[field.assignmentCode]"
               />
               <el-rate
@@ -64,11 +65,13 @@
               <el-input
                 v-else-if="field.assignmentModeDcode === 'field_assignment_textarea'"
                 v-model="dataForm[field.assignmentCode]"
+                :placeholder="field.annotation"
                 type="textarea"
                 :rows="2"
               />
               <el-input
                 v-else-if="field.assignmentModeDcode === 'field_assignment_password'"
+                :placeholder="field.annotation"
                 v-model="dataForm[field.assignmentCode]"
                 show-password
               />

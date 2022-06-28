@@ -7,7 +7,7 @@
  * @FilePath: /ch-uiap-ui/src/api/user.js
  */
 import request from '@/utils/request'
-import { chGet, chPost, chPut, chDelete } from './index'
+import { chGet, chPost, chPut, chDelete, jsonPut } from './index'
 
 export function login(data) {
   return chPost('/sys/login/login', data)
@@ -34,6 +34,10 @@ export function getUserMenu() {
 
 export function changePwd(query) {
   return chPut(`/sys/account`, query)
+}
+
+export function hideField(query) {
+  return jsonPut(`/sys/account/hideField`, query)
 }
 
 export function logout() {
