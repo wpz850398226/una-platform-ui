@@ -16,114 +16,141 @@
       >
         <h3>基本信息</h3>
         <div class="flex justify-between">
-          <el-form-item label="所属实体" prop="entityIdName">
-            <el-input v-model="dataForm.entityIdName" readonly />
-            <el-input v-model="dataForm.entityId" style="display:none;" readonly />
-          </el-form-item>
+<!--          <el-form-item label="所属实体" prop="entityIdName">-->
+<!--            <el-input v-model="dataForm.entityIdName" readonly />-->
+<!--            <el-input v-model="dataForm.entityId" style="display:none;" readonly />-->
+<!--          </el-form-item>-->
           <el-form-item label="名称" prop="name">
-            <el-input v-model="dataForm.name" />
+            <el-input v-model="dataForm.name" placeholder="请输入字段名称"/>
           </el-form-item>
 <!--        </div>-->
 <!--        <div class="flex justify-between">-->
           <el-form-item label="所属组名" prop="groupName">
-            <el-input v-model="dataForm.groupName" />
+            <el-input v-model="dataForm.groupName" placeholder="请输入所属组名"/>
           </el-form-item>
-          <el-form-item label="所属权限" prop="permissionId">
-            <el-select
-              v-model="dataForm.permissionId"
-              filterable
-              clearable
-            >
-              <el-option
-                v-for="item in permissionList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              />
-
-            </el-select>
-          </el-form-item>
+          <el-tooltip class="item" effect="dark" content="控制表单中该字段的显隐权限" placement="right">
+            <el-form-item label="所属权限" prop="permissionId">
+              <el-select
+                v-model="dataForm.permissionId"
+                filterable
+                clearable
+                placeholder="请选择所属权限"
+              >
+                <el-option
+                  v-for="item in permissionList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+          </el-tooltip>
         </div>
         <div class="flex justify-between">
-          <el-form-item label="赋值编码" prop="assignmentCode">
-            <el-input v-model="dataForm.assignmentCode" />
-          </el-form-item>
-          <el-form-item label="取值编码" prop="displayCode">
-            <el-input v-model="dataForm.displayCode" />
-          </el-form-item>
+          <el-tooltip class="item" effect="dark" content="入参值，对应后端字段保存编码" placement="right">
+            <el-form-item label="赋值编码" prop="assignmentCode">
+              <el-input v-model="dataForm.assignmentCode" placeholder="请输入赋值编码"/>
+            </el-form-item>
+          </el-tooltip>
 
-<!--        </div>-->
-<!--        <div class="flex justify-between">-->
-          <el-form-item label="转换值编码" prop="transformDisplayCode">
-            <el-input v-model="dataForm.transformDisplayCode" />
-          </el-form-item>
+          <el-tooltip class="item" effect="dark" content="出参值，对应前端字段展示编码，默认与赋值编码相同" placement="right">
+            <el-form-item label="取值编码" prop="displayCode">
+              <el-input v-model="dataForm.displayCode" placeholder="请输入取值编码"/>
+            </el-form-item>
+          </el-tooltip>
 
+          <el-tooltip class="item" effect="dark" content="赋值编码与取值编码不同时，通过转换值编码自动转换展示内容" placement="right">
+            <el-form-item label="转换值编码" prop="transformDisplayCode">
+              <el-input v-model="dataForm.transformDisplayCode" placeholder="请输入转换值所属字段编码"/>
+            </el-form-item>
+          </el-tooltip>
         </div>
         <h3>表格相关</h3>
         <div class="flex justify-between">
-          <el-form-item label="展示" prop="isEffect">
-            <el-switch
-              v-model="dataForm.isEffect"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-            />
-          </el-form-item>
-          <el-form-item label="导入" prop="isImport">
-            <el-switch
-              v-model="dataForm.isImport"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-            />
-          </el-form-item>
-          <el-form-item label="导出" prop="isExport">
-            <el-switch
-              v-model="dataForm.isExport"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-            />
-          </el-form-item>
-<!--        </div>-->
-<!--        <div class="flex justify-between">-->
+          <el-tooltip class="item" effect="dark" content="是否在表格中展示该列" placement="right">
+            <el-form-item label="展示" prop="isEffect">
+              <el-switch
+                v-model="dataForm.isEffect"
+                active-color="#13ce66"
+                inactive-color="#ff4949"
+              />
+            </el-form-item>
+          </el-tooltip>
+
+          <el-tooltip class="item" effect="dark" content="导入模板是否包含该字段" placement="right">
+            <el-form-item label="导入" prop="isImport">
+              <el-switch
+                v-model="dataForm.isImport"
+                active-color="#13ce66"
+                inactive-color="#ff4949"
+              />
+            </el-form-item>
+          </el-tooltip>
+
+          <el-tooltip class="item" effect="dark" content="导出数据中是否包含该字段" placement="right">
+            <el-form-item label="导出" prop="isExport">
+              <el-switch
+                v-model="dataForm.isExport"
+                active-color="#13ce66"
+                inactive-color="#ff4949"
+              />
+            </el-form-item>
+          </el-tooltip>
+
           <el-form-item label="展示方式" prop="displayModeDcode">
             <UnaDicSelect v-model="dataForm.displayModeDcode" parent-code="field_display" auto-pick-first />
           </el-form-item>
-          <el-form-item v-if="dataForm.displayModeDcode === 'field_display_omit'" label="展示长度" prop="displayLength">
-            <el-input
-              v-model="dataForm.displayLength"
-              type="number"
-            />
-          </el-form-item>
+
+          <el-tooltip v-if="dataForm.displayModeDcode === 'field_display_omit'"
+                      class="item" effect="dark" content="控制表格中展示长度，超长部分省略" placement="right">
+            <el-form-item label="展示长度" prop="displayLength">
+              <el-input v-model="dataForm.displayLength" type="number" />
+            </el-form-item>
+          </el-tooltip>
+
         </div>
         <h3>表单相关</h3>
         <div class="flex justify-between">
-          <el-form-item label="是否必填" prop="isRequired">
-            <el-switch
-              v-model="dataForm.isRequired"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-            />
-          </el-form-item>
-          <el-form-item label="表单是否加载" prop="isUpdate">
-            <el-switch
-              v-model="dataForm.isUpdate"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-            />
-          </el-form-item>
-          <el-form-item label="是否初始隐藏" prop="isHidden">
-            <el-switch
-              v-model="dataForm.isHidden"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-            />
-          </el-form-item>
-          <el-form-item label="批量修改" prop="isBatchUpdate">
-            <el-switch
-              v-model="dataForm.isBatchUpdate"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-            />
-          </el-form-item>
+          <el-tooltip class="item" effect="dark" content="表单中该字段是否必填" placement="right">
+            <el-form-item label="必填" prop="isRequired">
+              <el-switch
+                v-model="dataForm.isRequired"
+                active-color="#13ce66"
+                inactive-color="#ff4949"
+              />
+            </el-form-item>
+          </el-tooltip>
+
+          <el-tooltip class="item" effect="dark" content="表单中是否加载该字段" placement="right">
+            <el-form-item label="加载" prop="isUpdate">
+              <el-switch
+                v-model="dataForm.isUpdate"
+                active-color="#13ce66"
+                inactive-color="#ff4949"
+              />
+            </el-form-item>
+          </el-tooltip>
+
+          <el-tooltip class="item" effect="dark" content="表单中是否默认隐藏该字段" placement="right">
+            <el-form-item label="隐藏" prop="isHidden">
+              <el-switch
+                v-model="dataForm.isHidden"
+                active-color="#13ce66"
+                inactive-color="#ff4949"
+              />
+            </el-form-item>
+          </el-tooltip>
+
+          <el-tooltip class="item" effect="dark" content="批量修改表单中是否加载该字段" placement="right">
+            <el-form-item label="批量修改" prop="isBatchUpdate">
+              <el-switch
+                v-model="dataForm.isBatchUpdate"
+                active-color="#13ce66"
+                inactive-color="#ff4949"
+              />
+            </el-form-item>
+          </el-tooltip>
+
         </div>
         <div class="flex justify-between">
           <el-form-item label="赋值方式" prop="assignmentModeDcode">
@@ -137,14 +164,30 @@
               :max="100"
             />
           </el-form-item>
-<!--        </div>-->
-<!--        <div class="flex justify-between">-->
-          <el-form-item label="格式校验" prop="formatCheckTypeDcode">
-            <UnaDicSelect v-model="dataForm.formatCheckTypeDcode" parent-code="field_formatDetection" />
-          </el-form-item>
-          <el-form-item label="数据检测" prop="dataCheckTypeDcode">
-            <UnaDicSelect v-model="dataForm.dataCheckTypeDcode" parent-code="field_dataDetection" />
-          </el-form-item>
+          <el-tooltip class="item" effect="dark" content="表单中联动切换该字段显隐的父字段" placement="right">
+            <el-form-item label="切隐字段" prop="hideSwitchFieldId">
+              <el-select
+                v-model="dataForm.hideSwitchFieldId"
+                filterable
+                clearable
+                placeholder="请选择切换显隐字段"
+              >
+                <el-option
+                  v-for="item in entityLinkageFieldList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+          </el-tooltip>
+
+          <el-tooltip class="item" effect="dark" content="联动切换该字段显隐的触发值" placement="right">
+            <el-form-item label="切隐值" prop="hideSwitchFieldValue">
+              <el-input v-model="dataForm.hideSwitchFieldValue" placeholder="请输入切换显隐触发值"/>
+            </el-form-item>
+          </el-tooltip>
+
         </div>
         <div
           v-if="dataForm.assignmentModeDcode === 'field_assignment_singleselect' || dataForm.assignmentModeDcode ==='field_assignment_multiselect' || dataForm.assignmentModeDcode ==='field_assignment_entityRecord'"
@@ -157,6 +200,7 @@
                 filterable
                 clearable
                 @change="getEntityFieldList"
+                placeholder="请选择选项所属实体"
               >
                 <el-option
                   v-for="item in entityList"
@@ -173,6 +217,7 @@
               v-model="dataForm.optionNameFieldCode"
               clearable
               filterable
+              placeholder="请选择选项展示字段"
             >
               <el-option
                 v-for="item in entityFieldList"
@@ -182,8 +227,6 @@
               />
             </el-select>
           </el-form-item>
-          <!--        </div>-->
-          <!--        <div class="flex justify-between">-->
           <el-form-item
             v-if="dataForm.assignmentModeDcode === 'field_assignment_singleselect' || dataForm.assignmentModeDcode ==='field_assignment_multiselect'"
             label="选项提交"
@@ -193,6 +236,7 @@
               v-model="dataForm.optionValueFieldCode"
               clearable
               filterable
+              placeholder="请选择选项提交字段"
             >
               <el-option
                 v-for="item in entityFieldList"
@@ -210,18 +254,21 @@
           <el-form-item label="选项参数键" prop="optionParamName">
             <el-input
               v-model="dataForm.optionParamName"
+              placeholder="请输入查询选项参数键"
             />
           </el-form-item>
           <el-form-item label="选项参数值" prop="optionParamValue">
             <el-input
               v-model="dataForm.optionParamValue"
+              placeholder="请输入查询选项参数值"
             />
           </el-form-item>
-          <el-form-item label="联动父元素" prop="selectParentId">
+          <el-form-item label="联动父字段" prop="selectParentId">
             <el-select
               v-model="dataForm.selectParentId"
               filterable
               clearable
+              placeholder="请选择下拉联动父字段"
             >
               <el-option
                 v-for="item in entityLinkageFieldList"
@@ -233,70 +280,58 @@
           </el-form-item>
         </div>
         <div class="flex justify-between">
-<!--        </div>-->
-<!--        <div class="flex justify-between">-->
-          <el-form-item label="切隐字段" prop="hideSwitchFieldId">
-            <el-select
-              v-model="dataForm.hideSwitchFieldId"
-              filterable
-              clearable
-            >
-              <el-option
-                v-for="item in entityLinkageFieldList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="切隐值" prop="hideSwitchFieldValue">
-            <el-input
-              v-model="dataForm.hideSwitchFieldValue"
-            />
-          </el-form-item>
+          <el-tooltip class="item" effect="dark" content="数据格式校验，与内容无关" placement="right">
+            <el-form-item label="格式校验" prop="formatCheckTypeDcode">
+              <UnaDicSelect v-model="dataForm.formatCheckTypeDcode" parent-code="field_formatDetection" placeholder="请选择格式校验类型"/>
+            </el-form-item>
+          </el-tooltip>
+          <el-tooltip class="item" effect="dark" content="数据内容校验，业务或功能相关" placement="right">
+            <el-form-item label="数据校验" prop="dataCheckTypeDcode">
+              <UnaDicSelect v-model="dataForm.dataCheckTypeDcode" parent-code="field_dataDetection" placeholder="请选择数据校验类型"/>
+            </el-form-item>
+          </el-tooltip>
+          <el-tooltip class="item" effect="dark" content="数据校验阈值/波幅/有效值/无效值/备选值" placement="right">
+            <el-form-item label="阈值" prop="threshold">
+              <el-input v-model="dataForm.threshold" placeholder="请输入阈值"/>
+            </el-form-item>
+          </el-tooltip>
         </div>
         <div class="flex justify-between">
-          <el-form-item label="备选值" prop="radioOptions">
-            <el-input
-              v-model="dataForm.radioOptions"
-            />
-          </el-form-item>
           <el-form-item label="默认值" prop="defaultValue">
             <el-input
               v-model="dataForm.defaultValue"
+              placeholder="请输入默认值"
             />
           </el-form-item>
           <el-form-item label="注释" prop="annotation">
             <el-input
               v-model="dataForm.annotation"
+              placeholder="请输入注释填充值"
             />
           </el-form-item>
           <el-form-item label="提示" prop="tip">
-            <el-input v-model="dataForm.tip"/>
+            <el-input v-model="dataForm.tip" placeholder="请输入提示内容"/>
           </el-form-item>
         </div>
-<!--        <el-form-item label="选项查询语句" prop="optionSql">-->
-<!--          <el-input-->
-<!--            v-model="dataForm.optionSql"-->
-<!--            type="textarea"-->
-<!--            row="3"-->
-<!--          />-->
-<!--        </el-form-item>-->
-        <el-form-item label="备注" prop="optionSql">
+        <el-form-item label="描述" prop="description">
           <el-input
-            v-model="dataForm.remark"
+            v-model="dataForm.description"
+            placeholder="请输入描述信息"
           />
         </el-form-item>
         <h3>数据相关</h3>
         <div class="flex justify-between">
-          <el-form-item label="存储类型" prop="columnTypeDcode">
-            <UnaDicSelect v-model="dataForm.columnTypeDcode" parent-code="field_storage" auto-pick-first />
-          </el-form-item>
-          <el-form-item label="存储长度" prop="storageLength">
-            <el-input
-              v-model="dataForm.storageLength"
-            />
-          </el-form-item>
+          <el-tooltip class="item" effect="dark" content="数据库存储类型" placement="right">
+            <el-form-item label="存储类型" prop="columnTypeDcode">
+              <UnaDicSelect v-model="dataForm.columnTypeDcode" parent-code="field_storage" auto-pick-first placeholder="请选择存储类型"/>
+            </el-form-item>
+          </el-tooltip>
+
+          <el-tooltip class="item" effect="dark" content="数据库存储长度" placement="right">
+            <el-form-item label="存储长度" prop="storageLength">
+              <el-input v-model="dataForm.storageLength" placeholder="请输入数据库存储长度"/>
+            </el-form-item>
+          </el-tooltip>
         </div>
 
       </el-form>
