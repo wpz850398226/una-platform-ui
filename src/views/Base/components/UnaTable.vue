@@ -51,7 +51,11 @@
               </el-dropdown>
 
               <div v-for="btn in tableAboveButton" v-if="checkPermission(btn.map.permissionCode)" :key="btn.id" class="margin-left-xs" :span="3">
-                <el-button size="small" type="primary" :icon="btn.iconDcode" @click="reflectFun(btn.event, '', btn)">{{ btn.name }}</el-button>
+<!--                <el-button size="small" type="primary" :icon="btn.iconDcode" @click="reflectFun(btn.event, '', btn)">{{ btn.name }}</el-button>-->
+                <el-tooltip v-if="btn.tip" class="item" effect="dark" :content="btn.tip" placement="right">
+                  <el-button size="small" type="primary" :icon="btn.iconDcode" @click="sysButtonFunc(btn,'')">{{ btn.name }}</el-button>
+                </el-tooltip>
+                <el-button v-else size="small" type="primary" :icon="btn.iconDcode" @click="sysButtonFunc(btn,'')">{{ btn.name }}</el-button>
               </div>
             </div>
             <div v-if="entity.filterList && entity.filterList.length>0" class="flex">
@@ -228,7 +232,7 @@
               <una-entity-view :field="field" :row="scope.row" />
             </div>
             <div v-else-if="field.displayModeDcode === 'field_display_omit'">
-              {{scope.row[field.assignmentCode].length>30 ? scope.row[field.assignmentCode].substr(0,30).concat('…') : scope.row[field.assignmentCode]}}
+              {{scope.row[field.assignmentCode] && scope.row[field.assignmentCode].length>30 ? scope.row[field.assignmentCode].substr(0,30).concat('…') : scope.row[field.assignmentCode]}}
               <el-link v-if="scope.row[field.assignmentCode]" type="primary" @click="showOmitContentDialog(scope.row[field.assignmentCode])">[查看详情]</el-link>
             </div>
             <div v-else-if="field.displayModeDcode === 'field_display_showInTemplate'">
@@ -256,8 +260,9 @@
               type="text"
               plain
               :icon="btn.iconDcode"
-              @click="reflectFun(btn.event, scope.row, btn)"
-            >{{ btn.name }}</el-button>
+              @click="sysButtonFunc(btn,scope.row)">
+<!--              @click="reflectFun(btn.event, scope.row, btn)"-->
+            {{ btn.name }}</el-button>
             <el-button v-if="isPermitDelete" plain title="删除" type="text" style="color: red" @click="handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -449,7 +454,9 @@ import {
 import permission from '@/directive/permission/index.js' // 权限判断指令
 import checkPermission from '@/utils/permission.js'
 import { hideField } from '@/api/user'
+// import { chGet, chDelete, jsonPut, jsonPost } from '@/api/index'
 import UnaTreeNode from "@/layout/components/UnaTreeNode";
+import axios from "@/utils/request";
 
 export default {
   name: 'UnaTable',
@@ -894,6 +901,50 @@ export default {
       }
 
       // this.$emit('submitSelectDel', this.selectedData.map(v => v.id).join(','))
+    },
+    buttonGet (url,data) {
+      // console.log('buttonGet',data)
+      return chGet(url,data)
+    },
+    sysButtonFunc(btn,data) {
+      // console.log('sysButtonFunc',data)
+
+      if(btn.event){
+        let eventBody = btn.event
+        const patt = /{data.*}/
+
+        const matchResult = eventBody.match(patt)
+        // console.log('pppppppppppppppp',matchResult)
+        matchResult.forEach(e => {
+          const key = e.slice(6,-1)
+          eventBody = eventBody.replace(e,data[key])
+        })
+
+        // console.log('eeeeeeeeeeeee',eventBody)
+
+        if (btn.warning){
+          this.$confirm(btn.warning, '提示', {
+            confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+          }).then(() => {
+            eval(eventBody).then(res => {
+              if(btn.isRefresh && res.isSuccess) {
+                this.resetQuery()
+              }
+              this.$message.success(res.message)
+            })
+          })
+        } else {
+          eval(eventBody).then(res => {
+            if(btn.isRefresh && res.isSuccess) {
+              this.resetQuery()
+            }
+            this.$message.success(res.message)
+          })
+        }
+      }
+
+
+
     },
     // 通用按钮事件处理器
     reflectFun(handler, extra, btn) {
