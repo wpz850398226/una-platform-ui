@@ -422,7 +422,7 @@
 
 <script>
 import { CodeToText } from 'element-china-area-data'
-import { chDelete, chGet } from '@/api/index'
+import { chDelete, chGet, chPost, chPut } from '@/api/index'
 import { findDictionaryList } from '@/utils/find-dictionary'
 
 import * as fieldPort from '@/api/una/sys_field'
@@ -903,8 +903,16 @@ export default {
       // this.$emit('submitSelectDel', this.selectedData.map(v => v.id).join(','))
     },
     buttonGet (url,data) {
-      // console.log('buttonGet',data)
       return chGet(url,data)
+    },
+    buttonDelete (url) {
+      return chDelete(url)
+    },
+    buttonPost (url,data) {
+      return chPost(url,data)
+    },
+    buttonPut (url,data) {
+      return chPut(url,data)
     },
     sysButtonFunc(btn,data) {
       // console.log('sysButtonFunc',data)
@@ -915,114 +923,42 @@ export default {
 
         const matchResult = eventBody.match(patt)
         // console.log('pppppppppppppppp',matchResult)
-        matchResult.forEach(e => {
-          const key = e.slice(6,-1)
-          eventBody = eventBody.replace(e,data[key])
-        })
-
-        // console.log('eeeeeeeeeeeee',eventBody)
+        if(matchResult){
+          matchResult.forEach(e => {
+            const key = e.slice(6,-1)
+            eventBody = eventBody.replace(e,data[key])
+          })
+        }
 
         if (btn.warning){
           this.$confirm(btn.warning, '提示', {
             confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
           }).then(() => {
-            eval(eventBody).then(res => {
-              if(btn.isRefresh && res.isSuccess) {
-                this.resetQuery()
-              }
-              this.$message.success(res.message)
-            })
+            this.excuteFunc(btn,eventBody)
           })
         } else {
-          eval(eventBody).then(res => {
-            if(btn.isRefresh && res.isSuccess) {
-              this.resetQuery()
-            }
-            this.$message.success(res.message)
-          })
+          this.excuteFunc(btn,eventBody)
         }
       }
-
-
-
+    },
+    excuteFunc(btn,event) {
+      eval(event).then(res => {
+        if(btn.isRefresh && res.isSuccess) {
+          this.resetQuery()
+        }
+        this.$message.success(res.message)
+      })
     },
     // 通用按钮事件处理器
     reflectFun(handler, extra, btn) {
       const that = this
       const methodCenter = {
-        'refreshResource': () => {
-          this.$message.success('刷新资源成功')
-        },
-        'flushCache': (extra) => {
-          flushRedis().then(() => {
-            this.$message.success('清空缓存完成')
-          })
-        },
         'authorization': (extra) => {
           this.grantRoleDialogVisible = true
           this.initRoleManage(extra)
           // this.$message.success(`给${extra.name}发放金卡成功`)
         },
-        'tableGenerate': (extra) => { // 建表
-          this.$confirm(btn.warning, '提示', {
-            confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
-          }).then(() => {
-            tableGenerate(extra.id).then(res => {
-              this.resetQuery()
-              this.$message.success('建表完成')
-            })
-          })
-        },
-        'codeGenerate': (extra) => { // 生成代码
-          this.$confirm(btn.warning, '提示', {
-            confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
-          }).then(() => {
-            codeGenerate(extra.id).then(res => {
-              this.resetQuery()
-              this.$message.success('编码完成')
-            })
-          })
-        },
-        /*'stickGoods': (extra) => {
-          this.$confirm(btn.warning, '提示', {
-            confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
-          }).then(() => {
-            stickGoods(extra.id).then(res => {
-              this.resetQuery()
-              this.$message.success('置顶完成')
-            })
-          })
-        },
-        'refreshGoods': (extra) => {
-          this.$confirm(btn.warning, '提示', {
-            confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
-          }).then(() => {
-            refreshGoods(extra.id).then(res => {
-              this.resetQuery()
-              this.$message.success('刷新完成')
-            })
-          })
-        },
-        'stickShop': (extra) => {
-          this.$confirm(btn.warning, '提示', {
-            confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
-          }).then(() => {
-            stickShop(extra.id).then(res => {
-              this.resetQuery()
-              this.$message.success('置顶完成')
-            })
-          })
-        },
-        'refreshShop': (extra) => {
-          this.$confirm(btn.warning, '提示', {
-            confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
-          }).then(() => {
-            refreshShop(extra.id).then(res => {
-              this.resetQuery()
-              this.$message.success('刷新完成')
-            })
-          })
-        },
+        /*
         'settleOrder': (extra) => { // 结算订单
             settleOrder(extra.id).then(res => {
               // this.resetQuery()

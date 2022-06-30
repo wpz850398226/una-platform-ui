@@ -168,7 +168,7 @@ function chDelete(url) {
       url: `${reqUrl}${url}`,
       method: 'DELETE'
     }).then((res) => {
-      resolve(res.data)
+      resolve(res)
     }).catch((err) => {
       reject(err)
     })
