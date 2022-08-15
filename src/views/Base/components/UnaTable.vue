@@ -232,8 +232,9 @@
               <una-entity-view :field="field" :row="scope.row" />
             </div>
             <div v-else-if="field.displayModeDcode === 'field_display_omit'">
-              {{scope.row[field.assignmentCode] && scope.row[field.assignmentCode].length>30 ? scope.row[field.assignmentCode].substr(0,30).concat('…') : scope.row[field.assignmentCode]}}
-              <el-link v-if="scope.row[field.assignmentCode]" type="primary" @click="showOmitContentDialog(scope.row[field.assignmentCode])">[查看详情]</el-link>
+              {{console.log('----------', scope.row)}}
+              {{scope.row[field.assignmentCode] &&  scope.row[field.assignmentCode] && scope.row[field.assignmentCode].length>field.displayLength ? scope.row[field.assignmentCode].substring(0,field.displayLength) : scope.row[field.assignmentCode]}}
+              <el-link v-if="scope.row[field.assignmentCode] && scope.row[field.assignmentCode].length>field.displayLength" type="primary" @click="showOmitContentDialog(scope.row[field.assignmentCode])">[查看详情]</el-link>
             </div>
             <div v-else-if="field.displayModeDcode === 'field_display_showInTemplate'">
               <una-document
@@ -490,6 +491,7 @@ export default {
   },
   data() {
     return {
+      console: window.console,
       article: '',
       omitContent: '',
       keywordColumn: ':name',
@@ -538,6 +540,7 @@ export default {
   },
   computed: {
     visibleColumns() {
+      console.log("----", this.fieldList.filter((k) => this.checkList.includes(k.id)))
       return this.fieldList.filter((k) => this.checkList.includes(k.id))
     },
     code2Text() {
@@ -915,14 +918,11 @@ export default {
       return chPut(url,data)
     },
     sysButtonFunc(btn,data) {
-      // console.log('sysButtonFunc',data)
-
       if(btn.event){
         let eventBody = btn.event
         const patt = /{data.*}/
 
         const matchResult = eventBody.match(patt)
-        // console.log('pppppppppppppppp',matchResult)
         if(matchResult){
           matchResult.forEach(e => {
             const key = e.slice(6,-1)
@@ -934,152 +934,43 @@ export default {
           this.$confirm(btn.warning, '提示', {
             confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
           }).then(() => {
-            this.excuteFunc(btn,eventBody)
+            this.excuteFunc(btn,eventBody,data)
           })
         } else {
-          this.excuteFunc(btn,eventBody)
+          this.excuteFunc(btn,eventBody,data)
         }
       }
     },
-    excuteFunc(btn,event) {
-      eval(event).then(res => {
-        if(btn.isRefresh && res.isSuccess) {
-          this.resetQuery()
-        }
-        this.$message.success(res.message)
-      })
+    excuteFunc(btn,event,data) {
+      if(!btn.isReply){
+        eval(event)
+      }else{
+        eval(event).then(res => {
+          if(btn.isRefresh && res.isSuccess) {
+            this.resetQuery()
+          }
+          this.$message.success(res.message)
+        })
+      }
     },
     // 通用按钮事件处理器
-    reflectFun(handler, extra, btn) {
+    /*reflectFun(handler, extra, btn) {
       const that = this
       const methodCenter = {
-        'authorization': (extra) => {
-          this.grantRoleDialogVisible = true
-          this.initRoleManage(extra)
-          // this.$message.success(`给${extra.name}发放金卡成功`)
-        },
-        /*
-        'settleOrder': (extra) => { // 结算订单
-            settleOrder(extra.id).then(res => {
-              // this.resetQuery()
-              // this.$message.success('刷新完成')
-
-              const result = res.isSuccess
-              if (result) {
-                this.$message.success(`即将跳转支付页面`)
-                const htmlForm = res.data
-                if (htmlForm) {
-                  let dw;
-                  dw=window.open();
-                  dw.document.open();
-                  dw.document.write("<html><head><title>支付页面</title>");
-                  dw.document.write("<body>");
-                  dw.document.write(htmlForm);
-                  dw.document.write("</body></html>");
-                  dw.document.close();
-                }
-              } else {
-                this.$message.success(`跳转支付页面失败`)
-              }
-
-          })
-        },
-        'comment': (extra) => {
-          if (Object.prototype.hasOwnProperty.call(btn, 'formEntityId')) {
-            const extMap = {}
-
-            if (Object.prototype.hasOwnProperty.call(btn, 'formFieldCode')) {
-              extMap[btn.formFieldCode] = extra.id
-            }
-
-            this.convertId2EntityAndOpenForm(btn.formEntityId, extMap)
-          }
-        },
-        'attendancePunch': () => {
-          let coord = ''
-          if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-              // locationSuccess 获取成功的话
-              function(position) {
-                coord = position.coords.longitude + ',' + position.coords.latitude
-
-                attendancePunch(coord).then(res => {
-                  that.resetQuery()
-                  that.$message.success('打卡完成')
-                })
-              },
-              //  locationError  获取失败的话
-              function(error) {
-                var errorType = ['您拒绝共享位置信息', '获取不到位置信息', '获取位置信息超时']
-                alert(errorType[error.code - 1])
-              }
-            )
-          }
-        },
-        'autoAttendance': () => {
-          autoAttendance().then(res => {
-            this.resetQuery()
-            this.$message.success('生成记录成功')
-          })
-        },
-        'applyTravel': () => { // 提交出差申请
-          this.$confirm(btn.warning, '提示', {
-            confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
-          }).then(() => {
-            creatInstance(100001).then(res => {
-              this.$message.success(`流程创建成功`)
-              const task = res.data
-              if (task) {
-                this.openTaskDialog(task)
-              }
-            })
-          })
-        },
-        'applyExtraWork': (extra) => { // 提交加班申请
-          this.$confirm(btn.warning, '提示', {
-            confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
-          }).then(() => {
-            creatInstance(100003).then(res => {
-              this.$message.success(`流程创建成功`)
-              const task = res.data
-              if (task) {
-                this.openTaskDialog(task)
-              }
-            })
-          })
-        },
-        'applyVacate': () => { // 提交请假申请
-          this.$confirm(btn.warning, '提示', {
-            confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
-          }).then(() => {
-            creatInstance(100002).then(res => {
-              this.$message.success(`流程创建成功`)
-              const task = res.data
-              if (task) {
-                this.openTaskDialog(task)
-              }
-            })
-          })
-        },*/
         'articleSee': (extra) => {
           articleSee(this.entity.id, extra.id).then(res => {
             // 弹窗，展示富文本格式的内容，只展示，不编辑
-
             this.article = res.message
             this.articleViewDialogVisible = true
           })
         },
-        'mapView': (extra) => {
-          // this.$message.success('看地图了')
-          this.mapViewDialogVisible = true
-        }
       }
       if (Object.prototype.hasOwnProperty.call(methodCenter, handler)) {
         return methodCenter[handler](extra)
       } else {
         this.$message.error('指定事件未绑定')
       }
-    },
+    },*/
     // 打开办理任务窗口
     openTaskDialog(e) {
       this.taskInfo = e
