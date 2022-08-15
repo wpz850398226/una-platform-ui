@@ -233,7 +233,7 @@
             </div>
             <div v-else-if="field.displayModeDcode === 'field_display_omit'">
               {{console.log('----------', scope.row)}}
-              {{scope.row[field.assignmentCode] &&  scope.row[field.assignmentCode] && scope.row[field.assignmentCode].length>field.displayLength ? scope.row[field.assignmentCode].substring(0,field.displayLength) : scope.row[field.assignmentCode]}}
+              {{scope.row[field.assignmentCode] &&  scope.row[field.assignmentCode] && scope.row[field.assignmentCode].length>field.displayLength ? scope.row[field.assignmentCode].substring(0,field.displayLength)+'……' : scope.row[field.assignmentCode]}}
               <el-link v-if="scope.row[field.assignmentCode] && scope.row[field.assignmentCode].length>field.displayLength" type="primary" @click="showOmitContentDialog(scope.row[field.assignmentCode])">[查看详情]</el-link>
             </div>
             <div v-else-if="field.displayModeDcode === 'field_display_showInTemplate'">
