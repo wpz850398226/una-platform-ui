@@ -1,14 +1,14 @@
 <template>
   <el-table :data="list" style="width: 100%;padding-top: 15px;">
-    <el-table-column label="订单编号" prop="code" min-width="200" />
-    <el-table-column label="金额" prop="orderAmount" min-width="200" />
-    <el-table-column label="状态" prop="map.statusDname" min-width="200" />
+    <el-table-column label="操作内容" prop="name" min-width="200" />
+    <el-table-column label="操作人" prop="creatorName" min-width="200" />
+    <el-table-column label="时间" prop="createTime" min-width="200" />
   </el-table>
 </template>
 
 <script>
 // import { transactionList } from '@/api/remote-search'
-import { orderList } from '@/api/extend/order'
+import { logList } from '@/api/extend/log'
 
 export default {
   name: 'Order',
@@ -18,15 +18,16 @@ export default {
     }
   },
   created() {
-    this.getOrderList()
+    this.getLogList()
   },
   methods: {
-    getOrderList() {
-      orderList({
+    getLogList() {
+      logList({
         'pageNum': 1,
-        'pageSize': 15
+        'pageSize': 15,
+        'orderByDesc': 'createTime'
       }).then(res => {
-
+        this.list = res.data
       })
     }
     // fetchData() {
